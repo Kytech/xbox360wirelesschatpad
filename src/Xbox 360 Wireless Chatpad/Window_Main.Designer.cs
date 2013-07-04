@@ -38,16 +38,16 @@
             this.label1 = new System.Windows.Forms.Label();
             this.chatpadTextBox = new System.Windows.Forms.TextBox();
             this.deadzoneGroupBox = new System.Windows.Forms.GroupBox();
-            this.leftDeadzoneLabel = new System.Windows.Forms.Label();
-            this.leftDeadzone = new System.Windows.Forms.TrackBar();
-            this.rightDeadzoneLabel = new System.Windows.Forms.Label();
-            this.rightDeadzone = new System.Windows.Forms.TrackBar();
-            this.leftDeadzonePercentLabel = new System.Windows.Forms.Label();
             this.rightDeadzonePercentLabel = new System.Windows.Forms.Label();
+            this.leftDeadzonePercentLabel = new System.Windows.Forms.Label();
+            this.rightDeadzone = new System.Windows.Forms.TrackBar();
+            this.rightDeadzoneLabel = new System.Windows.Forms.Label();
+            this.leftDeadzone = new System.Windows.Forms.TrackBar();
+            this.leftDeadzoneLabel = new System.Windows.Forms.Label();
             this.trayIconMenu.SuspendLayout();
             this.deadzoneGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.leftDeadzone)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rightDeadzone)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.leftDeadzone)).BeginInit();
             this.SuspendLayout();
             // 
             // appLogTextbox
@@ -106,6 +106,7 @@
             // 
             // chatpadTextBox
             // 
+            this.chatpadTextBox.Enabled = false;
             this.chatpadTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chatpadTextBox.Location = new System.Drawing.Point(12, 153);
             this.chatpadTextBox.Margin = new System.Windows.Forms.Padding(2);
@@ -132,41 +133,14 @@
             this.deadzoneGroupBox.TabStop = false;
             this.deadzoneGroupBox.Text = "Analog Deadzones";
             // 
-            // leftDeadzoneLabel
+            // rightDeadzonePercentLabel
             // 
-            this.leftDeadzoneLabel.AutoSize = true;
-            this.leftDeadzoneLabel.Location = new System.Drawing.Point(6, 21);
-            this.leftDeadzoneLabel.Name = "leftDeadzoneLabel";
-            this.leftDeadzoneLabel.Size = new System.Drawing.Size(88, 13);
-            this.leftDeadzoneLabel.TabIndex = 0;
-            this.leftDeadzoneLabel.Text = "Left Analog Stick";
-            // 
-            // leftDeadzone
-            // 
-            this.leftDeadzone.Location = new System.Drawing.Point(7, 37);
-            this.leftDeadzone.Maximum = 30;
-            this.leftDeadzone.Name = "leftDeadzone";
-            this.leftDeadzone.Size = new System.Drawing.Size(134, 45);
-            this.leftDeadzone.TabIndex = 1;
-            this.leftDeadzone.ValueChanged += new System.EventHandler(this.leftDeadzone_ValueChanged);
-            // 
-            // rightDeadzoneLabel
-            // 
-            this.rightDeadzoneLabel.AutoSize = true;
-            this.rightDeadzoneLabel.Location = new System.Drawing.Point(6, 90);
-            this.rightDeadzoneLabel.Name = "rightDeadzoneLabel";
-            this.rightDeadzoneLabel.Size = new System.Drawing.Size(95, 13);
-            this.rightDeadzoneLabel.TabIndex = 2;
-            this.rightDeadzoneLabel.Text = "Right Analog Stick";
-            // 
-            // rightDeadzone
-            // 
-            this.rightDeadzone.Location = new System.Drawing.Point(7, 106);
-            this.rightDeadzone.Maximum = 30;
-            this.rightDeadzone.Name = "rightDeadzone";
-            this.rightDeadzone.Size = new System.Drawing.Size(134, 45);
-            this.rightDeadzone.TabIndex = 3;
-            this.rightDeadzone.ValueChanged += new System.EventHandler(this.rightDeadzone_ValueChanged);
+            this.rightDeadzonePercentLabel.Location = new System.Drawing.Point(111, 90);
+            this.rightDeadzonePercentLabel.Name = "rightDeadzonePercentLabel";
+            this.rightDeadzonePercentLabel.Size = new System.Drawing.Size(30, 13);
+            this.rightDeadzonePercentLabel.TabIndex = 5;
+            this.rightDeadzonePercentLabel.Text = "0%";
+            this.rightDeadzonePercentLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // leftDeadzonePercentLabel
             // 
@@ -177,14 +151,41 @@
             this.leftDeadzonePercentLabel.Text = "0%";
             this.leftDeadzonePercentLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
-            // rightDeadzonePercentLabel
+            // rightDeadzone
             // 
-            this.rightDeadzonePercentLabel.Location = new System.Drawing.Point(111, 90);
-            this.rightDeadzonePercentLabel.Name = "rightDeadzonePercentLabel";
-            this.rightDeadzonePercentLabel.Size = new System.Drawing.Size(30, 13);
-            this.rightDeadzonePercentLabel.TabIndex = 5;
-            this.rightDeadzonePercentLabel.Text = "0%";
-            this.rightDeadzonePercentLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.rightDeadzone.Location = new System.Drawing.Point(7, 106);
+            this.rightDeadzone.Maximum = 30;
+            this.rightDeadzone.Name = "rightDeadzone";
+            this.rightDeadzone.Size = new System.Drawing.Size(134, 45);
+            this.rightDeadzone.TabIndex = 3;
+            this.rightDeadzone.ValueChanged += new System.EventHandler(this.rightDeadzone_ValueChanged);
+            // 
+            // rightDeadzoneLabel
+            // 
+            this.rightDeadzoneLabel.AutoSize = true;
+            this.rightDeadzoneLabel.Location = new System.Drawing.Point(6, 90);
+            this.rightDeadzoneLabel.Name = "rightDeadzoneLabel";
+            this.rightDeadzoneLabel.Size = new System.Drawing.Size(95, 13);
+            this.rightDeadzoneLabel.TabIndex = 2;
+            this.rightDeadzoneLabel.Text = "Right Analog Stick";
+            // 
+            // leftDeadzone
+            // 
+            this.leftDeadzone.Location = new System.Drawing.Point(7, 37);
+            this.leftDeadzone.Maximum = 30;
+            this.leftDeadzone.Name = "leftDeadzone";
+            this.leftDeadzone.Size = new System.Drawing.Size(134, 45);
+            this.leftDeadzone.TabIndex = 1;
+            this.leftDeadzone.ValueChanged += new System.EventHandler(this.leftDeadzone_ValueChanged);
+            // 
+            // leftDeadzoneLabel
+            // 
+            this.leftDeadzoneLabel.AutoSize = true;
+            this.leftDeadzoneLabel.Location = new System.Drawing.Point(6, 21);
+            this.leftDeadzoneLabel.Name = "leftDeadzoneLabel";
+            this.leftDeadzoneLabel.Size = new System.Drawing.Size(88, 13);
+            this.leftDeadzoneLabel.TabIndex = 0;
+            this.leftDeadzoneLabel.Text = "Left Analog Stick";
             // 
             // Window_Main
             // 
@@ -205,8 +206,8 @@
             this.trayIconMenu.ResumeLayout(false);
             this.deadzoneGroupBox.ResumeLayout(false);
             this.deadzoneGroupBox.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.leftDeadzone)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.rightDeadzone)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.leftDeadzone)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
