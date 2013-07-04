@@ -10,7 +10,7 @@ using LibUsbDotNet.Main;
 namespace Xbox360WirelessChatpad
 {
     // Necessary to reset the deadzones in a thread-safe manner
-    delegate void resetDeadzoneCallback();
+    delegate void controllerDisconnectCallback();
 
     public partial class Window_Main : Form
     {
@@ -187,12 +187,18 @@ namespace Xbox360WirelessChatpad
             rightDeadzonePercentLabel.Text = rightDeadzone.Value.ToString() + "%";
         }
 
-        private void resetDeadzones()
+        private void controllerDisconnect()
         {
-            // Necessary for thread-safe resetting of the deadzones
+            // Reset the deadzones in a thread safe manner
             leftDeadzone.Value = 0;
             rightDeadzone.Value = 0;
             deadzoneGroupBox.Enabled = false;
+
+            // Reset the chatpad test box in a thread safe manner
+            chatpadTextBox.Enabled = false;
+            chatpadTextBox.TextAlign = HorizontalAlignment.Center;
+            chatpadTextBox.Text = "-Test Chatpad Here-";
+            chatpadTextBox.Enter += chatpadTextBox_Enter;
         }
 
         #endregion
@@ -300,6 +306,9 @@ namespace Xbox360WirelessChatpad
                         // Reports the Controller is Connected
                         Trace.WriteLine("Xbox 360 Wireless Controller 1 Connected.\r\n");
 
+                        // Enable the chatpad test box
+                        chatpadTextBox.Enabled = true;
+
                         // Set the Controller deadzones to 16% and enabled the deadzone toggles
                         leftDeadzone.Value = 18;
                         rightDeadzone.Value = 18;
@@ -347,7 +356,7 @@ namespace Xbox360WirelessChatpad
                         Trace.WriteLine("Xbox 360 Wireless Controller Disconnected.\r\n");
 
                         // Reset the deadzones and disable the form control
-                        Invoke(new resetDeadzoneCallback(resetDeadzones));
+                        Invoke(new controllerDisconnectCallback(controllerDisconnect));
                     }
 
                     WirelessControllerAttached = false;
