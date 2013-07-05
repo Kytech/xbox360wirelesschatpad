@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
 using System.Windows.Forms;
 
 namespace Xbox360WirelessChatpad
@@ -92,6 +93,13 @@ namespace Xbox360WirelessChatpad
             // This function is called anytime received data is identified as chatpad data
             // It will parse the data, and depending on the value, send a keyboard command,
             // adjust a modifier for later use, or simply note the LED status.
+            // Issue 2: Outputting the chatpad data to determine why its not registering.
+            StringBuilder debugString = new StringBuilder();            
+            for (int i = 0; i < 35; i++)
+            {
+                debugString.Append(dataPacket[i].ToString("X"));
+            }
+            Trace.WriteLine("Chatpad Data: " + debugString);
 
 
             if (dataPacket[24] == 0xF0)
@@ -117,19 +125,16 @@ namespace Xbox360WirelessChatpad
                 // This data represents a key-press event
                 // Check if any keys or modifiers have changed since the last dataPacket
                 bool dataChanged = false;
-                // Issue 2: Attempting to determine root cause, maybe the data is being repeated but
-                // not initially registered, commenting out this chunk for now, not as optimal but
-                // will not skip processing data.
-                //if (dataPacketLast != null)
-                //{
-                //    if (dataPacketLast[0] != dataPacket[25])
-                //        dataChanged = true;
-                //    if (dataPacketLast[1] != dataPacket[26])
-                //        dataChanged = true;
-                //    if (dataPacketLast[2] != dataPacket[27])
-                //        dataChanged = true;
-                //}
-                //else
+                if (dataPacketLast != null)
+                {
+                    if (dataPacketLast[0] != dataPacket[25])
+                        dataChanged = true;
+                    if (dataPacketLast[1] != dataPacket[26])
+                        dataChanged = true;
+                    if (dataPacketLast[2] != dataPacket[27])
+                        dataChanged = true;
+                }
+                else
                     dataChanged = true;
 
                 // Store bits 25-27 of the data packet for later comparison
