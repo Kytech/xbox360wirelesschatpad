@@ -93,32 +93,43 @@ namespace Xbox360WirelessChatpad
             // It will parse the data, and depending on the value, send a keyboard command,
             // adjust a modifier for later use, or simply note the LED status.
 
-            // Note: This code identifies the current status of the chatpad LEDs. These values
-            // are not currently being used so it is commented out for efficiency. 
-            //if (dataPacket[24] == 0xF0 && dataPacket[25] == 0x04)
-            //{
-            //    // This data represents the LED status, store them for later use
-            //    chatpadLED["Green"] = (dataPacket[26] & 0x08) > 0;
-            //    chatpadLED["Orange"] = (dataPacket[26] & 0x10) > 0;
-            //    chatpadLED["Messenger"] = (dataPacket[26] & 0x01) > 0;
-            //    chatpadLED["Capslock"] = (dataPacket[26] & 0x20) > 0;
-            //    chatpadLED["Backlight"] = (dataPacket[26] & 0x80) > 0;
-            //}
 
-            if (dataPacket[24] == 0x00)
+            if (dataPacket[24] == 0xF0)
             {
-                // Check if any keys or modifiers have changed since the last dataPacket
-                bool dataChanged = false;
-                if (dataPacketLast != null)
+                if (dataPacket[25] == 0x03) {}
+                    // This data represents chatpad initialization, no need to do anything.
+                    // Note: Can't confirm this is initialization, but it's a good guess when tracking the logs.
+                else if (dataPacket[25] == 0x04)
                 {
-                    if (dataPacketLast[0] != dataPacket[25])
-                        dataChanged = true;
-                    if (dataPacketLast[1] != dataPacket[26])
-                        dataChanged = true;
-                    if (dataPacketLast[2] != dataPacket[27])
-                        dataChanged = true;
+                    // This data represents the LED status, store them for later use
+                    // Note: These values are not currently being used so it is commented out for efficiency.
+                    //chatpadLED["Green"] = (dataPacket[26] & 0x08) > 0;
+                    //chatpadLED["Orange"] = (dataPacket[26] & 0x10) > 0;
+                    //chatpadLED["Messenger"] = (dataPacket[26] & 0x01) > 0;
+                    //chatpadLED["Capslock"] = (dataPacket[26] & 0x20) > 0;
+                    //chatpadLED["Backlight"] = (dataPacket[26] & 0x80) > 0;
                 }
                 else
+                    Trace.WriteLine("WARNING: Unknown Chatpad Status Data.");
+            }
+            else if (dataPacket[24] == 0x00)
+            {
+                // This data represents a key-press event
+                // Check if any keys or modifiers have changed since the last dataPacket
+                bool dataChanged = false;
+                // Issue 2: Attempting to determine root cause, maybe the data is being repeated but
+                // not initially registered, commenting out this chunk for now, not as optimal but
+                // will not skip processing data.
+                //if (dataPacketLast != null)
+                //{
+                //    if (dataPacketLast[0] != dataPacket[25])
+                //        dataChanged = true;
+                //    if (dataPacketLast[1] != dataPacket[26])
+                //        dataChanged = true;
+                //    if (dataPacketLast[2] != dataPacket[27])
+                //        dataChanged = true;
+                //}
+                //else
                     dataChanged = true;
 
                 // Store bits 25-27 of the data packet for later comparison
@@ -171,26 +182,19 @@ namespace Xbox360WirelessChatpad
                         chatpadKeysHeld.Remove(key);
                 }
             }
+            else
+                Trace.WriteLine("WARNING: Unknown Chatpad Data.");
         }
 
         private string GetChatPadKeyValue(int value, bool orangeModifer, bool greenModifer)
         {
-            try
-            {
-                // Returns the String associated with the value supplied
-                if (orangeModifer)
-                    return keyMap[value][2];
-                else if (greenModifer)
-                    return keyMap[value][1];
-                else
-                    return keyMap[value][0];
-            }
-            catch (IndexOutOfRangeException ex)
-            {
-                // Data from Chatpad isn't recognized, throw an exception
-                Trace.WriteLine("ERROR: Chatpad Data Unknown.");
-                throw new Exception("ERROR: Chatpad Data Unknown.", ex);
-            }
+            // Returns the String associated with the value supplied
+            if (orangeModifer)
+                return keyMap[value][2];
+            else if (greenModifer)
+                return keyMap[value][1];
+            else
+                return keyMap[value][0];
         }
 
         private void ProcessKeystroke(string key)
