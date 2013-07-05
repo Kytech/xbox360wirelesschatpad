@@ -401,16 +401,13 @@ namespace Xbox360WirelessChatpad
                 }
             }
 
-            if (e.Buffer[1] == 0x02)
+            // Issue 2: Outputting the chatpad data to determine why its not registering.
+            byte[] debugString = new byte[40];
+            for (int i = 0; i < debugString.Length; i++)
             {
-                // Issue 2: Outputting the chatpad data to determine why its not registering.
-                byte[] debugString = new byte[40];
-                for (int i = 0; i < debugString.Length; i++)
-                {
-                    debugString[i] = e.Buffer[i];
-                }
-                debugLog.WriteLine("Controller Data: " + BitConverter.ToString(debugString));
+                debugString[i] = e.Buffer[i];
             }
+            debugLog.WriteLine("Controller Data: " + BitConverter.ToString(debugString));
         }
 
         private void keepAliveTick()
