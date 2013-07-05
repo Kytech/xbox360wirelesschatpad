@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 using System.Windows.Forms;
 
 namespace Xbox360WirelessChatpad
@@ -93,15 +92,6 @@ namespace Xbox360WirelessChatpad
             // This function is called anytime received data is identified as chatpad data
             // It will parse the data, and depending on the value, send a keyboard command,
             // adjust a modifier for later use, or simply note the LED status.
-            // Issue 2: Outputting the chatpad data to determine why its not registering.
-            StringBuilder debugString = new StringBuilder();            
-            for (int i = 0; i < 35; i++)
-            {
-                debugString.Append(dataPacket[i].ToString("X"));
-            }
-            Trace.WriteLine("Chatpad Data: " + debugString);
-
-
             if (dataPacket[24] == 0xF0)
             {
                 if (dataPacket[25] == 0x03) {}

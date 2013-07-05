@@ -6,6 +6,7 @@ using System.Windows.Forms;
 
 using LibUsbDotNet;
 using LibUsbDotNet.Main;
+using System.IO;
 
 namespace Xbox360WirelessChatpad
 {
@@ -16,6 +17,9 @@ namespace Xbox360WirelessChatpad
     {
         // Necessary to write to TextBox from multiple threads
         Util_LogToTextbox appLog;
+
+        // Issue 2: Log File
+        StreamWriter debugLog;
 
         // The Gamepad, non-chatpad buttons, joysticks, and triggers.
         private Gamepad xboxGamepad;
@@ -76,6 +80,10 @@ namespace Xbox360WirelessChatpad
             // Instansiates the appLog and adds it to the Trace listeners
             appLog = new Util_LogToTextbox(appLogTextbox);
             Trace.Listeners.Add(appLog);
+
+            // Issue 2: Delete the log file so we can get a new one
+            File.Delete("debugLog.txt");
+            debugLog = File.AppendText("debugLog.txt");
         }
 
         private void Window_Main_Resize(object sender, EventArgs e)
@@ -373,6 +381,14 @@ namespace Xbox360WirelessChatpad
             {
                 if (WirelessControllerAttached)
                 {
+                    // Issue 2: Outputting the chatpad data to determine why its not registering.
+                    byte[] debugString = new byte[40];
+                    for (int i = 0; i < debugString.Length; i++)
+                    {
+                        debugString[i] = e.Buffer[i];
+                    }
+                    debugLog.WriteLine("Controller Data: " + BitConverter.ToString(debugString));
+
                     switch (e.Buffer[1])
                     {
                         case 0x01:
