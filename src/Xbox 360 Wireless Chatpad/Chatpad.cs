@@ -13,14 +13,14 @@ namespace Xbox360WirelessChatpad
         // Identifies which Chatpad LEDs are active
         // Note: These values are not currently being used so it is commented out
         // for efficiency.
-        //Dictionary<string, bool> chatpadLED = new Dictionary<string, bool>()
-        //    {
-        //        { "Green", false },
-        //        { "Orange", false },
-        //        { "Messenger", false },
-        //        { "Capslock", false },
-        //        { "Backlight", false }
-        //    };
+        public Dictionary<string, bool> chatpadLED = new Dictionary<string, bool>()
+            {
+                { "Green", false },
+                { "Orange", false },
+                { "Messenger", false },
+                { "Capslock", false },
+                { "Backlight", false }
+            };
 
         // Identifies which Chatpad Modifiers are active
         Dictionary<string, bool> chatpadMod = new Dictionary<string, bool>()
@@ -101,11 +101,11 @@ namespace Xbox360WirelessChatpad
                 {
                     // This data represents the LED status, store them for later use
                     // Note: These values are not currently being used so it is commented out for efficiency.
-                    //chatpadLED["Green"] = (dataPacket[26] & 0x08) > 0;
-                    //chatpadLED["Orange"] = (dataPacket[26] & 0x10) > 0;
-                    //chatpadLED["Messenger"] = (dataPacket[26] & 0x01) > 0;
-                    //chatpadLED["Capslock"] = (dataPacket[26] & 0x20) > 0;
-                    //chatpadLED["Backlight"] = (dataPacket[26] & 0x80) > 0;
+                    chatpadLED["Green"] = (dataPacket[26] & 0x08) > 0;
+                    chatpadLED["Orange"] = (dataPacket[26] & 0x10) > 0;
+                    chatpadLED["Messenger"] = (dataPacket[26] & 0x01) > 0;
+                    chatpadLED["Capslock"] = (dataPacket[26] & 0x20) > 0;
+                    chatpadLED["Backlight"] = (dataPacket[26] & 0x80) > 0;
                 }
                 else
                     Trace.WriteLine("WARNING: Unknown Chatpad Status Data.");

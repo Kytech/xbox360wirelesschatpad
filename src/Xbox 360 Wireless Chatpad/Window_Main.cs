@@ -43,6 +43,9 @@ namespace Xbox360WirelessChatpad
         // during each execution cycle, True = Command 1, False = Commands 2a and 2b
         private bool keepAliveToggle = false;
 
+        // Determines if the chatpad needs initialization/handshake commands.
+        private bool chatpadInitNeeded = true;
+
         // Contains the mapping of useful device commands
         public Dictionary<string, byte[]> deviceCommands = new Dictionary<string, byte[]>()
             {
@@ -58,8 +61,8 @@ namespace Xbox360WirelessChatpad
                 { "DisableController",  new byte[4] {0x00, 0x00, 0x08, 0xC0} },
 
                 // Chatpad LED Commands
-                { "Green_On",           new byte[4] {0x00, 0x00, 0x0C, 0x09} },
-                { "Green_Off",          new byte[4] {0x00, 0x00, 0x0C, 0x01} },
+                { "Green_On",           new byte[8] {0x00, 0x00, 0x0C, 0x09, 0x02, 0x00, 0x00, 0x00} },
+                { "Green_Off",          new byte[8] {0x00, 0x00, 0x0C, 0x01, 0x02, 0x00, 0x00, 0x00} },
                 { "Orange_On",          new byte[4] {0x00, 0x00, 0x0C, 0x0A} },
                 { "Orange_Off",         new byte[4] {0x00, 0x00, 0x0C, 0x02} },
                 { "Messenger_On",       new byte[4] {0x00, 0x00, 0x0C, 0x0B} },
@@ -300,23 +303,6 @@ namespace Xbox360WirelessChatpad
                     // If Controller 1 is attached, proceed with the initialization, otherwise report the error
                     if (WirelessControllerAttached)
                     {
-                        // Initialize Chatpad Communication
-                        // Note: Not really sure where these commands came from, or what they mean. Some may
-                        // be redundant but for now it increases the possibility of things working. For reference
-                        // all of these commands have been un-necessary for my machine, but required for other.
-                        sendData(new byte[] { 0x40, 0xA9, 0x0C, 0xA3, 0x23, 0x44, 0x00, 0x00 });
-                        sendData(new byte[] { 0x40, 0xA9, 0x44, 0x23, 0x03, 0x7F, 0x00, 0x00 });
-                        sendData(new byte[] { 0x40, 0xA9, 0x39, 0x58, 0x32, 0x08, 0x00, 0x00 });
-                        sendData(new byte[] { 0xC0, 0xA1, 0x00, 0x00, 0x16, 0xE4, 0x02, 0x00 });
-                        sendData(new byte[] { 0x40, 0xA1, 0x00, 0x00, 0x16, 0xE4, 0x02, 0x00 });
-                        sendData(new byte[] { 0xC0, 0xA1, 0x00, 0x00, 0x16, 0xE4, 0x02, 0x00 });
-
-                        // Set the Chatpad's modifiers to Safestate (Off) values
-                        sendData(deviceCommands["Orange_Off"]);
-                        sendData(deviceCommands["Green_Off"]);
-                        sendData(deviceCommands["Messenger_Off"]);
-                        sendData(deviceCommands["Capslock_Off"]);
-
                         // Create and start the Keep-Alive thread
                         keepAliveThread = new System.Threading.Thread(new System.Threading.ThreadStart(keepAliveTick));
                         keepAliveThread.IsBackground = true;
@@ -357,6 +343,8 @@ namespace Xbox360WirelessChatpad
 
                 if (ec != ErrorCode.None)
                     Trace.WriteLine("ERROR: Problem Sending Controller Data.");
+
+                //System.Threading.Thread.Sleep(15);
             }
         }
 
@@ -394,13 +382,15 @@ namespace Xbox360WirelessChatpad
                 {
                     switch (e.Buffer[1])
                     {
-                        case 0x01:
-                            // Process this as Gamepad data
+                        case 0x01: // This is Gamepad data
                             xboxGamepad.ProcessData(e.Buffer);
                             break;
-                        case 0x02:
-                            // Process this as Chatpad data
-                            xboxChatpad.ProcessData(e.Buffer);
+                        case 0x02: // This is Chatpad data
+                            if (e.Buffer[25] == 3)
+                                // This is a handshake, flag chatpad for initialization
+                                chatpadInitNeeded = true;
+                            else
+                                xboxChatpad.ProcessData(e.Buffer);
                             break;
                         case 0x0F:
                             sendData(deviceCommands["KeepAlive2b"]);
@@ -441,6 +431,24 @@ namespace Xbox360WirelessChatpad
                         }
 
                         keepAliveToggle = !keepAliveToggle;
+
+                        if (chatpadInitNeeded)
+                        {
+                            // Initialize Chatpad Communication
+                            // Note: Not really sure where these commands came from, or what they mean. Some may
+                            // be redundant but for now it increases the possibility of things working. For reference
+                            // all of these commands have been un-necessary for my machine, but required for others.
+                            sendData(new byte[] { 0x40, 0xA9, 0x0C, 0xA3, 0x23, 0x44, 0x00, 0x00 });
+                            sendData(new byte[] { 0x40, 0xA9, 0x44, 0x23, 0x03, 0x7F, 0x00, 0x00 });
+                            sendData(new byte[] { 0x40, 0xA9, 0x39, 0x58, 0x32, 0x08, 0x00, 0x00 });
+                            sendData(new byte[] { 0xC0, 0xA1, 0x00, 0x00, 0x16, 0xE4, 0x02, 0x00 });
+                            sendData(new byte[] { 0x40, 0xA1, 0x00, 0x00, 0x16, 0xE4, 0x02, 0x00 });
+                            sendData(new byte[] { 0xC0, 0xA1, 0x00, 0x00, 0x16, 0xE4, 0x02, 0x00 });
+                            sendData(deviceCommands["KeepAlive2b"]);
+
+                            // Set chatpadInitNeeded to false, we just did it
+                            chatpadInitNeeded = false;
+                        }
                     }
                 }
             }
@@ -450,6 +458,14 @@ namespace Xbox360WirelessChatpad
             }
 
             System.Threading.Thread.Sleep(1000);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (!xboxChatpad.chatpadLED["Green"])
+                sendData(deviceCommands["Green_On"]);
+            else
+                sendData(deviceCommands["Green_Off"]);
         }
     }
 }

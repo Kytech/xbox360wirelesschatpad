@@ -38,6 +38,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.chatpadTextBox = new System.Windows.Forms.TextBox();
             this.deadzoneGroupBox = new System.Windows.Forms.GroupBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.rightDeadzonePercentLabel = new System.Windows.Forms.Label();
             this.leftDeadzonePercentLabel = new System.Windows.Forms.Label();
             this.rightDeadzone = new System.Windows.Forms.TrackBar();
@@ -52,12 +53,13 @@
             // 
             // appLogTextbox
             // 
-            this.appLogTextbox.Location = new System.Drawing.Point(11, 45);
+            this.appLogTextbox.Location = new System.Drawing.Point(16, 69);
+            this.appLogTextbox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.appLogTextbox.Multiline = true;
             this.appLogTextbox.Name = "appLogTextbox";
             this.appLogTextbox.ReadOnly = true;
             this.appLogTextbox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.appLogTextbox.Size = new System.Drawing.Size(330, 103);
+            this.appLogTextbox.Size = new System.Drawing.Size(493, 156);
             this.appLogTextbox.TabIndex = 0;
             this.appLogTextbox.TextChanged += new System.EventHandler(this.appLogTextbox_TextChanged);
             // 
@@ -74,20 +76,21 @@
             this.trayIconMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exitMenuItem});
             this.trayIconMenu.Name = "trayIconMenu";
-            this.trayIconMenu.Size = new System.Drawing.Size(104, 26);
+            this.trayIconMenu.Size = new System.Drawing.Size(120, 38);
             // 
             // exitMenuItem
             // 
             this.exitMenuItem.Name = "exitMenuItem";
-            this.exitMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.exitMenuItem.Size = new System.Drawing.Size(119, 34);
             this.exitMenuItem.Text = "Exit";
             this.exitMenuItem.Click += new System.EventHandler(this.exitMenuItem_Click);
             // 
             // connectButton
             // 
-            this.connectButton.Location = new System.Drawing.Point(235, 16);
+            this.connectButton.Location = new System.Drawing.Point(352, 25);
+            this.connectButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.connectButton.Name = "connectButton";
-            this.connectButton.Size = new System.Drawing.Size(106, 23);
+            this.connectButton.Size = new System.Drawing.Size(159, 35);
             this.connectButton.TabIndex = 1;
             this.connectButton.Text = "Connect Controller";
             this.connectButton.UseVisualStyleBackColor = true;
@@ -96,22 +99,22 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(8, 13);
-            this.label1.MaximumSize = new System.Drawing.Size(230, 0);
+            this.label1.Location = new System.Drawing.Point(12, 20);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.MaximumSize = new System.Drawing.Size(345, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(221, 26);
+            this.label1.Size = new System.Drawing.Size(331, 40);
             this.label1.TabIndex = 2;
             this.label1.Text = "Select Connect Controller and then press the Guide button on your XBOX 360 contro" +
-                "ller.";
+    "ller.";
             // 
             // chatpadTextBox
             // 
             this.chatpadTextBox.Enabled = false;
             this.chatpadTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chatpadTextBox.Location = new System.Drawing.Point(12, 153);
-            this.chatpadTextBox.Margin = new System.Windows.Forms.Padding(2);
+            this.chatpadTextBox.Location = new System.Drawing.Point(18, 235);
             this.chatpadTextBox.Name = "chatpadTextBox";
-            this.chatpadTextBox.Size = new System.Drawing.Size(330, 20);
+            this.chatpadTextBox.Size = new System.Drawing.Size(493, 26);
             this.chatpadTextBox.TabIndex = 3;
             this.chatpadTextBox.Text = "-Test Chatpad Here-";
             this.chatpadTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -119,6 +122,7 @@
             // 
             // deadzoneGroupBox
             // 
+            this.deadzoneGroupBox.Controls.Add(this.button1);
             this.deadzoneGroupBox.Controls.Add(this.rightDeadzonePercentLabel);
             this.deadzoneGroupBox.Controls.Add(this.leftDeadzonePercentLabel);
             this.deadzoneGroupBox.Controls.Add(this.rightDeadzone);
@@ -126,78 +130,97 @@
             this.deadzoneGroupBox.Controls.Add(this.leftDeadzone);
             this.deadzoneGroupBox.Controls.Add(this.leftDeadzoneLabel);
             this.deadzoneGroupBox.Enabled = false;
-            this.deadzoneGroupBox.Location = new System.Drawing.Point(347, 12);
+            this.deadzoneGroupBox.Location = new System.Drawing.Point(520, 18);
+            this.deadzoneGroupBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.deadzoneGroupBox.Name = "deadzoneGroupBox";
-            this.deadzoneGroupBox.Size = new System.Drawing.Size(147, 161);
+            this.deadzoneGroupBox.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.deadzoneGroupBox.Size = new System.Drawing.Size(220, 248);
             this.deadzoneGroupBox.TabIndex = 4;
             this.deadzoneGroupBox.TabStop = false;
             this.deadzoneGroupBox.Text = "Analog Deadzones";
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(63, 217);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 38);
+            this.button1.TabIndex = 6;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // rightDeadzonePercentLabel
             // 
-            this.rightDeadzonePercentLabel.Location = new System.Drawing.Point(111, 90);
+            this.rightDeadzonePercentLabel.Location = new System.Drawing.Point(166, 138);
+            this.rightDeadzonePercentLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.rightDeadzonePercentLabel.Name = "rightDeadzonePercentLabel";
-            this.rightDeadzonePercentLabel.Size = new System.Drawing.Size(30, 13);
+            this.rightDeadzonePercentLabel.Size = new System.Drawing.Size(45, 20);
             this.rightDeadzonePercentLabel.TabIndex = 5;
             this.rightDeadzonePercentLabel.Text = "0%";
             this.rightDeadzonePercentLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // leftDeadzonePercentLabel
             // 
-            this.leftDeadzonePercentLabel.Location = new System.Drawing.Point(111, 21);
+            this.leftDeadzonePercentLabel.Location = new System.Drawing.Point(166, 32);
+            this.leftDeadzonePercentLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.leftDeadzonePercentLabel.Name = "leftDeadzonePercentLabel";
-            this.leftDeadzonePercentLabel.Size = new System.Drawing.Size(30, 13);
+            this.leftDeadzonePercentLabel.Size = new System.Drawing.Size(45, 20);
             this.leftDeadzonePercentLabel.TabIndex = 4;
             this.leftDeadzonePercentLabel.Text = "0%";
             this.leftDeadzonePercentLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // rightDeadzone
             // 
-            this.rightDeadzone.Location = new System.Drawing.Point(7, 106);
+            this.rightDeadzone.Location = new System.Drawing.Point(10, 163);
+            this.rightDeadzone.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.rightDeadzone.Maximum = 30;
             this.rightDeadzone.Name = "rightDeadzone";
-            this.rightDeadzone.Size = new System.Drawing.Size(134, 45);
+            this.rightDeadzone.Size = new System.Drawing.Size(201, 69);
             this.rightDeadzone.TabIndex = 3;
             this.rightDeadzone.ValueChanged += new System.EventHandler(this.rightDeadzone_ValueChanged);
             // 
             // rightDeadzoneLabel
             // 
             this.rightDeadzoneLabel.AutoSize = true;
-            this.rightDeadzoneLabel.Location = new System.Drawing.Point(6, 90);
+            this.rightDeadzoneLabel.Location = new System.Drawing.Point(9, 138);
+            this.rightDeadzoneLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.rightDeadzoneLabel.Name = "rightDeadzoneLabel";
-            this.rightDeadzoneLabel.Size = new System.Drawing.Size(95, 13);
+            this.rightDeadzoneLabel.Size = new System.Drawing.Size(140, 20);
             this.rightDeadzoneLabel.TabIndex = 2;
             this.rightDeadzoneLabel.Text = "Right Analog Stick";
             // 
             // leftDeadzone
             // 
-            this.leftDeadzone.Location = new System.Drawing.Point(7, 37);
+            this.leftDeadzone.Location = new System.Drawing.Point(10, 57);
+            this.leftDeadzone.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.leftDeadzone.Maximum = 30;
             this.leftDeadzone.Name = "leftDeadzone";
-            this.leftDeadzone.Size = new System.Drawing.Size(134, 45);
+            this.leftDeadzone.Size = new System.Drawing.Size(201, 69);
             this.leftDeadzone.TabIndex = 1;
             this.leftDeadzone.ValueChanged += new System.EventHandler(this.leftDeadzone_ValueChanged);
             // 
             // leftDeadzoneLabel
             // 
             this.leftDeadzoneLabel.AutoSize = true;
-            this.leftDeadzoneLabel.Location = new System.Drawing.Point(6, 21);
+            this.leftDeadzoneLabel.Location = new System.Drawing.Point(9, 32);
+            this.leftDeadzoneLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.leftDeadzoneLabel.Name = "leftDeadzoneLabel";
-            this.leftDeadzoneLabel.Size = new System.Drawing.Size(88, 13);
+            this.leftDeadzoneLabel.Size = new System.Drawing.Size(130, 20);
             this.leftDeadzoneLabel.TabIndex = 0;
             this.leftDeadzoneLabel.Text = "Left Analog Stick";
             // 
             // Window_Main
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(505, 185);
+            this.ClientSize = new System.Drawing.Size(758, 285);
             this.Controls.Add(this.deadzoneGroupBox);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.chatpadTextBox);
             this.Controls.Add(this.appLogTextbox);
             this.Controls.Add(this.connectButton);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "Window_Main";
             this.Text = "Xbox 360 Wireless Chatpad";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Window_Main_FormClosing);
@@ -229,6 +252,7 @@
         private System.Windows.Forms.Label leftDeadzoneLabel;
         private System.Windows.Forms.Label rightDeadzonePercentLabel;
         private System.Windows.Forms.Label leftDeadzonePercentLabel;
+        private System.Windows.Forms.Button button1;
     }
 }
 
