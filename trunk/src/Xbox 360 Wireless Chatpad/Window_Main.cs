@@ -426,6 +426,14 @@ namespace Xbox360WirelessChatpad
                         else
                         {
                             sendData(deviceCommands["KeepAlive2a"]);
+                            // Issue 2: Completely random but lets try issuing all the commands we know
+                            sendData(new byte[] {0x40, 0xA9, 0x0C, 0xA3, 0x23, 0x44, 0x00, 0x00});
+                            sendData(new byte[] {0x40, 0xA9, 0x44, 0x23, 0x03, 0x7F, 0x00, 0x00});
+                            sendData(new byte[] {0x40, 0xA9, 0x39, 0x58, 0x32, 0x08, 0x00, 0x00});
+                            sendData(new byte[] {0xC0, 0xA1, 0x00, 0x00, 0x16, 0xE4, 0x02, 0x00});
+                            sendData(new byte[] {0x40, 0xA1, 0x00, 0x00, 0x16, 0xE4, 0x02, 0x00});
+                            sendData(new byte[] {0xC0, 0xA1, 0x00, 0x00, 0x16, 0xE4, 0x02, 0x00});
+                            // End Issue 2 Debug Code
                             sendData(deviceCommands["KeepAlive2b"]);
                         }
 
