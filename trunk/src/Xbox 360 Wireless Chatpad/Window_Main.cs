@@ -300,6 +300,17 @@ namespace Xbox360WirelessChatpad
                     // If Controller 1 is attached, proceed with the initialization, otherwise report the error
                     if (WirelessControllerAttached)
                     {
+                        // Initialize Chatpad Communication
+                        // Note: Not really sure where these commands came from, or what they mean. Some may
+                        // be redundant but for now it increases the possibility of things working. For reference
+                        // all of these commands have been un-necessary for my machine, but required for other.
+                        sendData(new byte[] { 0x40, 0xA9, 0x0C, 0xA3, 0x23, 0x44, 0x00, 0x00 });
+                        sendData(new byte[] { 0x40, 0xA9, 0x44, 0x23, 0x03, 0x7F, 0x00, 0x00 });
+                        sendData(new byte[] { 0x40, 0xA9, 0x39, 0x58, 0x32, 0x08, 0x00, 0x00 });
+                        sendData(new byte[] { 0xC0, 0xA1, 0x00, 0x00, 0x16, 0xE4, 0x02, 0x00 });
+                        sendData(new byte[] { 0x40, 0xA1, 0x00, 0x00, 0x16, 0xE4, 0x02, 0x00 });
+                        sendData(new byte[] { 0xC0, 0xA1, 0x00, 0x00, 0x16, 0xE4, 0x02, 0x00 });
+
                         // Set the Chatpad's modifiers to Safestate (Off) values
                         sendData(deviceCommands["Orange_Off"]);
                         sendData(deviceCommands["Green_Off"]);
@@ -426,14 +437,6 @@ namespace Xbox360WirelessChatpad
                         else
                         {
                             sendData(deviceCommands["KeepAlive2a"]);
-                            // Issue 2: Completely random but lets try issuing all the commands we know
-                            sendData(new byte[] {0x40, 0xA9, 0x0C, 0xA3, 0x23, 0x44, 0x00, 0x00});
-                            sendData(new byte[] {0x40, 0xA9, 0x44, 0x23, 0x03, 0x7F, 0x00, 0x00});
-                            sendData(new byte[] {0x40, 0xA9, 0x39, 0x58, 0x32, 0x08, 0x00, 0x00});
-                            sendData(new byte[] {0xC0, 0xA1, 0x00, 0x00, 0x16, 0xE4, 0x02, 0x00});
-                            sendData(new byte[] {0x40, 0xA1, 0x00, 0x00, 0x16, 0xE4, 0x02, 0x00});
-                            sendData(new byte[] {0xC0, 0xA1, 0x00, 0x00, 0x16, 0xE4, 0x02, 0x00});
-                            // End Issue 2 Debug Code
                             sendData(deviceCommands["KeepAlive2b"]);
                         }
 
