@@ -18,9 +18,6 @@ namespace Xbox360WirelessChatpad
         // Necessary to write to TextBox from multiple threads
         Util_LogToTextbox appLog;
 
-        // Issue 2: Log File
-        StreamWriter debugLog;
-
         // The Gamepad, non-chatpad buttons, joysticks, and triggers.
         private Gamepad xboxGamepad;
 
@@ -43,7 +40,7 @@ namespace Xbox360WirelessChatpad
         // during each execution cycle, True = Command 1, False = Commands 2a and 2b
         private bool keepAliveToggle = false;
 
-        // Determines if the chatpad needs initialization/handshake commands.
+        // Determines if the chatpad needs initialization/handshake command.
         public bool chatpadInitNeeded = true;
 
         // Contains the mapping of useful device commands
@@ -83,10 +80,6 @@ namespace Xbox360WirelessChatpad
             // Instansiates the appLog and adds it to the Trace listeners
             appLog = new Util_LogToTextbox(appLogTextbox);
             Trace.Listeners.Add(appLog);
-
-            // Issue 2: Delete the log file so we can get a new one
-            File.Delete("debugLog.txt");
-            debugLog = File.AppendText("debugLog.txt");
         }
 
         private void Window_Main_Resize(object sender, EventArgs e)
@@ -130,8 +123,6 @@ namespace Xbox360WirelessChatpad
                         WirelessReceiver.Close();
                     WirelessReceiver = null;
                 }
-
-                System.Environment.Exit(0);
             }
             catch
             {
@@ -391,15 +382,6 @@ namespace Xbox360WirelessChatpad
                     }
                 }
             }
-            else { } // Unknown Data, do nothing with it
-
-            // Issue 2: Outputting the chatpad data to determine why its not registering.
-            byte[] debugString = new byte[40];
-            for (int i = 0; i < debugString.Length; i++)
-            {
-                debugString[i] = e.Buffer[i];
-            }
-            debugLog.WriteLine("Controller Data: " + BitConverter.ToString(debugString));
         }
 
         private void keepAliveTick()
@@ -424,16 +406,6 @@ namespace Xbox360WirelessChatpad
                         if (chatpadInitNeeded)
                         {
                             // Initialize Chatpad Communication
-                            // Note: Not really sure where these commands came from, or what they mean. Some may
-                            // be redundant but for now it increases the possibility of things working. For reference
-                            // all of these commands have been un-necessary for my machine, but required for others.
-                            //sendData(new byte[] { 0x40, 0xA9, 0x0C, 0xA3, 0x23, 0x44, 0x00, 0x00 });
-                            //sendData(new byte[] { 0x40, 0xA9, 0x44, 0x23, 0x03, 0x7F, 0x00, 0x00 });
-                            //sendData(new byte[] { 0x40, 0xA9, 0x39, 0x58, 0x32, 0x08, 0x00, 0x00 });
-                            //sendData(new byte[] { 0xC0, 0xA1, 0x00, 0x00, 0x16, 0xE4, 0x02, 0x00 });
-                            //sendData(new byte[] { 0x40, 0xA1, 0x00, 0x00, 0x16, 0xE4, 0x02, 0x00 });
-                            //sendData(new byte[] { 0xC0, 0xA1, 0x00, 0x00, 0x16, 0xE4, 0x02, 0x00 });
-                            //sendData(new byte[] { 0x00, 0x00, 0x0C, 0x1B, 0x00, 0x00, 0x00, 0x00 });
                             sendData(deviceCommands["ChatpadInit"]);
 
                             // Set Initialization flag to False, no need to do it again
