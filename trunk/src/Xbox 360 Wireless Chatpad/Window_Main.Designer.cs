@@ -38,7 +38,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.chatpadTextBox = new System.Windows.Forms.TextBox();
             this.deadzoneGroupBox = new System.Windows.Forms.GroupBox();
-            this.button1 = new System.Windows.Forms.Button();
             this.rightDeadzonePercentLabel = new System.Windows.Forms.Label();
             this.leftDeadzonePercentLabel = new System.Windows.Forms.Label();
             this.rightDeadzone = new System.Windows.Forms.TrackBar();
@@ -122,7 +121,6 @@
             // 
             // deadzoneGroupBox
             // 
-            this.deadzoneGroupBox.Controls.Add(this.button1);
             this.deadzoneGroupBox.Controls.Add(this.rightDeadzonePercentLabel);
             this.deadzoneGroupBox.Controls.Add(this.leftDeadzonePercentLabel);
             this.deadzoneGroupBox.Controls.Add(this.rightDeadzone);
@@ -138,16 +136,6 @@
             this.deadzoneGroupBox.TabIndex = 4;
             this.deadzoneGroupBox.TabStop = false;
             this.deadzoneGroupBox.Text = "Analog Deadzones";
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(63, 217);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 38);
-            this.button1.TabIndex = 6;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // rightDeadzonePercentLabel
             // 
@@ -252,7 +240,6 @@
         private System.Windows.Forms.Label leftDeadzoneLabel;
         private System.Windows.Forms.Label rightDeadzonePercentLabel;
         private System.Windows.Forms.Label leftDeadzonePercentLabel;
-        private System.Windows.Forms.Button button1;
     }
 }
 
