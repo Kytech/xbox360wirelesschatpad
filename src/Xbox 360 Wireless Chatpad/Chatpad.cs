@@ -11,9 +11,7 @@ namespace Xbox360WirelessChatpad
         Dictionary<int, List<string>> keyMap = new Dictionary<int, List<string>>();
 
         // Identifies which Chatpad LEDs are active
-        // Note: These values are not currently being used so it is commented out
-        // for efficiency.
-        public Dictionary<string, bool> chatpadLED = new Dictionary<string, bool>()
+        Dictionary<string, bool> chatpadLED = new Dictionary<string, bool>()
             {
                 { "Green", false },
                 { "Orange", false },
@@ -87,20 +85,20 @@ namespace Xbox360WirelessChatpad
             keyMap.Add(119, new List<string> { "k", "{[}", "☺" });
         }
 
-        public void ProcessData(byte[] dataPacket)
+        public void ProcessData(byte[] dataPacket, Window_Main parentWindow)
         {
             // This function is called anytime received data is identified as chatpad data
             // It will parse the data, and depending on the value, send a keyboard command,
-            // adjust a modifier for later use, or simply note the LED status.
+            // adjust a modifier for later use, flag initialization, or note the LED status.
             if (dataPacket[24] == 0xF0)
             {
-                if (dataPacket[25] == 0x03) {}
-                    // This data represents chatpad initialization, no need to do anything.
-                    // Note: Can't confirm this is initialization, but it's a good guess when tracking the logs.
+                if (dataPacket[25] == 0x03)
+                    // This data represents handshake request, flag keep-alive to send
+                    // chatpad initialization data.
+                    parentWindow.chatpadInitNeeded = true;
                 else if (dataPacket[25] == 0x04)
                 {
                     // This data represents the LED status, store them for later use
-                    // Note: These values are not currently being used so it is commented out for efficiency.
                     chatpadLED["Green"] = (dataPacket[26] & 0x08) > 0;
                     chatpadLED["Orange"] = (dataPacket[26] & 0x10) > 0;
                     chatpadLED["Messenger"] = (dataPacket[26] & 0x01) > 0;
