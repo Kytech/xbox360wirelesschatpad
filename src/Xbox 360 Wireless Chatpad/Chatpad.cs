@@ -138,9 +138,15 @@ namespace Xbox360WirelessChatpad
                     chatpadMod["Shift"] = (dataPacket[25] & 0x01) > 0;
                     chatpadMod["Messenger"] = (dataPacket[25] & 0x08) > 0;
 
-                    // Special Handling if Shift and Orange are both held, Toggle Capslock
+                    // Special Handling if Shift and Orange Modifer, Toggle Capslock Modifier
                     if (chatpadMod["Orange"] && chatpadMod["Shift"])
                         chatpadMod["Capslock"] = !chatpadMod["Capslock"];
+
+                    // Set LED for Capslock Button based on Modifier
+                    if (chatpadMod["Capslock"])
+                        parentWindow.sendData(parentWindow.deviceCommands["Capslock_On"]);
+                    else
+                        parentWindow.sendData(parentWindow.deviceCommands["Capslock_Off"]);
 
                     // Record the two different possible keys that could be held down
                     byte key1 = dataPacket[26];
