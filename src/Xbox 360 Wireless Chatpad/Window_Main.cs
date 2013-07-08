@@ -6,7 +6,6 @@ using System.Windows.Forms;
 
 using LibUsbDotNet;
 using LibUsbDotNet.Main;
-using System.IO;
 
 namespace Xbox360WirelessChatpad
 {
@@ -80,6 +79,24 @@ namespace Xbox360WirelessChatpad
             // Instansiates the appLog and adds it to the Trace listeners
             appLog = new Util_LogToTextbox(appLogTextbox);
             Trace.Listeners.Add(appLog);
+
+            // Load the keyboardType configuration variable into the radio selections
+            switch (Properties.Settings.Default.keyboardType)
+            {
+                case "QWERTY":
+                    qwertyButton.Checked = true;
+                    break;
+                case "QWERTZ":
+                    qwertzButton.Checked = true;
+                    break;
+                case "AZERTY":
+                    azertyButton.Checked = true;
+                    break;
+                default:
+                    // Use QWERTY if the configuration file has junk data
+                    qwertyButton.Checked = true;
+                    break;
+            }
         }
 
         private void Window_Main_Resize(object sender, EventArgs e)
@@ -123,6 +140,9 @@ namespace Xbox360WirelessChatpad
                         WirelessReceiver.Close();
                     WirelessReceiver = null;
                 }
+
+                // Save the configuration file variables
+                Properties.Settings.Default.Save();
             }
             catch
             {
@@ -152,6 +172,13 @@ namespace Xbox360WirelessChatpad
             appLogTextbox.Refresh();
         }
 
+        private void keyboardType_Selected(object sender, EventArgs e)
+        {
+            // Set the keyboardType setting to the selected radio button
+            if (((RadioButton)sender).Checked)
+                Properties.Settings.Default.keyboardType = ((RadioButton)sender).Text;
+        }
+
         private void connectButton_Click(object sender, EventArgs e)
         {
             // Connects Xbox Wireless Receiver
@@ -179,6 +206,9 @@ namespace Xbox360WirelessChatpad
 
             // Set the left deadzone label to the new value
             leftDeadzonePercentLabel.Text = leftDeadzone.Value.ToString() + "%";
+
+            // Set the left deadzone configuration property to the new value
+            Properties.Settings.Default.leftDeadzone = leftDeadzone.Value;
         }
 
         private void rightDeadzone_ValueChanged(object sender, EventArgs e)
@@ -189,16 +219,20 @@ namespace Xbox360WirelessChatpad
 
             // Set the right deadzone label to the new value
             rightDeadzonePercentLabel.Text = rightDeadzone.Value.ToString() + "%";
+
+            // Set the right deadzone configuration property to the new value
+            Properties.Settings.Default.rightDeadzone = rightDeadzone.Value;
         }
 
         private void controllerDisconnect()
         {
             // Reset the deadzones in a thread safe manner
-            leftDeadzone.Value = 0;
-            rightDeadzone.Value = 0;
             deadzoneGroupBox.Enabled = false;
 
-            // Reset the chatpad test box in a thread safe manner
+            // Reset the keyabord type box
+            keyboardTypeGroupBox.Enabled = true;
+
+            // Reset the chatpad test box
             chatpadTextBox.Enabled = false;
             chatpadTextBox.TextAlign = HorizontalAlignment.Center;
             chatpadTextBox.Text = "-Test Chatpad Here-";
@@ -270,10 +304,8 @@ namespace Xbox360WirelessChatpad
             if (WirelessReceiverAttached)
             {
                 // Instantiates the Gamepad and Chatpad, if it hasn't been done
-                if (xboxGamepad == null)
-                    xboxGamepad = new Gamepad();
-                if (xboxChatpad == null)
-                    xboxChatpad = new Chatpad();
+                xboxGamepad = new Gamepad();
+                xboxChatpad = new Chatpad(Properties.Settings.Default.keyboardType);
 
                 Trace.WriteLine("Searching for Controller...Press the Guide Button Now.");
 
@@ -302,12 +334,18 @@ namespace Xbox360WirelessChatpad
                         // Reports the Controller is Connected
                         Trace.WriteLine("Xbox 360 Wireless Controller 1 Connected.\r\n");
 
+                        // Disable the Keyboard Type
+                        keyboardTypeGroupBox.Enabled = false;
+
                         // Enable the chatpad test box
                         chatpadTextBox.Enabled = true;
 
-                        // Set the Controller deadzones to 16% and enabled the deadzone toggles
-                        leftDeadzone.Value = 18;
-                        rightDeadzone.Value = 18;
+                        // Set the Controller deadzones to configuration values
+                        // and enabled the deadzone toggles.
+                        leftDeadzone.Value = Properties.Settings.Default.leftDeadzone;
+                        xboxGamepad.deadzoneL = (int)Math.Round(leftDeadzone.Value * 327.67);
+                        rightDeadzone.Value = Properties.Settings.Default.rightDeadzone;
+                        xboxGamepad.deadzoneR = (int)Math.Round(rightDeadzone.Value * 327.67);
                         deadzoneGroupBox.Enabled = true;
                     }
                     else

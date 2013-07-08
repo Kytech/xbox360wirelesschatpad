@@ -36,53 +36,154 @@ namespace Xbox360WirelessChatpad
 
         private byte[] dataPacketLast = new byte[3];
 
-        public Chatpad()
+        public Chatpad(string keyboardType)
         {
-            // Map the Xbox chatpad buttons to characters, Qwerty Based
+            // Map the Xbox chatpad buttons to characters
             // The format of the list is: ( NormalKey, GreenShiftKey, OrangeShiftKey }
-            keyMap.Add(17, new List<string> { "7", "", "" });
-            keyMap.Add(18, new List<string> { "6", "", "" });
-            keyMap.Add(19, new List<string> { "5", "", "" });
-            keyMap.Add(20, new List<string> { "4", "", "" });
-            keyMap.Add(21, new List<string> { "3", "", "" });
-            keyMap.Add(22, new List<string> { "2", "", "" });
-            keyMap.Add(23, new List<string> { "1", "", "" });
-            keyMap.Add(33, new List<string> { "u", "&", "ú" });
-            keyMap.Add(34, new List<string> { "y", "{^}", "ý" });
-            keyMap.Add(35, new List<string> { "t", "{%}", "Þ" });
-            keyMap.Add(36, new List<string> { "r", "#", "$" });
-            keyMap.Add(37, new List<string> { "e", "€", "é" });
-            keyMap.Add(38, new List<string> { "w", "@", "å" });
-            keyMap.Add(39, new List<string> { "q", "!", "¡" });
-            keyMap.Add(49, new List<string> { "j", "'", "\"" });
-            keyMap.Add(50, new List<string> { "h", "/", "\\" });
-            keyMap.Add(51, new List<string> { "g", "¨", "¥" });
-            keyMap.Add(52, new List<string> { "f", "{}}", "£" });
-            keyMap.Add(53, new List<string> { "d", "{{}", "ð" });
-            keyMap.Add(54, new List<string> { "s", "š", "ß" });
-            keyMap.Add(55, new List<string> { "a", "{~}", "á" });
-            keyMap.Add(65, new List<string> { "n", "<", "ñ" });
-            keyMap.Add(66, new List<string> { "b", "|", "{+}" });
-            keyMap.Add(67, new List<string> { "v", "-", "_" });
-            keyMap.Add(68, new List<string> { "c", "»", "ç" });
-            keyMap.Add(69, new List<string> { "x", "«", "œ" });
-            keyMap.Add(70, new List<string> { "z", "`", "æ" });
-            keyMap.Add(81, new List<string> { "{Right}", "", "" });
-            keyMap.Add(82, new List<string> { "m", ">", "µ" });
-            keyMap.Add(83, new List<string> { ".", "?", "¿" });
-            keyMap.Add(84, new List<string> { " ", "", "" });
-            keyMap.Add(85, new List<string> { "{Left}", "", "" });
-            keyMap.Add(98, new List<string> { ",", ":", ";" });
-            keyMap.Add(99, new List<string> { "{Enter}", "", "" });
-            keyMap.Add(100, new List<string> { "p", "{)}", "=" });
-            keyMap.Add(101, new List<string> { "0", "", "" });
-            keyMap.Add(102, new List<string> { "9", "", "" });
-            keyMap.Add(103, new List<string> { "8", "", "" });
-            keyMap.Add(113, new List<string> { "{Backspace}", "", "" });
-            keyMap.Add(114, new List<string> { "l", "{]}", "ø" });
-            keyMap.Add(117, new List<string> { "o", "{(}", "ó" });
-            keyMap.Add(118, new List<string> { "i", "*", "í" });
-            keyMap.Add(119, new List<string> { "k", "{[}", "☺" });
+            switch (keyboardType)
+            {
+                case "QWERTY":
+                    keyMap.Add(17, new List<string> { "7", "", "" });
+                    keyMap.Add(18, new List<string> { "6", "", "" });
+                    keyMap.Add(19, new List<string> { "5", "", "" });
+                    keyMap.Add(20, new List<string> { "4", "", "" });
+                    keyMap.Add(21, new List<string> { "3", "", "" });
+                    keyMap.Add(22, new List<string> { "2", "", "" });
+                    keyMap.Add(23, new List<string> { "1", "", "" });
+                    keyMap.Add(33, new List<string> { "u", "&", "ú" });
+                    keyMap.Add(34, new List<string> { "y", "{^}", "ý" });
+                    keyMap.Add(35, new List<string> { "t", "{%}", "Þ" });
+                    keyMap.Add(36, new List<string> { "r", "#", "$" });
+                    keyMap.Add(37, new List<string> { "e", "€", "é" });
+                    keyMap.Add(38, new List<string> { "w", "@", "å" });
+                    keyMap.Add(39, new List<string> { "q", "!", "¡" });
+                    keyMap.Add(49, new List<string> { "j", "'", "\"" });
+                    keyMap.Add(50, new List<string> { "h", "/", "\\" });
+                    keyMap.Add(51, new List<string> { "g", "¨", "¥" });
+                    keyMap.Add(52, new List<string> { "f", "{}}", "£" });
+                    keyMap.Add(53, new List<string> { "d", "{{}", "ð" });
+                    keyMap.Add(54, new List<string> { "s", "š", "ß" });
+                    keyMap.Add(55, new List<string> { "a", "{~}", "á" });
+                    keyMap.Add(65, new List<string> { "n", "<", "ñ" });
+                    keyMap.Add(66, new List<string> { "b", "|", "{+}" });
+                    keyMap.Add(67, new List<string> { "v", "-", "_" });
+                    keyMap.Add(68, new List<string> { "c", "»", "ç" });
+                    keyMap.Add(69, new List<string> { "x", "«", "œ" });
+                    keyMap.Add(70, new List<string> { "z", "`", "æ" });
+                    keyMap.Add(81, new List<string> { "{Right}", "", "" });
+                    keyMap.Add(82, new List<string> { "m", ">", "µ" });
+                    keyMap.Add(83, new List<string> { ".", "?", "¿" });
+                    keyMap.Add(84, new List<string> { " ", "", "" });
+                    keyMap.Add(85, new List<string> { "{Left}", "", "" });
+                    keyMap.Add(98, new List<string> { ",", ":", ";" });
+                    keyMap.Add(99, new List<string> { "{Enter}", "", "" });
+                    keyMap.Add(100, new List<string> { "p", "{)}", "=" });
+                    keyMap.Add(101, new List<string> { "0", "", "" });
+                    keyMap.Add(102, new List<string> { "9", "", "" });
+                    keyMap.Add(103, new List<string> { "8", "", "" });
+                    keyMap.Add(113, new List<string> { "{Backspace}", "", "" });
+                    keyMap.Add(114, new List<string> { "l", "{]}", "ø" });
+                    keyMap.Add(117, new List<string> { "o", "{(}", "ó" });
+                    keyMap.Add(118, new List<string> { "i", "*", "í" });
+                    keyMap.Add(119, new List<string> { "k", "{[}", "☺" });
+                    break;
+
+                case "QWERTZ":
+                    keyMap.Add(17, new List<string> { "7", "", "" });
+                    keyMap.Add(18, new List<string> { "6", "", "" });
+                    keyMap.Add(19, new List<string> { "5", "", "" });
+                    keyMap.Add(20, new List<string> { "4", "", "" });
+                    keyMap.Add(21, new List<string> { "3", "", "" });
+                    keyMap.Add(22, new List<string> { "2", "", "" });
+                    keyMap.Add(23, new List<string> { "1", "", "" });
+                    keyMap.Add(33, new List<string> { "u", "/", "ü" });
+                    keyMap.Add(34, new List<string> { "z", "&", "º" });
+                    keyMap.Add(35, new List<string> { "t", "{%}", "Þ" });
+                    keyMap.Add(36, new List<string> { "r", "$", "¥" });
+                    keyMap.Add(37, new List<string> { "e", "€", "é" });
+                    keyMap.Add(38, new List<string> { "w", "\"", "¡" });
+                    keyMap.Add(39, new List<string> { "q", "!", "@" });
+                    keyMap.Add(49, new List<string> { "j", "{}}", "ø" });
+                    keyMap.Add(50, new List<string> { "h", "{{}", "`" });
+                    keyMap.Add(51, new List<string> { "g", "¨", "☺" });
+                    keyMap.Add(52, new List<string> { "f", "»", "£" });
+                    keyMap.Add(53, new List<string> { "d", "«", "ð" });
+                    keyMap.Add(54, new List<string> { "s", "ß", "š" });
+                    keyMap.Add(55, new List<string> { "a", "å", "ä" });
+                    keyMap.Add(65, new List<string> { "n", ";", "ñ" });
+                    keyMap.Add(66, new List<string> { "b", "*", "{+}" });
+                    keyMap.Add(67, new List<string> { "v", "-", "_" });
+                    keyMap.Add(68, new List<string> { "c", "{~}", "ç" });
+                    keyMap.Add(69, new List<string> { "x", ">", "|" });
+                    keyMap.Add(70, new List<string> { "y", "<", "º" });
+                    keyMap.Add(81, new List<string> { "{Right}", "", "" });
+                    keyMap.Add(82, new List<string> { "m", ":", "µ" });
+                    keyMap.Add(83, new List<string> { ".", "?", "¿" });
+                    keyMap.Add(84, new List<string> { " ", "", "" });
+                    keyMap.Add(85, new List<string> { "{Left}", "", "" });
+                    keyMap.Add(98, new List<string> { ",", "'", "#" });
+                    keyMap.Add(99, new List<string> { "{Enter}", "", "" });
+                    keyMap.Add(100, new List<string> { "p", "=", "\\" });
+                    keyMap.Add(101, new List<string> { "0", "", "" });
+                    keyMap.Add(102, new List<string> { "9", "", "" });
+                    keyMap.Add(103, new List<string> { "8", "", "" });
+                    keyMap.Add(113, new List<string> { "{Backspace}", "", "" });
+                    keyMap.Add(114, new List<string> { "l", "{]}", "œ" });
+                    keyMap.Add(117, new List<string> { "o", "{)}", "ö" });
+                    keyMap.Add(118, new List<string> { "i", "{(}", "í" });
+                    keyMap.Add(119, new List<string> { "k", "{[}", "æ" });
+                    break;
+
+                case "AZERTY":
+                    keyMap.Add(17, new List<string> { "7", "", "" });
+                    keyMap.Add(18, new List<string> { "6", "", "" });
+                    keyMap.Add(19, new List<string> { "5", "", "" });
+                    keyMap.Add(20, new List<string> { "4", "", "" });
+                    keyMap.Add(21, new List<string> { "3", "", "" });
+                    keyMap.Add(22, new List<string> { "2", "", "" });
+                    keyMap.Add(23, new List<string> { "1", "", "" });
+                    keyMap.Add(33, new List<string> { "u", "ù", "`" });
+                    keyMap.Add(34, new List<string> { "y", "ý", "-" });
+                    keyMap.Add(35, new List<string> { "t", "#", "{(}" });
+                    keyMap.Add(36, new List<string> { "r", "é", "$" });
+                    keyMap.Add(37, new List<string> { "e", "€", "\"" });
+                    keyMap.Add(38, new List<string> { "z", "æ", "{~}" });
+                    keyMap.Add(39, new List<string> { "a", "à", "&" });
+                    keyMap.Add(49, new List<string> { "j", "µ", "¨" });
+                    keyMap.Add(50, new List<string> { "h", "|", "ø" });
+                    keyMap.Add(51, new List<string> { "g", "¨", "¥" });
+                    keyMap.Add(52, new List<string> { "f", "Þ", "{{}" });
+                    keyMap.Add(53, new List<string> { "d", "ð", "»" });
+                    keyMap.Add(54, new List<string> { "s", "š", "«" });
+                    keyMap.Add(55, new List<string> { "q", "å", "☺" });
+                    keyMap.Add(65, new List<string> { "n", "?", "ñ" });
+                    keyMap.Add(66, new List<string> { "b", "{+}", "{%}" });
+                    keyMap.Add(67, new List<string> { "v", "=", "{]}" });
+                    keyMap.Add(68, new List<string> { "c", "ç", "{[}" });
+                    keyMap.Add(69, new List<string> { "x", "¿", ">" });
+                    keyMap.Add(70, new List<string> { "w", "¡", "<" });
+                    keyMap.Add(81, new List<string> { "{Right}", "", "" });
+                    keyMap.Add(82, new List<string> { ",", "!", "'" });
+                    keyMap.Add(83, new List<string> { ".", ":", ";" });
+                    keyMap.Add(84, new List<string> { " ", "", "" });
+                    keyMap.Add(85, new List<string> { "{Left}", "", "" });
+                    keyMap.Add(98, new List<string> { "m", "*", "{^}" });
+                    keyMap.Add(99, new List<string> { "{Enter}", "", "" });
+                    keyMap.Add(100, new List<string> { "p", "ó", "{)}" });
+                    keyMap.Add(101, new List<string> { "0", "", "" });
+                    keyMap.Add(102, new List<string> { "9", "", "" });
+                    keyMap.Add(103, new List<string> { "8", "", "" });
+                    keyMap.Add(113, new List<string> { "{Backspace}", "", "" });
+                    keyMap.Add(114, new List<string> { "l", "$", "£" });
+                    keyMap.Add(117, new List<string> { "o", "œ", "@" });
+                    keyMap.Add(118, new List<string> { "i", "ì", "_" });
+                    keyMap.Add(119, new List<string> { "k", "/", "\\" });
+                    break;
+
+                default:
+                    Trace.WriteLine("ERROR: Unknown Keyboard Type.");
+                    break;
+            }
         }
 
         public void ProcessData(byte[] dataPacket, Window_Main parentWindow)
