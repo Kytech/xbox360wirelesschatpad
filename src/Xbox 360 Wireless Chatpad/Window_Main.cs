@@ -303,8 +303,11 @@ namespace Xbox360WirelessChatpad
             // only drawback is the lack of chatpad in that scenario.
             if (WirelessReceiverAttached)
             {
-                // Instantiates the Gamepad and Chatpad, if it hasn't been done
-                xboxGamepad = new Gamepad();
+                // Instantiates the Gamepad, if it hasn't been done
+                if (xboxGamepad == null)
+                    xboxGamepad = new Gamepad();
+
+                // Instantiates the Chatpad with the appropriate keyboard type
                 xboxChatpad = new Chatpad(Properties.Settings.Default.keyboardType);
 
                 Trace.WriteLine("Searching for Controller...Press the Guide Button Now.");
