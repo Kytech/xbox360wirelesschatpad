@@ -317,7 +317,7 @@ namespace Xbox360WirelessChatpad
             {
                 // Instantiates the Gamepad, if it hasn't been done
                 if (xboxGamepad == null)
-                    xboxGamepad = new Gamepad(Properties.Settings.Default.ffxivFlag);
+                    xboxGamepad = new Gamepad(ffxivFlag.Checked);
 
                 // Instantiates the Chatpad with the appropriate keyboard type
                 xboxChatpad = new Chatpad(Properties.Settings.Default.keyboardType);
