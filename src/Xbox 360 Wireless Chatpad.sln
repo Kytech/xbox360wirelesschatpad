@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Express 2012 for Windows Desktop
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual C# Express 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xbox 360 Wireless Chatpad", "Xbox 360 Wireless Chatpad\Xbox 360 Wireless Chatpad.csproj", "{581ACA2E-F868-4411-8BB7-6922983DA7FA}"
 EndProject
 Global
@@ -13,7 +13,6 @@ Global
 		{581ACA2E-F868-4411-8BB7-6922983DA7FA}.Debug|x86.Build.0 = Debug|x86
 		{581ACA2E-F868-4411-8BB7-6922983DA7FA}.Release|x86.ActiveCfg = Release|x86
 		{581ACA2E-F868-4411-8BB7-6922983DA7FA}.Release|x86.Build.0 = Release|x86
-		{581ACA2E-F868-4411-8BB7-6922983DA7FA}.Release|x86.Deploy.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
