@@ -11,5 +11,8 @@
     <Setting Name="rightDeadzone" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">18</Value>
     </Setting>
+    <Setting Name="ffxivFlag" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

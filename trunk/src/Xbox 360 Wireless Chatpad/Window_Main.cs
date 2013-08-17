@@ -97,6 +97,12 @@ namespace Xbox360WirelessChatpad
                     qwertyButton.Checked = true;
                     break;
             }
+
+            // Load the ffxivFlag configuration variable into the checkbox
+            if (Properties.Settings.Default.ffxivFlag)
+                ffxivFlag.Checked = true;
+            else
+                ffxivFlag.Checked = false;
         }
 
         private void Window_Main_Resize(object sender, EventArgs e)
@@ -140,6 +146,9 @@ namespace Xbox360WirelessChatpad
                         WirelessReceiver.Close();
                     WirelessReceiver = null;
                 }
+
+                // Writes the ffxivFlag configuration parameter
+                Properties.Settings.Default.ffxivFlag = ffxivFlag.Checked;
 
                 // Save the configuration file variables
                 Properties.Settings.Default.Save();
@@ -232,6 +241,9 @@ namespace Xbox360WirelessChatpad
             // Reset the keyabord type box
             keyboardTypeGroupBox.Enabled = true;
 
+            // Reset the FFXIV check box
+            ffxivFlag.Enabled = true;
+
             // Reset the chatpad test box
             chatpadTextBox.Enabled = false;
             chatpadTextBox.TextAlign = HorizontalAlignment.Center;
@@ -305,7 +317,7 @@ namespace Xbox360WirelessChatpad
             {
                 // Instantiates the Gamepad, if it hasn't been done
                 if (xboxGamepad == null)
-                    xboxGamepad = new Gamepad();
+                    xboxGamepad = new Gamepad(Properties.Settings.Default.ffxivFlag);
 
                 // Instantiates the Chatpad with the appropriate keyboard type
                 xboxChatpad = new Chatpad(Properties.Settings.Default.keyboardType);
@@ -339,6 +351,9 @@ namespace Xbox360WirelessChatpad
 
                         // Disable the Keyboard Type
                         keyboardTypeGroupBox.Enabled = false;
+
+                        // Disable the FFXIV check box
+                        ffxivFlag.Enabled = false;
 
                         // Enable the chatpad test box
                         chatpadTextBox.Enabled = true;

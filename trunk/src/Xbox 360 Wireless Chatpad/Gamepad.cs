@@ -15,49 +15,106 @@ namespace Xbox360WirelessChatpad
         public int deadzoneL = 0;
         public int deadzoneR = 0;
 
+        // Global FFXIV Flag for use by data packet processing
+        public bool ffxivFlag;
+
         // Contains the mapping of Gamepad buttons
-        Dictionary<String, uint> buttonMap = new Dictionary<String, uint>()
-            {
-                {"A", 1},         // A
-                {"B", 2},         // B
-                {"X", 3},         // X
-                {"Y", 4},         // Y
-                {"LStick", 5},    // Left Analog Stick Press
-                {"RStick", 6},    // Right Analog Stick Press
-                {"LBump", 7},     // Left Bumper
-                {"RBump", 8},     // Right Bumper
-                {"Guide", 9},     // Center/Power Button
-                {"Back", 10},     // Back
-                {"Start", 11}     // Start
-            };
+        Dictionary<String, uint> buttonMap;
 
         // Contains the mapping of Gamepad directional pad buttons
-        Dictionary<String, int> directionMap = new Dictionary<String, int>()
-            {
-                {"Neutral", -1},        // Neutral, Nothing Pressed
-                {"Up", 0},              // Up
-                {"UpRight", 4500},      // Up-Right
-                {"Right", 9000},        // Right
-                {"DownRight", 13500},   // Down-Right
-                {"Down", 18000},        // Down
-                {"DownLeft", 22500},    // Down-Left
-                {"Left", 27000},        // Left
-                {"UpLeft", 31500}       // Up-Left
-            };
+        Dictionary<String, int> directionMap;
 
         // Contains the mapping of Gamepad axes
-        Dictionary<String, HID_USAGES> axisMap = new Dictionary<String, HID_USAGES>()
-            {
-                {"LTrigger", HID_USAGES.HID_USAGE_Z},    // Left Trigger
-                {"RTrigger", HID_USAGES.HID_USAGE_RZ},   // Right Trigger
-                {"LX", HID_USAGES.HID_USAGE_X},          // Left Stick X Axis
-                {"LY", HID_USAGES.HID_USAGE_Y},          // Left Stick Y Axis
-                {"RX", HID_USAGES.HID_USAGE_RX},         // Right Stick X Axis
-                {"RY", HID_USAGES.HID_USAGE_RY}          // Right Stick Y Axis
-            };
+        Dictionary<String, HID_USAGES> axisMap;
 
-        public Gamepad()
+        public Gamepad(bool ffFlag)
         {
+            // Populates the Dictionaries depending on Final Fantasy XIV Flag
+            // This is done to retain full functionality of the controller app,
+            // but also allow the controller to work with FF14.
+            if (ffFlag)
+            {
+                ffxivFlag = ffFlag;
+
+                buttonMap = new Dictionary<String, uint>()
+                {
+                    {"A", 3},         // A
+                    {"B", 4},         // B
+                    {"X", 1},         // X
+                    {"Y", 2},         // Y
+                    {"LStick", 9},    // Left Analog Stick Press
+                    {"RStick", 10},   // Right Analog Stick Press
+                    {"LBump", 5},     // Left Bumper
+                    {"RBump", 6},     // Right Bumper
+                    {"LTrig", 7},     // Left Trigger
+                    {"RTrig", 8},     // Right Trigger
+                    {"Back", 11},     // Back
+                    {"Start", 12},    // Start
+                    {"Guide", 13}     // Guide
+                };
+
+                directionMap = new Dictionary<String, int>()
+                {
+                    {"Neutral", -1},        // Neutral, Nothing Pressed
+                    {"Up", 0},              // Up
+                    {"UpRight", 4500},      // Up-Right
+                    {"Right", 9000},        // Right
+                    {"DownRight", 13500},   // Down-Right
+                    {"Down", 18000},        // Down
+                    {"DownLeft", 22500},    // Down-Left
+                    {"Left", 27000},        // Left
+                    {"UpLeft", 31500}       // Up-Left
+                };
+
+                axisMap = new Dictionary<String, HID_USAGES>()
+                {
+                    {"LX", HID_USAGES.HID_USAGE_X},     // Left Stick X Axis
+                    {"LY", HID_USAGES.HID_USAGE_Y},     // Left Stick Y Axis
+                    {"RX", HID_USAGES.HID_USAGE_Z},     // Right Stick X Axis
+                    {"RY", HID_USAGES.HID_USAGE_RZ}     // Right Stick Y Axis
+                };
+            }
+            else
+            {
+                buttonMap = new Dictionary<String, uint>()
+                {
+                    {"A", 1},         // A
+                    {"B", 2},         // B
+                    {"X", 3},         // X
+                    {"Y", 4},         // Y
+                    {"LStick", 5},    // Left Analog Stick Press
+                    {"RStick", 6},    // Right Analog Stick Press
+                    {"LBump", 7},     // Left Bumper
+                    {"RBump", 8},     // Right Bumper
+                    {"Guide", 9},     // Center/Power Button
+                    {"Back", 10},     // Back
+                    {"Start", 11}     // Start
+                };
+
+                directionMap = new Dictionary<String, int>()
+                {
+                    {"Neutral", -1},        // Neutral, Nothing Pressed
+                    {"Up", 0},              // Up
+                    {"UpRight", 4500},      // Up-Right
+                    {"Right", 9000},        // Right
+                    {"DownRight", 13500},   // Down-Right
+                    {"Down", 18000},        // Down
+                    {"DownLeft", 22500},    // Down-Left
+                    {"Left", 27000},        // Left
+                    {"UpLeft", 31500}       // Up-Left
+                };
+
+                axisMap = new Dictionary<String, HID_USAGES>()
+                {
+                    {"LTrig", HID_USAGES.HID_USAGE_Z},    // Left Trigger
+                    {"RTrig", HID_USAGES.HID_USAGE_RZ},   // Right Trigger
+                    {"LX", HID_USAGES.HID_USAGE_X},       // Left Stick X Axis
+                    {"LY", HID_USAGES.HID_USAGE_Y},       // Left Stick Y Axis
+                    {"RX", HID_USAGES.HID_USAGE_RX},      // Right Stick X Axis
+                    {"RY", HID_USAGES.HID_USAGE_RY}       // Right Stick Y Axis
+                };
+            }
+
             // Instantiate the virtual joystick
             vJoystick = new vJoy();
 
@@ -164,34 +221,76 @@ namespace Xbox360WirelessChatpad
             vJoystick.SetAxis(leftX, 1, axisMap["LX"]);
             vJoystick.SetAxis(-leftY, 1, axisMap["LY"]);
 
-            // Record the right stick X and Y values
-            short rightX = (short)(dataPacket[14] | (dataPacket[15] << 8));
-            short rightY = (short)(dataPacket[16] | (dataPacket[17] << 8));
+            // If we're in FFXIV Mode, the Left and Right Triggers are buttons and the R and Z
+            // axes are used in a very peculiar manner.
+            if (!ffxivFlag)
+	        {
+		        // Record the right stick X and Y values
+                short rightX = (short)(dataPacket[14] | (dataPacket[15] << 8));
+                short rightY = (short)(dataPacket[16] | (dataPacket[17] << 8));
 
-            // Filter the right stick X and Y values based on the circular deadzone
-            double rightDistance = Math.Sqrt((double)(rightX * rightX) + (double)(rightY * rightY));
-            if (rightDistance < deadzoneR)
-            {
-                rightX = 0;
-                rightY = 0;
-            }
+                // Filter the right stick X and Y values based on the circular deadzone
+                double rightDistance = Math.Sqrt((double)(rightX * rightX) + (double)(rightY * rightY));
+                if (rightDistance < deadzoneR)
+                {
+                    rightX = 0;
+                    rightY = 0;
+                }
+                else
+                {
+                    if (Math.Abs(Convert.ToInt32(rightX)) < deadzoneR)
+                        rightX = 0;
+                    if (Math.Abs(Convert.ToInt32(rightY)) < deadzoneR)
+                        rightY = 0;
+                }
+
+                // Set the right stick X and Y values
+                vJoystick.SetAxis(rightX, 1, axisMap["RX"]);
+                vJoystick.SetAxis(rightY, 1, axisMap["RY"]);
+
+                // Left Trigger
+                vJoystick.SetAxis(dataPacket[8], 1, axisMap["LTrig"]);
+
+                // Right Trigger
+                vJoystick.SetAxis(dataPacket[9], 1, axisMap["RTrig"]); 
+	        }
             else
             {
-                if (Math.Abs(Convert.ToInt32(rightX)) < deadzoneR)
+                // Record the right stick X and Y values
+                short rightX = (short)(dataPacket[14] | (dataPacket[15] << 8));
+                short rightY = (short)(dataPacket[16] | (dataPacket[17] << 8));
+
+                // Filter the right stick X and Y values based on the circular deadzone
+                double rightDistance = Math.Sqrt((double)(rightX * rightX) + (double)(rightY * rightY));
+                if (rightDistance < deadzoneR)
+                {
                     rightX = 0;
-                if (Math.Abs(Convert.ToInt32(rightY)) < deadzoneR)
                     rightY = 0;
+                }
+                else
+                {
+                    if (Math.Abs(Convert.ToInt32(rightX)) < deadzoneR)
+                        rightX = 0;
+                    if (Math.Abs(Convert.ToInt32(rightY)) < deadzoneR)
+                        rightY = 0;
+                }
+
+                // Set the right stick X and Y values
+                vJoystick.SetAxis(rightX, 1, axisMap["RX"]);
+                vJoystick.SetAxis(rightY, 1, axisMap["RY"]);
+
+                // Left Trigger
+                if (dataPacket[8] >= 50)
+                    vJoystick.SetBtn(true, 1, buttonMap["LTrig"]);
+                else
+                    vJoystick.SetBtn(false, 1, buttonMap["LTrig"]);
+
+                // Right Trigger
+                if (dataPacket[9] >= 50)
+                    vJoystick.SetBtn(true, 1, buttonMap["RTrig"]);
+                else
+                    vJoystick.SetBtn(false, 1, buttonMap["RTrig"]);
             }
-
-            // Set the right stick X and Y values
-            vJoystick.SetAxis(rightX, 1, axisMap["RX"]);
-            vJoystick.SetAxis(rightY, 1, axisMap["RY"]);
-
-            // Left Trigger
-            vJoystick.SetAxis(dataPacket[8], 1, axisMap["LTrigger"]);
-
-            // Right Trigger
-            vJoystick.SetAxis(dataPacket[9], 1, axisMap["RTrigger"]);
         }
     }
 }

@@ -42,7 +42,7 @@ namespace Xbox360WirelessChatpad
             // The format of the list is: ( NormalKey, GreenShiftKey, OrangeShiftKey }
             switch (keyboardType)
             {
-                case "QWERTY":
+                case "Q W E R T Y":
                     keyMap.Add(17, new List<string> { "7", "", "" });
                     keyMap.Add(18, new List<string> { "6", "", "" });
                     keyMap.Add(19, new List<string> { "5", "", "" });
@@ -88,7 +88,7 @@ namespace Xbox360WirelessChatpad
                     keyMap.Add(119, new List<string> { "k", "{[}", "☺" });
                     break;
 
-                case "QWERTZ":
+                case "Q W E R T Z":
                     keyMap.Add(17, new List<string> { "7", "", "" });
                     keyMap.Add(18, new List<string> { "6", "", "" });
                     keyMap.Add(19, new List<string> { "5", "", "" });
@@ -134,7 +134,7 @@ namespace Xbox360WirelessChatpad
                     keyMap.Add(119, new List<string> { "k", "{[}", "æ" });
                     break;
 
-                case "AZERTY":
+                case "A Z E R T Y":
                     keyMap.Add(17, new List<string> { "7", "", "" });
                     keyMap.Add(18, new List<string> { "6", "", "" });
                     keyMap.Add(19, new List<string> { "5", "", "" });

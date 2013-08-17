@@ -44,9 +44,10 @@
             this.leftDeadzone = new System.Windows.Forms.TrackBar();
             this.leftDeadzoneLabel = new System.Windows.Forms.Label();
             this.keyboardTypeGroupBox = new System.Windows.Forms.GroupBox();
-            this.qwertyButton = new System.Windows.Forms.RadioButton();
-            this.qwertzButton = new System.Windows.Forms.RadioButton();
             this.azertyButton = new System.Windows.Forms.RadioButton();
+            this.qwertzButton = new System.Windows.Forms.RadioButton();
+            this.qwertyButton = new System.Windows.Forms.RadioButton();
+            this.ffxivFlag = new System.Windows.Forms.CheckBox();
             this.trayIconMenu.SuspendLayout();
             this.deadzoneGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.rightDeadzone)).BeginInit();
@@ -56,12 +57,12 @@
             // 
             // appLogTextbox
             // 
-            this.appLogTextbox.Location = new System.Drawing.Point(112, 12);
+            this.appLogTextbox.Location = new System.Drawing.Point(132, 12);
             this.appLogTextbox.Multiline = true;
             this.appLogTextbox.Name = "appLogTextbox";
             this.appLogTextbox.ReadOnly = true;
             this.appLogTextbox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.appLogTextbox.Size = new System.Drawing.Size(330, 136);
+            this.appLogTextbox.Size = new System.Drawing.Size(310, 136);
             this.appLogTextbox.TabIndex = 0;
             this.appLogTextbox.TextChanged += new System.EventHandler(this.appLogTextbox_TextChanged);
             // 
@@ -89,9 +90,9 @@
             // 
             // connectButton
             // 
-            this.connectButton.Location = new System.Drawing.Point(12, 109);
+            this.connectButton.Location = new System.Drawing.Point(12, 132);
             this.connectButton.Name = "connectButton";
-            this.connectButton.Size = new System.Drawing.Size(94, 64);
+            this.connectButton.Size = new System.Drawing.Size(114, 41);
             this.connectButton.TabIndex = 1;
             this.connectButton.Text = "Connect Controller";
             this.connectButton.UseVisualStyleBackColor = true;
@@ -101,10 +102,10 @@
             // 
             this.chatpadTextBox.Enabled = false;
             this.chatpadTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chatpadTextBox.Location = new System.Drawing.Point(113, 153);
-            this.chatpadTextBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.chatpadTextBox.Location = new System.Drawing.Point(132, 153);
+            this.chatpadTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.chatpadTextBox.Name = "chatpadTextBox";
-            this.chatpadTextBox.Size = new System.Drawing.Size(330, 20);
+            this.chatpadTextBox.Size = new System.Drawing.Size(311, 20);
             this.chatpadTextBox.TabIndex = 3;
             this.chatpadTextBox.Text = "-Test Chatpad Here-";
             this.chatpadTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -187,52 +188,63 @@
             this.keyboardTypeGroupBox.Controls.Add(this.qwertyButton);
             this.keyboardTypeGroupBox.Location = new System.Drawing.Point(12, 12);
             this.keyboardTypeGroupBox.Name = "keyboardTypeGroupBox";
-            this.keyboardTypeGroupBox.Size = new System.Drawing.Size(94, 91);
+            this.keyboardTypeGroupBox.Size = new System.Drawing.Size(114, 91);
             this.keyboardTypeGroupBox.TabIndex = 5;
             this.keyboardTypeGroupBox.TabStop = false;
             this.keyboardTypeGroupBox.Text = "Keyboard Type";
-            // 
-            // qwertyButton
-            // 
-            this.qwertyButton.AutoSize = true;
-            this.qwertyButton.Location = new System.Drawing.Point(6, 17);
-            this.qwertyButton.Name = "qwertyButton";
-            this.qwertyButton.Size = new System.Drawing.Size(73, 17);
-            this.qwertyButton.TabIndex = 0;
-            this.qwertyButton.TabStop = true;
-            this.qwertyButton.Text = "QWERTY";
-            this.qwertyButton.UseVisualStyleBackColor = true;
-            this.qwertyButton.CheckedChanged += new System.EventHandler(this.keyboardType_Selected);
-            // 
-            // qwertzButton
-            // 
-            this.qwertzButton.AutoSize = true;
-            this.qwertzButton.Location = new System.Drawing.Point(6, 41);
-            this.qwertzButton.Name = "qwertzButton";
-            this.qwertzButton.Size = new System.Drawing.Size(73, 17);
-            this.qwertzButton.TabIndex = 1;
-            this.qwertzButton.TabStop = true;
-            this.qwertzButton.Text = "QWERTZ";
-            this.qwertzButton.UseVisualStyleBackColor = true;
-            this.qwertzButton.CheckedChanged += new System.EventHandler(this.keyboardType_Selected);
             // 
             // azertyButton
             // 
             this.azertyButton.AutoSize = true;
             this.azertyButton.Location = new System.Drawing.Point(6, 65);
             this.azertyButton.Name = "azertyButton";
-            this.azertyButton.Size = new System.Drawing.Size(68, 17);
+            this.azertyButton.Size = new System.Drawing.Size(83, 17);
             this.azertyButton.TabIndex = 2;
             this.azertyButton.TabStop = true;
-            this.azertyButton.Text = "AZERTY";
+            this.azertyButton.Text = "A Z E R T Y";
             this.azertyButton.UseVisualStyleBackColor = true;
             this.azertyButton.CheckedChanged += new System.EventHandler(this.keyboardType_Selected);
+            // 
+            // qwertzButton
+            // 
+            this.qwertzButton.AutoSize = true;
+            this.qwertzButton.Location = new System.Drawing.Point(6, 41);
+            this.qwertzButton.Name = "qwertzButton";
+            this.qwertzButton.Size = new System.Drawing.Size(88, 17);
+            this.qwertzButton.TabIndex = 1;
+            this.qwertzButton.TabStop = true;
+            this.qwertzButton.Text = "Q W E R T Z";
+            this.qwertzButton.UseVisualStyleBackColor = true;
+            this.qwertzButton.CheckedChanged += new System.EventHandler(this.keyboardType_Selected);
+            // 
+            // qwertyButton
+            // 
+            this.qwertyButton.AutoSize = true;
+            this.qwertyButton.Location = new System.Drawing.Point(6, 17);
+            this.qwertyButton.Name = "qwertyButton";
+            this.qwertyButton.Size = new System.Drawing.Size(88, 17);
+            this.qwertyButton.TabIndex = 0;
+            this.qwertyButton.TabStop = true;
+            this.qwertyButton.Text = "Q W E R T Y";
+            this.qwertyButton.UseVisualStyleBackColor = true;
+            this.qwertyButton.CheckedChanged += new System.EventHandler(this.keyboardType_Selected);
+            // 
+            // ffxivFlag
+            // 
+            this.ffxivFlag.AutoSize = true;
+            this.ffxivFlag.Location = new System.Drawing.Point(18, 109);
+            this.ffxivFlag.Name = "ffxivFlag";
+            this.ffxivFlag.Size = new System.Drawing.Size(108, 17);
+            this.ffxivFlag.TabIndex = 6;
+            this.ffxivFlag.Text = "Final Fantasy XIV";
+            this.ffxivFlag.UseVisualStyleBackColor = true;
             // 
             // Window_Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(608, 184);
+            this.Controls.Add(this.ffxivFlag);
             this.Controls.Add(this.keyboardTypeGroupBox);
             this.Controls.Add(this.deadzoneGroupBox);
             this.Controls.Add(this.connectButton);
@@ -275,6 +287,7 @@
         private System.Windows.Forms.RadioButton azertyButton;
         private System.Windows.Forms.RadioButton qwertzButton;
         private System.Windows.Forms.RadioButton qwertyButton;
+        private System.Windows.Forms.CheckBox ffxivFlag;
     }
 }
 
