@@ -3,22 +3,17 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
 
+using InputManager;
+
 namespace Xbox360WirelessChatpad
 {
     public class Chatpad
     {
-        // Contains the mapping of Chatpad buttons
-        Dictionary<int, List<string>> keyMap = new Dictionary<int, List<string>>();
-
-        // Identifies which Chatpad LEDs are active
-        Dictionary<string, bool> chatpadLED = new Dictionary<string, bool>()
-            {
-                { "Green", false },
-                { "Orange", false },
-                { "Messenger", false },
-                { "Capslock", false },
-                { "Backlight", false }
-            };
+        // Contains the mapping of Chatpad Buttons, Green Modifiers, and
+        // Orange Modifiers respectively.
+        Dictionary<int, Keys> keyMap = new Dictionary<int, Keys>();
+        Dictionary<int, string> greenMap = new Dictionary<int, string>();
+        Dictionary<int, string> orangeMap = new Dictionary<int, string>();
 
         // Identifies which Chatpad Modifiers are active
         Dictionary<string, bool> chatpadMod = new Dictionary<string, bool>()
@@ -34,150 +29,172 @@ namespace Xbox360WirelessChatpad
         // if a keystroke should be sent or not
         private List<byte> chatpadKeysHeld = new List<byte>();
 
+        // Identifies which keyboard keys are down, used to track if a KeyUp command
+        // needs to be sent or not
+        private List<Keys> keyboardKeysDown = new List<Keys>();
+
+        // Identifies if the sent key data should be upper case or lower case
+        bool flagUpperCase = false;
+
+        // Identifies if Alt-Tab cycling has begun
+        bool altTabActive = false;
+
+        // Used to determine if the data has changed since the last packet
         private byte[] dataPacketLast = new byte[3];
 
         public Chatpad(string keyboardType)
         {
             // Map the Xbox chatpad buttons to characters
-            // The format of the list is: ( NormalKey, GreenShiftKey, OrangeShiftKey }
             switch (keyboardType)
             {
                 case "Q W E R T Y":
-                    keyMap.Add(17, new List<string> { "7", "", "" });
-                    keyMap.Add(18, new List<string> { "6", "", "" });
-                    keyMap.Add(19, new List<string> { "5", "", "" });
-                    keyMap.Add(20, new List<string> { "4", "", "" });
-                    keyMap.Add(21, new List<string> { "3", "", "" });
-                    keyMap.Add(22, new List<string> { "2", "", "" });
-                    keyMap.Add(23, new List<string> { "1", "", "" });
-                    keyMap.Add(33, new List<string> { "u", "&", "ú" });
-                    keyMap.Add(34, new List<string> { "y", "{^}", "ý" });
-                    keyMap.Add(35, new List<string> { "t", "{%}", "Þ" });
-                    keyMap.Add(36, new List<string> { "r", "#", "$" });
-                    keyMap.Add(37, new List<string> { "e", "€", "é" });
-                    keyMap.Add(38, new List<string> { "w", "@", "å" });
-                    keyMap.Add(39, new List<string> { "q", "!", "¡" });
-                    keyMap.Add(49, new List<string> { "j", "'", "\"" });
-                    keyMap.Add(50, new List<string> { "h", "/", "\\" });
-                    keyMap.Add(51, new List<string> { "g", "¨", "¥" });
-                    keyMap.Add(52, new List<string> { "f", "{}}", "£" });
-                    keyMap.Add(53, new List<string> { "d", "{{}", "ð" });
-                    keyMap.Add(54, new List<string> { "s", "š", "ß" });
-                    keyMap.Add(55, new List<string> { "a", "{~}", "á" });
-                    keyMap.Add(65, new List<string> { "n", "<", "ñ" });
-                    keyMap.Add(66, new List<string> { "b", "|", "{+}" });
-                    keyMap.Add(67, new List<string> { "v", "-", "_" });
-                    keyMap.Add(68, new List<string> { "c", "»", "ç" });
-                    keyMap.Add(69, new List<string> { "x", "«", "œ" });
-                    keyMap.Add(70, new List<string> { "z", "`", "æ" });
-                    keyMap.Add(81, new List<string> { "{Right}", "", "" });
-                    keyMap.Add(82, new List<string> { "m", ">", "µ" });
-                    keyMap.Add(83, new List<string> { ".", "?", "¿" });
-                    keyMap.Add(84, new List<string> { " ", "", "" });
-                    keyMap.Add(85, new List<string> { "{Left}", "", "" });
-                    keyMap.Add(98, new List<string> { ",", ":", ";" });
-                    keyMap.Add(99, new List<string> { "{Enter}", "", "" });
-                    keyMap.Add(100, new List<string> { "p", "{)}", "=" });
-                    keyMap.Add(101, new List<string> { "0", "", "" });
-                    keyMap.Add(102, new List<string> { "9", "", "" });
-                    keyMap.Add(103, new List<string> { "8", "", "" });
-                    keyMap.Add(113, new List<string> { "{Backspace}", "", "" });
-                    keyMap.Add(114, new List<string> { "l", "{]}", "ø" });
-                    keyMap.Add(117, new List<string> { "o", "{(}", "ó" });
-                    keyMap.Add(118, new List<string> { "i", "*", "í" });
-                    keyMap.Add(119, new List<string> { "k", "{[}", "☺" });
+                    keyMap.Add(23, Keys.D1);        greenMap.Add(23, "");       orangeMap.Add(23, "");
+                    keyMap.Add(22, Keys.D2);        greenMap.Add(22, "");       orangeMap.Add(22, "");
+                    keyMap.Add(21, Keys.D3);        greenMap.Add(21, "");       orangeMap.Add(21, "");
+                    keyMap.Add(20, Keys.D4);        greenMap.Add(20, "");       orangeMap.Add(20, "");
+                    keyMap.Add(19, Keys.D5);        greenMap.Add(19, "");       orangeMap.Add(19, "");
+                    keyMap.Add(18, Keys.D6);        greenMap.Add(18, "");       orangeMap.Add(18, "");
+                    keyMap.Add(17, Keys.D7);        greenMap.Add(17, "");       orangeMap.Add(17, "");
+                    keyMap.Add(103, Keys.D8);       greenMap.Add(103, "");      orangeMap.Add(103, "");
+                    keyMap.Add(102, Keys.D9);       greenMap.Add(102, "");      orangeMap.Add(102, "");
+                    keyMap.Add(101, Keys.D0);       greenMap.Add(101, "");      orangeMap.Add(101, "");
+
+                    keyMap.Add(39, Keys.Q);         greenMap.Add(39, "!");      orangeMap.Add(39, "¡");
+                    keyMap.Add(38, Keys.W);         greenMap.Add(38, "@");      orangeMap.Add(38, "å");
+                    keyMap.Add(37, Keys.E);         greenMap.Add(37, "€");      orangeMap.Add(37, "é");
+                    keyMap.Add(36, Keys.R);         greenMap.Add(36, "#");      orangeMap.Add(36, "$");
+                    keyMap.Add(35, Keys.T);         greenMap.Add(35, "{%}");    orangeMap.Add(35, "Þ");
+                    keyMap.Add(34, Keys.Y);         greenMap.Add(34, "{^}");    orangeMap.Add(34, "ý");
+                    keyMap.Add(33, Keys.U);         greenMap.Add(33, "&");      orangeMap.Add(33, "ú");
+                    keyMap.Add(118, Keys.I);        greenMap.Add(118, "*");     orangeMap.Add(118, "í");
+                    keyMap.Add(117, Keys.O);        greenMap.Add(117, "{(}");   orangeMap.Add(117, "ó");
+                    keyMap.Add(100, Keys.P);        greenMap.Add(100, "{)}");   orangeMap.Add(100, "=");
+
+                    keyMap.Add(55, Keys.A);         greenMap.Add(55, "{~}");    orangeMap.Add(55, "á");
+                    keyMap.Add(54, Keys.S);         greenMap.Add(54, "š");      orangeMap.Add(54, "ß");
+                    keyMap.Add(53, Keys.D);         greenMap.Add(53, "{{}");    orangeMap.Add(53, "ð");
+                    keyMap.Add(52, Keys.F);         greenMap.Add(52, "{}}");    orangeMap.Add(52, "£");
+                    keyMap.Add(51, Keys.G);         greenMap.Add(51, "¨");      orangeMap.Add(51, "¥");
+                    keyMap.Add(50, Keys.H);         greenMap.Add(50, "/");      orangeMap.Add(50, "\\");
+                    keyMap.Add(49, Keys.J);         greenMap.Add(49, "'");      orangeMap.Add(49, "\"");
+                    keyMap.Add(119, Keys.K);        greenMap.Add(119, "{[}");   orangeMap.Add(119, "☺");
+                    keyMap.Add(114, Keys.L);        greenMap.Add(114, "{]}");   orangeMap.Add(114, "ø");
+                    keyMap.Add(98, Keys.Oemcomma);  greenMap.Add(98, ":");      orangeMap.Add(98, ";");
+
+                    keyMap.Add(70, Keys.Z);         greenMap.Add(70, "`");      orangeMap.Add(70, "æ");
+                    keyMap.Add(69, Keys.X);         greenMap.Add(69, "«");      orangeMap.Add(69, "œ");
+                    keyMap.Add(68, Keys.C);         greenMap.Add(68, "»");      orangeMap.Add(68, "ç");
+                    keyMap.Add(67, Keys.V);         greenMap.Add(67, "-");      orangeMap.Add(67, "_");
+                    keyMap.Add(66, Keys.B);         greenMap.Add(66, "|");      orangeMap.Add(66, "{+}");
+                    keyMap.Add(65, Keys.N);         greenMap.Add(65, "<");      orangeMap.Add(65, "ñ");
+                    keyMap.Add(82, Keys.M);         greenMap.Add(82, ">");      orangeMap.Add(82, "µ");
+                    keyMap.Add(83, Keys.OemPeriod); greenMap.Add(83, "?");      orangeMap.Add(83, "¿");
+                    keyMap.Add(99, Keys.Enter);     greenMap.Add(99, "");       orangeMap.Add(99, "");
+
+                    keyMap.Add(85, Keys.Left);      greenMap.Add(85, "");       orangeMap.Add(85, "");
+                    keyMap.Add(84, Keys.Space);     greenMap.Add(84, "");       orangeMap.Add(84, "");
+                    keyMap.Add(81, Keys.Right);     greenMap.Add(81, "");       orangeMap.Add(81, "");
+                    keyMap.Add(113, Keys.Back);     greenMap.Add(113, "");      orangeMap.Add(113, "");
                     break;
 
                 case "Q W E R T Z":
-                    keyMap.Add(17, new List<string> { "7", "", "" });
-                    keyMap.Add(18, new List<string> { "6", "", "" });
-                    keyMap.Add(19, new List<string> { "5", "", "" });
-                    keyMap.Add(20, new List<string> { "4", "", "" });
-                    keyMap.Add(21, new List<string> { "3", "", "" });
-                    keyMap.Add(22, new List<string> { "2", "", "" });
-                    keyMap.Add(23, new List<string> { "1", "", "" });
-                    keyMap.Add(33, new List<string> { "u", "/", "ü" });
-                    keyMap.Add(34, new List<string> { "z", "&", "º" });
-                    keyMap.Add(35, new List<string> { "t", "{%}", "Þ" });
-                    keyMap.Add(36, new List<string> { "r", "$", "¥" });
-                    keyMap.Add(37, new List<string> { "e", "€", "é" });
-                    keyMap.Add(38, new List<string> { "w", "\"", "¡" });
-                    keyMap.Add(39, new List<string> { "q", "!", "@" });
-                    keyMap.Add(49, new List<string> { "j", "{}}", "ø" });
-                    keyMap.Add(50, new List<string> { "h", "{{}", "`" });
-                    keyMap.Add(51, new List<string> { "g", "¨", "☺" });
-                    keyMap.Add(52, new List<string> { "f", "»", "£" });
-                    keyMap.Add(53, new List<string> { "d", "«", "ð" });
-                    keyMap.Add(54, new List<string> { "s", "ß", "š" });
-                    keyMap.Add(55, new List<string> { "a", "å", "ä" });
-                    keyMap.Add(65, new List<string> { "n", ";", "ñ" });
-                    keyMap.Add(66, new List<string> { "b", "*", "{+}" });
-                    keyMap.Add(67, new List<string> { "v", "-", "_" });
-                    keyMap.Add(68, new List<string> { "c", "{~}", "ç" });
-                    keyMap.Add(69, new List<string> { "x", ">", "|" });
-                    keyMap.Add(70, new List<string> { "y", "<", "º" });
-                    keyMap.Add(81, new List<string> { "{Right}", "", "" });
-                    keyMap.Add(82, new List<string> { "m", ":", "µ" });
-                    keyMap.Add(83, new List<string> { ".", "?", "¿" });
-                    keyMap.Add(84, new List<string> { " ", "", "" });
-                    keyMap.Add(85, new List<string> { "{Left}", "", "" });
-                    keyMap.Add(98, new List<string> { ",", "'", "#" });
-                    keyMap.Add(99, new List<string> { "{Enter}", "", "" });
-                    keyMap.Add(100, new List<string> { "p", "=", "\\" });
-                    keyMap.Add(101, new List<string> { "0", "", "" });
-                    keyMap.Add(102, new List<string> { "9", "", "" });
-                    keyMap.Add(103, new List<string> { "8", "", "" });
-                    keyMap.Add(113, new List<string> { "{Backspace}", "", "" });
-                    keyMap.Add(114, new List<string> { "l", "{]}", "œ" });
-                    keyMap.Add(117, new List<string> { "o", "{)}", "ö" });
-                    keyMap.Add(118, new List<string> { "i", "{(}", "í" });
-                    keyMap.Add(119, new List<string> { "k", "{[}", "æ" });
+                    keyMap.Add(23, Keys.D1);        greenMap.Add(23, "");       orangeMap.Add(23, "");
+                    keyMap.Add(22, Keys.D2);        greenMap.Add(22, "");       orangeMap.Add(22, "");
+                    keyMap.Add(21, Keys.D3);        greenMap.Add(21, "");       orangeMap.Add(21, "");
+                    keyMap.Add(20, Keys.D4);        greenMap.Add(20, "");       orangeMap.Add(20, "");
+                    keyMap.Add(19, Keys.D5);        greenMap.Add(19, "");       orangeMap.Add(19, "");
+                    keyMap.Add(18, Keys.D6);        greenMap.Add(18, "");       orangeMap.Add(18, "");
+                    keyMap.Add(17, Keys.D7);        greenMap.Add(17, "");       orangeMap.Add(17, "");
+                    keyMap.Add(103, Keys.D8);       greenMap.Add(103, "");      orangeMap.Add(103, "");
+                    keyMap.Add(102, Keys.D9);       greenMap.Add(102, "");      orangeMap.Add(102, "");
+                    keyMap.Add(101, Keys.D0);       greenMap.Add(101, "");      orangeMap.Add(101, "");
+
+                    keyMap.Add(39, Keys.Q);         greenMap.Add(39, "!");      orangeMap.Add(39, "@");
+                    keyMap.Add(38, Keys.W);         greenMap.Add(38, "\"");     orangeMap.Add(38, "¡");
+                    keyMap.Add(37, Keys.E);         greenMap.Add(37, "€");      orangeMap.Add(37, "é");
+                    keyMap.Add(36, Keys.R);         greenMap.Add(36, "$");      orangeMap.Add(36, "¥");
+                    keyMap.Add(35, Keys.T);         greenMap.Add(35, "{%}");    orangeMap.Add(35, "Þ");
+                    keyMap.Add(34, Keys.Z);         greenMap.Add(34, "&");      orangeMap.Add(34, "{^}");
+                    keyMap.Add(33, Keys.U);         greenMap.Add(33, "/");      orangeMap.Add(33, "ü");
+                    keyMap.Add(118, Keys.I);        greenMap.Add(118, "{(}");   orangeMap.Add(118, "í");
+                    keyMap.Add(117, Keys.O);        greenMap.Add(117, "{)}");   orangeMap.Add(117, "ö");
+                    keyMap.Add(100, Keys.P);        greenMap.Add(100, "=");     orangeMap.Add(100, "\\");
+
+                    keyMap.Add(55, Keys.A);         greenMap.Add(55, "å");      orangeMap.Add(55, "ä");
+                    keyMap.Add(54, Keys.S);         greenMap.Add(54, "ß");      orangeMap.Add(54, "š");
+                    keyMap.Add(53, Keys.D);         greenMap.Add(53, "«");      orangeMap.Add(53, "ð");
+                    keyMap.Add(52, Keys.F);         greenMap.Add(52, "»");      orangeMap.Add(52, "£");
+                    keyMap.Add(51, Keys.G);         greenMap.Add(51, "¨");      orangeMap.Add(51, "☺");
+                    keyMap.Add(50, Keys.H);         greenMap.Add(50, "{{}");    orangeMap.Add(50, "`");
+                    keyMap.Add(49, Keys.J);         greenMap.Add(49, "{}}");    orangeMap.Add(49, "ø");
+                    keyMap.Add(119, Keys.K);        greenMap.Add(119, "{[}");   orangeMap.Add(119, "æ");
+                    keyMap.Add(114, Keys.L);        greenMap.Add(114, "{]}");   orangeMap.Add(114, "œ");
+                    keyMap.Add(98, Keys.Oemcomma);  greenMap.Add(98, "':");     orangeMap.Add(98, "#;");
+
+                    keyMap.Add(70, Keys.Y);         greenMap.Add(70, "<");      orangeMap.Add(70, "°");
+                    keyMap.Add(69, Keys.X);         greenMap.Add(69, ">");      orangeMap.Add(69, "|");
+                    keyMap.Add(68, Keys.C);         greenMap.Add(68, "{~}");    orangeMap.Add(68, "ç");
+                    keyMap.Add(67, Keys.V);         greenMap.Add(67, "-");      orangeMap.Add(67, "_");
+                    keyMap.Add(66, Keys.B);         greenMap.Add(66, "*");      orangeMap.Add(66, "{+}");
+                    keyMap.Add(65, Keys.N);         greenMap.Add(65, ";");      orangeMap.Add(65, "ñ");
+                    keyMap.Add(82, Keys.M);         greenMap.Add(82, ":");      orangeMap.Add(82, "µ");
+                    keyMap.Add(83, Keys.OemPeriod); greenMap.Add(83, "?");      orangeMap.Add(83, "¿");
+                    keyMap.Add(99, Keys.Enter);     greenMap.Add(99, "");       orangeMap.Add(99, "");
+
+                    keyMap.Add(85, Keys.Left);      greenMap.Add(85, "");       orangeMap.Add(85, "");
+                    keyMap.Add(84, Keys.Space);     greenMap.Add(84, "");       orangeMap.Add(84, "");
+                    keyMap.Add(81, Keys.Right);     greenMap.Add(81, "");       orangeMap.Add(81, "");
+                    keyMap.Add(113, Keys.Back);     greenMap.Add(113, "");      orangeMap.Add(113, "");
                     break;
 
                 case "A Z E R T Y":
-                    keyMap.Add(17, new List<string> { "7", "", "" });
-                    keyMap.Add(18, new List<string> { "6", "", "" });
-                    keyMap.Add(19, new List<string> { "5", "", "" });
-                    keyMap.Add(20, new List<string> { "4", "", "" });
-                    keyMap.Add(21, new List<string> { "3", "", "" });
-                    keyMap.Add(22, new List<string> { "2", "", "" });
-                    keyMap.Add(23, new List<string> { "1", "", "" });
-                    keyMap.Add(33, new List<string> { "u", "ù", "`" });
-                    keyMap.Add(34, new List<string> { "y", "ý", "-" });
-                    keyMap.Add(35, new List<string> { "t", "#", "{(}" });
-                    keyMap.Add(36, new List<string> { "r", "é", "$" });
-                    keyMap.Add(37, new List<string> { "e", "€", "\"" });
-                    keyMap.Add(38, new List<string> { "z", "æ", "{~}" });
-                    keyMap.Add(39, new List<string> { "a", "à", "&" });
-                    keyMap.Add(49, new List<string> { "j", "µ", "¨" });
-                    keyMap.Add(50, new List<string> { "h", "|", "ø" });
-                    keyMap.Add(51, new List<string> { "g", "¨", "¥" });
-                    keyMap.Add(52, new List<string> { "f", "Þ", "{{}" });
-                    keyMap.Add(53, new List<string> { "d", "ð", "»" });
-                    keyMap.Add(54, new List<string> { "s", "š", "«" });
-                    keyMap.Add(55, new List<string> { "q", "å", "☺" });
-                    keyMap.Add(65, new List<string> { "n", "?", "ñ" });
-                    keyMap.Add(66, new List<string> { "b", "{+}", "{%}" });
-                    keyMap.Add(67, new List<string> { "v", "=", "{]}" });
-                    keyMap.Add(68, new List<string> { "c", "ç", "{[}" });
-                    keyMap.Add(69, new List<string> { "x", "¿", ">" });
-                    keyMap.Add(70, new List<string> { "w", "¡", "<" });
-                    keyMap.Add(81, new List<string> { "{Right}", "", "" });
-                    keyMap.Add(82, new List<string> { ",", "!", "'" });
-                    keyMap.Add(83, new List<string> { ".", ":", ";" });
-                    keyMap.Add(84, new List<string> { " ", "", "" });
-                    keyMap.Add(85, new List<string> { "{Left}", "", "" });
-                    keyMap.Add(98, new List<string> { "m", "*", "{^}" });
-                    keyMap.Add(99, new List<string> { "{Enter}", "", "" });
-                    keyMap.Add(100, new List<string> { "p", "ó", "{)}" });
-                    keyMap.Add(101, new List<string> { "0", "", "" });
-                    keyMap.Add(102, new List<string> { "9", "", "" });
-                    keyMap.Add(103, new List<string> { "8", "", "" });
-                    keyMap.Add(113, new List<string> { "{Backspace}", "", "" });
-                    keyMap.Add(114, new List<string> { "l", "$", "£" });
-                    keyMap.Add(117, new List<string> { "o", "œ", "@" });
-                    keyMap.Add(118, new List<string> { "i", "ì", "_" });
-                    keyMap.Add(119, new List<string> { "k", "/", "\\" });
+                    keyMap.Add(23, Keys.D1);        greenMap.Add(23, "");       orangeMap.Add(23, "");
+                    keyMap.Add(22, Keys.D2);        greenMap.Add(22, "");       orangeMap.Add(22, "");
+                    keyMap.Add(21, Keys.D3);        greenMap.Add(21, "");       orangeMap.Add(21, "");
+                    keyMap.Add(20, Keys.D4);        greenMap.Add(20, "");       orangeMap.Add(20, "");
+                    keyMap.Add(19, Keys.D5);        greenMap.Add(19, "");       orangeMap.Add(19, "");
+                    keyMap.Add(18, Keys.D6);        greenMap.Add(18, "");       orangeMap.Add(18, "");
+                    keyMap.Add(17, Keys.D7);        greenMap.Add(17, "");       orangeMap.Add(17, "");
+                    keyMap.Add(103, Keys.D8);       greenMap.Add(103, "");      orangeMap.Add(103, "");
+                    keyMap.Add(102, Keys.D9);       greenMap.Add(102, "");      orangeMap.Add(102, "");
+                    keyMap.Add(101, Keys.D0);       greenMap.Add(101, "");      orangeMap.Add(101, "");
+
+                    keyMap.Add(39, Keys.A);         greenMap.Add(39, "à");      orangeMap.Add(39, "&");
+                    keyMap.Add(38, Keys.Z);         greenMap.Add(38, "æ");      orangeMap.Add(38, "{~}");
+                    keyMap.Add(37, Keys.E);         greenMap.Add(37, "€");      orangeMap.Add(37, "\"");
+                    keyMap.Add(36, Keys.R);         greenMap.Add(36, "é");      orangeMap.Add(36, "$");
+                    keyMap.Add(35, Keys.T);         greenMap.Add(35, "#");      orangeMap.Add(35, "{(}");
+                    keyMap.Add(34, Keys.Y);         greenMap.Add(34, "ý");      orangeMap.Add(34, "-");
+                    keyMap.Add(33, Keys.U);         greenMap.Add(33, "ù");      orangeMap.Add(33, "`");
+                    keyMap.Add(118, Keys.I);        greenMap.Add(118, "ì");     orangeMap.Add(118, "_");
+                    keyMap.Add(117, Keys.O);        greenMap.Add(117, "œ");     orangeMap.Add(117, "@");
+                    keyMap.Add(100, Keys.P);        greenMap.Add(100, "ó");     orangeMap.Add(100, "{)}");
+
+                    keyMap.Add(55, Keys.Q);         greenMap.Add(55, "å");      orangeMap.Add(55, "☺");
+                    keyMap.Add(54, Keys.S);         greenMap.Add(54, "š");      orangeMap.Add(54, "«");
+                    keyMap.Add(53, Keys.D);         greenMap.Add(53, "ð");      orangeMap.Add(53, "»");
+                    keyMap.Add(52, Keys.F);         greenMap.Add(52, "Þ");      orangeMap.Add(52, "{{}");
+                    keyMap.Add(51, Keys.G);         greenMap.Add(51, "¨");      orangeMap.Add(51, "¥");
+                    keyMap.Add(50, Keys.H);         greenMap.Add(50, "|");      orangeMap.Add(50, "ø");
+                    keyMap.Add(49, Keys.J);         greenMap.Add(49, "µ");      orangeMap.Add(49, "¨");
+                    keyMap.Add(119, Keys.K);        greenMap.Add(119, "/");     orangeMap.Add(119, "\\");
+                    keyMap.Add(114, Keys.L);        greenMap.Add(114, "$");     orangeMap.Add(114, "£");
+                    keyMap.Add(98, Keys.M);         greenMap.Add(98, "*");      orangeMap.Add(98, "{^}");
+
+                    keyMap.Add(70, Keys.W);         greenMap.Add(70, "¡");      orangeMap.Add(70, "<");
+                    keyMap.Add(69, Keys.X);         greenMap.Add(69, "¿");      orangeMap.Add(69, ">");
+                    keyMap.Add(68, Keys.C);         greenMap.Add(68, "ç");      orangeMap.Add(68, "{[}");
+                    keyMap.Add(67, Keys.V);         greenMap.Add(67, "=");      orangeMap.Add(67, "{]}");
+                    keyMap.Add(66, Keys.B);         greenMap.Add(66, "{+}");    orangeMap.Add(66, "{%}");
+                    keyMap.Add(65, Keys.N);         greenMap.Add(65, "?");      orangeMap.Add(65, "ñ");
+                    keyMap.Add(82, Keys.Oemcomma);  greenMap.Add(82, "!");      orangeMap.Add(82, "'");
+                    keyMap.Add(83, Keys.OemPeriod); greenMap.Add(83, ":");      orangeMap.Add(83, ";");
+                    keyMap.Add(99, Keys.Enter);     greenMap.Add(99, "");       orangeMap.Add(99, "");
+
+                    keyMap.Add(85, Keys.Left);      greenMap.Add(85, "");       orangeMap.Add(85, "");
+                    keyMap.Add(84, Keys.Space);     greenMap.Add(84, "");       orangeMap.Add(84, "");
+                    keyMap.Add(81, Keys.Right);     greenMap.Add(81, "");       orangeMap.Add(81, "");
+                    keyMap.Add(113, Keys.Back);     greenMap.Add(113, "");      orangeMap.Add(113, "");
                     break;
 
                 default:
@@ -199,12 +216,14 @@ namespace Xbox360WirelessChatpad
                     parentWindow.chatpadInitNeeded = true;
                 else if (dataPacket[25] == 0x04)
                 {
-                    // This data represents the LED status, store them for later use
-                    chatpadLED["Green"] = (dataPacket[26] & 0x08) > 0;
-                    chatpadLED["Orange"] = (dataPacket[26] & 0x10) > 0;
-                    chatpadLED["Messenger"] = (dataPacket[26] & 0x01) > 0;
-                    chatpadLED["Capslock"] = (dataPacket[26] & 0x20) > 0;
-                    chatpadLED["Backlight"] = (dataPacket[26] & 0x80) > 0;
+                    // This data represents the LED status, no need for these.
+                    // Note: This is commented out because we don't need them but the code
+                    // is a good reference of how to parse the data
+                    //      Green = (dataPacket[26] & 0x08) > 0;
+                    //      Orange = (dataPacket[26] & 0x10) > 0;
+                    //      Messenger = (dataPacket[26] & 0x01) > 0;
+                    //      Capslock = (dataPacket[26] & 0x20) > 0;
+                    //      Backlight = (dataPacket[26] & 0x80) > 0;
                 }
                 else
                     Trace.WriteLine("WARNING: Unknown Chatpad Status Data.");
@@ -212,15 +231,15 @@ namespace Xbox360WirelessChatpad
             else if (dataPacket[24] == 0x00)
             {
                 // This data represents a key-press event
-                // Check if any keys or modifiers have changed since the last dataPacket
+                // Check if anything has changed since the last dataPacket
                 bool dataChanged = false;
                 if (dataPacketLast != null)
                 {
                     if (dataPacketLast[0] != dataPacket[25])
                         dataChanged = true;
-                    if (dataPacketLast[1] != dataPacket[26])
+                    else if (dataPacketLast[1] != dataPacket[26])
                         dataChanged = true;
-                    if (dataPacketLast[2] != dataPacket[27])
+                    else if (dataPacketLast[2] != dataPacket[27])
                         dataChanged = true;
                 }
                 else
@@ -239,78 +258,125 @@ namespace Xbox360WirelessChatpad
                     chatpadMod["Shift"] = (dataPacket[25] & 0x01) > 0;
                     chatpadMod["Messenger"] = (dataPacket[25] & 0x08) > 0;
 
-                    // Special Handling if Shift and Orange Modifer, Toggle Capslock Modifier
+                    // Toggle Capslock Modifier based on Orange and Shift Modifiers
                     if (chatpadMod["Orange"] && chatpadMod["Shift"])
                         chatpadMod["Capslock"] = !chatpadMod["Capslock"];
 
-                    // Set LED for Capslock Button based on Modifier
+                    // Set LEDs based on Modifiers
+                    if (chatpadMod["Green"])
+                        parentWindow.sendData(parentWindow.deviceCommands["Green_On"]);
+                    else
+                        parentWindow.sendData(parentWindow.deviceCommands["Green_Off"]);
+
+                    if (chatpadMod["Orange"])
+                        parentWindow.sendData(parentWindow.deviceCommands["Orange_On"]);
+                    else
+                        parentWindow.sendData(parentWindow.deviceCommands["Orange_Off"]);
+
+                    if (chatpadMod["Messenger"])
+                        parentWindow.sendData(parentWindow.deviceCommands["Messenger_On"]);
+                    else
+                        parentWindow.sendData(parentWindow.deviceCommands["Messenger_Off"]);
+
                     if (chatpadMod["Capslock"])
                         parentWindow.sendData(parentWindow.deviceCommands["Capslock_On"]);
                     else
                         parentWindow.sendData(parentWindow.deviceCommands["Capslock_Off"]);
 
-                    // Record the two different possible keys that could be held down
-                    byte key1 = dataPacket[26];
-                    byte key2 = dataPacket[27];
+                    // Set the Upper-Case flag and Shift Key status based on the
+                    // XOR of Shift and Capslock Modifiers.
+                    flagUpperCase = chatpadMod["Shift"] ^ chatpadMod["Capslock"];
+                    if (flagUpperCase)
+                        Keyboard.KeyDown(Keys.LShiftKey);
+                    else
+                        Keyboard.KeyUp(Keys.LShiftKey);
 
-                    if (key1 != 0 && !chatpadKeysHeld.Contains(key1))
+                    // Set the Tab Key status based on the Messenger Modifier.
+                    if (chatpadMod["Messenger"])
+                        Keyboard.KeyDown(Keys.Tab);
+                    else
+                        Keyboard.KeyUp(Keys.Tab);
+
+                    // Duplicates the Alt-Tab functionality with the Green and Orange
+                    // Modifiers. Orange is Alt, Green is Tab
+                    if (chatpadMod["Orange"])
                     {
-                        // If key 1 is non-zero and was not previously being held down,
-                        // record that is now being held
-                        chatpadKeysHeld.Add(key1);
-
-                        // Process the keystroke for the character associated with the key
-                        ProcessKeystroke(GetChatPadKeyValue(key1, chatpadMod["Orange"], chatpadMod["Green"]));
+                        if (chatpadMod["Green"])
+                        {
+                            if (altTabActive)
+                                Keyboard.KeyPress(Keys.Tab);
+                            else
+                            {
+                                altTabActive = true;
+                                Keyboard.KeyDown(Keys.LMenu);
+                                Keyboard.KeyPress(Keys.Tab);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (altTabActive)
+                        {
+                            altTabActive = false;
+                            Keyboard.KeyUp(Keys.LMenu);
+                        }
                     }
 
-                    if (key2 != 0 && !chatpadKeysHeld.Contains(key2))
-                    {
-                        // If key 2 is non-zero and was not previously being held down,
-                        // record that is now being held
-                        chatpadKeysHeld.Add(key2);
+                    // Process the two different possible keys that could be held down
+                    ProcessKeypress(dataPacket[26]);
+                    ProcessKeypress(dataPacket[27]);
 
-                        // Process the keystroke for the character associated with the key
-                        ProcessKeystroke(GetChatPadKeyValue(key2, chatpadMod["Orange"], chatpadMod["Green"]));
-                    }
-
-                    // Remove the keys from the list of held keys that are not being held
+                    // Compile the list of keys that were once held but no longer being held
+                    // For each one, send the KeyUp command if it was down and remove from the list.
                     List<byte> keysToRemove = new List<byte>();
                     foreach (var key in chatpadKeysHeld)
-                        if (key != key1 && key != key2)
+                        if (key != dataPacket[26] && key != dataPacket[27])
                             keysToRemove.Add(key);
                     foreach (var key in keysToRemove)
+                    {
+                        if (keyboardKeysDown.Contains(keyMap[key]))
+                        {
+                            keyboardKeysDown.Remove(keyMap[key]);
+                            Keyboard.KeyUp(keyMap[key]);
+                        }
                         chatpadKeysHeld.Remove(key);
+                    }
                 }
             }
             else
                 Trace.WriteLine("WARNING: Unknown Chatpad Data.");
         }
 
-        private string GetChatPadKeyValue(int value, bool orangeModifer, bool greenModifer)
+        private void ProcessKeypress(byte key)
         {
-            // Returns the String associated with the value supplied
-            if (orangeModifer)
-                return keyMap[value][2];
-            else if (greenModifer)
-                return keyMap[value][1];
-            else
-                return keyMap[value][0];
-        }
+            if (key != 0 && !chatpadKeysHeld.Contains(key))
+            {
+                // If key is non-zero and was not previously being held down,
+                // record that is now being held
+                chatpadKeysHeld.Add(key);
 
-        private void ProcessKeystroke(string key)
-        {
-            // If "CapsLock" is active and "Shift" is active, send the key as lowercase
-            // If "CapsLock" is active and "Shift" is inactive, send the key as uppercase
-            // If "CapsLock" is inactive and "Shift" is active, send the key as uppercase
-            // If "CapsLock" is inactive and "Shift" is inactive, send the key as lowercase
-            if (chatpadMod["Capslock"] && chatpadMod["Shift"])
-                SendKeys.SendWait(key);
-            else if (chatpadMod["Capslock"] && !chatpadMod["Shift"])
-                SendKeys.SendWait(key.ToUpper());
-            else if (!chatpadMod["Capslock"] && chatpadMod["Shift"])
-                SendKeys.SendWait(key.ToUpper());
-            else
-                SendKeys.SendWait(key);
+                // Process the keystroke for the character associated with the key
+                // depending on the status of Orange and Green modifiers.
+                if (chatpadMod["Orange"])
+                {
+                    if (flagUpperCase)
+                        SendKeys.SendWait(orangeMap[key].ToUpper());
+                    else
+                        SendKeys.SendWait(orangeMap[key]);
+                }
+                else if (chatpadMod["Green"])
+                {
+                    if (flagUpperCase)
+                        SendKeys.SendWait(greenMap[key].ToUpper());
+                    else
+                        SendKeys.SendWait(greenMap[key]);
+                }
+                else
+                {
+                    keyboardKeysDown.Add(keyMap[key]);
+                    Keyboard.KeyDown(keyMap[key]);
+                }
+            }
         }
     }
 }
