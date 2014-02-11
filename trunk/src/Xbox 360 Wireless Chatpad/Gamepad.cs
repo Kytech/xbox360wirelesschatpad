@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 
 using vJoyInterfaceWrap;
+using InputManager;
 
 namespace Xbox360WirelessChatpad
 {
@@ -17,6 +18,14 @@ namespace Xbox360WirelessChatpad
 
         // Global FFXIV Flag for use by data packet processing
         public bool ffxivFlag;
+
+        // Global Mouse Mode Flag for use by data packet processing
+        public bool mouseModeFlag = true;
+
+        // Relative Mouse Data based on Joystick location. This will
+        // be used by a higher level timer function to continually move
+        // the mouse.
+        public int relMouseX, relMouseY;
 
         // Contains the mapping of Gamepad buttons
         Dictionary<String, uint> buttonMap;
@@ -189,17 +198,39 @@ namespace Xbox360WirelessChatpad
             vJoystick.SetBtn((dataPacket[6] & 0x20) > 0, 1, buttonMap["Back"]);
             vJoystick.SetBtn((dataPacket[6] & 0x40) > 0, 1, buttonMap["LStick"]);
             vJoystick.SetBtn((dataPacket[6] & 0x80) > 0, 1, buttonMap["RStick"]);
-            vJoystick.SetBtn((dataPacket[7] & 0x01) > 0, 1, buttonMap["LBump"]);
-            vJoystick.SetBtn((dataPacket[7] & 0x02) > 0, 1, buttonMap["RBump"]);
             vJoystick.SetBtn((dataPacket[7] & 0x04) > 0, 1, buttonMap["Guide"]);
+
+            // If in mouse mode use bumpers as mouse clicks; otherwise
+            // set joystick buttons like above.
+            if (mouseModeFlag)
+            {
+                //// Left Bumper
+                //if ((dataPacket[7] & 0x01) > 0)
+                //    Mouse.ButtonDown(Mouse.MouseKeys.Right);
+                //else
+                //    Mouse.ButtonUp(Mouse.MouseKeys.Right);
+
+                //// Right Bumper
+                //if ((dataPacket[7] & 0x02) > 0)
+                //    Mouse.ButtonDown(Mouse.MouseKeys.Left);
+                //else
+                //    Mouse.ButtonUp(Mouse.MouseKeys.Left);
+            }
+            else
+            {
+                vJoystick.SetBtn((dataPacket[7] & 0x01) > 0, 1, buttonMap["LBump"]);
+                vJoystick.SetBtn((dataPacket[7] & 0x02) > 0, 1, buttonMap["RBump"]);
+            }
+            
 
             // ---------------
             // Axis Processing
             // ---------------
 
             // Record the left stick X and Y values
+            // Note: For some reason, the left stick Y axis is inverted, multiplied by -1 to fix
             short leftX = (short)(dataPacket[10] | (dataPacket[11] << 8));
-            short leftY = (short)(dataPacket[12] | (dataPacket[13] << 8));
+            short leftY = (short)-(dataPacket[12] | (dataPacket[13] << 8));
 
             // Filter the left stick X and Y values based on the circular deadzone
             double leftDistance = Math.Sqrt((double)(leftX * leftX) + (double)(leftY * leftY));
@@ -216,10 +247,31 @@ namespace Xbox360WirelessChatpad
                     leftY = 0;
             }
 
-            // Set the left stick X and Y values
-            // Note: For some reason, the left stick Y axis is inverted, multiplied by -1 to fix
-            vJoystick.SetAxis(leftX, 1, axisMap["LX"]);
-            vJoystick.SetAxis(-leftY, 1, axisMap["LY"]);
+            // If in mouse mode record the relative mouse movement data, otherwise
+            // set the left stick X and Y values
+            if (mouseModeFlag)
+            {
+                int relMouseDist = 5;
+
+                if (leftX > 0)
+                    relMouseX = relMouseDist;
+                else if (leftX < 0)
+                    relMouseX = -relMouseDist;
+                else
+                    relMouseX = 0;
+
+                if (leftY > 0)
+                    relMouseY = relMouseDist;
+                else if (leftY < 0)
+                    relMouseY = -relMouseDist;
+                else
+                    relMouseY = 0;
+            }
+            else
+            {
+                vJoystick.SetAxis(leftX, 1, axisMap["LX"]);
+                vJoystick.SetAxis(-leftY, 1, axisMap["LY"]);
+            }
 
             // If we're in FFXIV Mode, the Left and Right Triggers are buttons and the R and Z
             // axes are used in a very peculiar manner.

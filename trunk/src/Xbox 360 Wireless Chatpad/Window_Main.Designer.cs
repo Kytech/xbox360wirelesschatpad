@@ -48,6 +48,7 @@
             this.qwertzButton = new System.Windows.Forms.RadioButton();
             this.qwertyButton = new System.Windows.Forms.RadioButton();
             this.ffxivFlag = new System.Windows.Forms.CheckBox();
+            this.mouseModeFlag = new System.Windows.Forms.CheckBox();
             this.trayIconMenu.SuspendLayout();
             this.deadzoneGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.rightDeadzone)).BeginInit();
@@ -57,12 +58,13 @@
             // 
             // appLogTextbox
             // 
-            this.appLogTextbox.Location = new System.Drawing.Point(132, 12);
+            this.appLogTextbox.Location = new System.Drawing.Point(176, 15);
+            this.appLogTextbox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.appLogTextbox.Multiline = true;
             this.appLogTextbox.Name = "appLogTextbox";
             this.appLogTextbox.ReadOnly = true;
             this.appLogTextbox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.appLogTextbox.Size = new System.Drawing.Size(310, 136);
+            this.appLogTextbox.Size = new System.Drawing.Size(412, 166);
             this.appLogTextbox.TabIndex = 0;
             this.appLogTextbox.TextChanged += new System.EventHandler(this.appLogTextbox_TextChanged);
             // 
@@ -79,20 +81,21 @@
             this.trayIconMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exitMenuItem});
             this.trayIconMenu.Name = "trayIconMenu";
-            this.trayIconMenu.Size = new System.Drawing.Size(104, 26);
+            this.trayIconMenu.Size = new System.Drawing.Size(103, 28);
             // 
             // exitMenuItem
             // 
             this.exitMenuItem.Name = "exitMenuItem";
-            this.exitMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.exitMenuItem.Size = new System.Drawing.Size(102, 24);
             this.exitMenuItem.Text = "Exit";
             this.exitMenuItem.Click += new System.EventHandler(this.exitMenuItem_Click);
             // 
             // connectButton
             // 
-            this.connectButton.Location = new System.Drawing.Point(12, 132);
+            this.connectButton.Location = new System.Drawing.Point(16, 188);
+            this.connectButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.connectButton.Name = "connectButton";
-            this.connectButton.Size = new System.Drawing.Size(114, 41);
+            this.connectButton.Size = new System.Drawing.Size(152, 24);
             this.connectButton.TabIndex = 1;
             this.connectButton.Text = "Connect Controller";
             this.connectButton.UseVisualStyleBackColor = true;
@@ -102,10 +105,10 @@
             // 
             this.chatpadTextBox.Enabled = false;
             this.chatpadTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chatpadTextBox.Location = new System.Drawing.Point(132, 153);
-            this.chatpadTextBox.Margin = new System.Windows.Forms.Padding(2);
+            this.chatpadTextBox.Location = new System.Drawing.Point(176, 188);
+            this.chatpadTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.chatpadTextBox.Name = "chatpadTextBox";
-            this.chatpadTextBox.Size = new System.Drawing.Size(311, 20);
+            this.chatpadTextBox.Size = new System.Drawing.Size(413, 23);
             this.chatpadTextBox.TabIndex = 3;
             this.chatpadTextBox.Text = "-Test Chatpad Here-";
             this.chatpadTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -120,64 +123,72 @@
             this.deadzoneGroupBox.Controls.Add(this.leftDeadzone);
             this.deadzoneGroupBox.Controls.Add(this.leftDeadzoneLabel);
             this.deadzoneGroupBox.Enabled = false;
-            this.deadzoneGroupBox.Location = new System.Drawing.Point(448, 12);
+            this.deadzoneGroupBox.Location = new System.Drawing.Point(597, 15);
+            this.deadzoneGroupBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.deadzoneGroupBox.Name = "deadzoneGroupBox";
-            this.deadzoneGroupBox.Size = new System.Drawing.Size(147, 161);
+            this.deadzoneGroupBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.deadzoneGroupBox.Size = new System.Drawing.Size(196, 198);
             this.deadzoneGroupBox.TabIndex = 4;
             this.deadzoneGroupBox.TabStop = false;
             this.deadzoneGroupBox.Text = "Analog Deadzones";
             // 
             // rightDeadzonePercentLabel
             // 
-            this.rightDeadzonePercentLabel.Location = new System.Drawing.Point(111, 90);
+            this.rightDeadzonePercentLabel.Location = new System.Drawing.Point(148, 111);
+            this.rightDeadzonePercentLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.rightDeadzonePercentLabel.Name = "rightDeadzonePercentLabel";
-            this.rightDeadzonePercentLabel.Size = new System.Drawing.Size(30, 13);
+            this.rightDeadzonePercentLabel.Size = new System.Drawing.Size(40, 16);
             this.rightDeadzonePercentLabel.TabIndex = 5;
             this.rightDeadzonePercentLabel.Text = "0%";
             this.rightDeadzonePercentLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // leftDeadzonePercentLabel
             // 
-            this.leftDeadzonePercentLabel.Location = new System.Drawing.Point(111, 21);
+            this.leftDeadzonePercentLabel.Location = new System.Drawing.Point(148, 26);
+            this.leftDeadzonePercentLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.leftDeadzonePercentLabel.Name = "leftDeadzonePercentLabel";
-            this.leftDeadzonePercentLabel.Size = new System.Drawing.Size(30, 13);
+            this.leftDeadzonePercentLabel.Size = new System.Drawing.Size(40, 16);
             this.leftDeadzonePercentLabel.TabIndex = 4;
             this.leftDeadzonePercentLabel.Text = "0%";
             this.leftDeadzonePercentLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // rightDeadzone
             // 
-            this.rightDeadzone.Location = new System.Drawing.Point(7, 106);
+            this.rightDeadzone.Location = new System.Drawing.Point(9, 130);
+            this.rightDeadzone.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.rightDeadzone.Maximum = 30;
             this.rightDeadzone.Name = "rightDeadzone";
-            this.rightDeadzone.Size = new System.Drawing.Size(134, 45);
+            this.rightDeadzone.Size = new System.Drawing.Size(179, 56);
             this.rightDeadzone.TabIndex = 3;
             this.rightDeadzone.ValueChanged += new System.EventHandler(this.rightDeadzone_ValueChanged);
             // 
             // rightDeadzoneLabel
             // 
             this.rightDeadzoneLabel.AutoSize = true;
-            this.rightDeadzoneLabel.Location = new System.Drawing.Point(6, 90);
+            this.rightDeadzoneLabel.Location = new System.Drawing.Point(8, 111);
+            this.rightDeadzoneLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.rightDeadzoneLabel.Name = "rightDeadzoneLabel";
-            this.rightDeadzoneLabel.Size = new System.Drawing.Size(95, 13);
+            this.rightDeadzoneLabel.Size = new System.Drawing.Size(123, 17);
             this.rightDeadzoneLabel.TabIndex = 2;
             this.rightDeadzoneLabel.Text = "Right Analog Stick";
             // 
             // leftDeadzone
             // 
-            this.leftDeadzone.Location = new System.Drawing.Point(7, 37);
+            this.leftDeadzone.Location = new System.Drawing.Point(9, 46);
+            this.leftDeadzone.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.leftDeadzone.Maximum = 30;
             this.leftDeadzone.Name = "leftDeadzone";
-            this.leftDeadzone.Size = new System.Drawing.Size(134, 45);
+            this.leftDeadzone.Size = new System.Drawing.Size(179, 56);
             this.leftDeadzone.TabIndex = 1;
             this.leftDeadzone.ValueChanged += new System.EventHandler(this.leftDeadzone_ValueChanged);
             // 
             // leftDeadzoneLabel
             // 
             this.leftDeadzoneLabel.AutoSize = true;
-            this.leftDeadzoneLabel.Location = new System.Drawing.Point(6, 21);
+            this.leftDeadzoneLabel.Location = new System.Drawing.Point(8, 26);
+            this.leftDeadzoneLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.leftDeadzoneLabel.Name = "leftDeadzoneLabel";
-            this.leftDeadzoneLabel.Size = new System.Drawing.Size(88, 13);
+            this.leftDeadzoneLabel.Size = new System.Drawing.Size(114, 17);
             this.leftDeadzoneLabel.TabIndex = 0;
             this.leftDeadzoneLabel.Text = "Left Analog Stick";
             // 
@@ -186,9 +197,11 @@
             this.keyboardTypeGroupBox.Controls.Add(this.azertyButton);
             this.keyboardTypeGroupBox.Controls.Add(this.qwertzButton);
             this.keyboardTypeGroupBox.Controls.Add(this.qwertyButton);
-            this.keyboardTypeGroupBox.Location = new System.Drawing.Point(12, 12);
+            this.keyboardTypeGroupBox.Location = new System.Drawing.Point(16, 15);
+            this.keyboardTypeGroupBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.keyboardTypeGroupBox.Name = "keyboardTypeGroupBox";
-            this.keyboardTypeGroupBox.Size = new System.Drawing.Size(114, 91);
+            this.keyboardTypeGroupBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.keyboardTypeGroupBox.Size = new System.Drawing.Size(152, 112);
             this.keyboardTypeGroupBox.TabIndex = 5;
             this.keyboardTypeGroupBox.TabStop = false;
             this.keyboardTypeGroupBox.Text = "Keyboard Type";
@@ -196,9 +209,10 @@
             // azertyButton
             // 
             this.azertyButton.AutoSize = true;
-            this.azertyButton.Location = new System.Drawing.Point(6, 65);
+            this.azertyButton.Location = new System.Drawing.Point(8, 80);
+            this.azertyButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.azertyButton.Name = "azertyButton";
-            this.azertyButton.Size = new System.Drawing.Size(83, 17);
+            this.azertyButton.Size = new System.Drawing.Size(104, 21);
             this.azertyButton.TabIndex = 2;
             this.azertyButton.TabStop = true;
             this.azertyButton.Text = "A Z E R T Y";
@@ -208,9 +222,10 @@
             // qwertzButton
             // 
             this.qwertzButton.AutoSize = true;
-            this.qwertzButton.Location = new System.Drawing.Point(6, 41);
+            this.qwertzButton.Location = new System.Drawing.Point(8, 50);
+            this.qwertzButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.qwertzButton.Name = "qwertzButton";
-            this.qwertzButton.Size = new System.Drawing.Size(88, 17);
+            this.qwertzButton.Size = new System.Drawing.Size(110, 21);
             this.qwertzButton.TabIndex = 1;
             this.qwertzButton.TabStop = true;
             this.qwertzButton.Text = "Q W E R T Z";
@@ -220,9 +235,10 @@
             // qwertyButton
             // 
             this.qwertyButton.AutoSize = true;
-            this.qwertyButton.Location = new System.Drawing.Point(6, 17);
+            this.qwertyButton.Location = new System.Drawing.Point(8, 21);
+            this.qwertyButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.qwertyButton.Name = "qwertyButton";
-            this.qwertyButton.Size = new System.Drawing.Size(88, 17);
+            this.qwertyButton.Size = new System.Drawing.Size(110, 21);
             this.qwertyButton.TabIndex = 0;
             this.qwertyButton.TabStop = true;
             this.qwertyButton.Text = "Q W E R T Y";
@@ -232,18 +248,31 @@
             // ffxivFlag
             // 
             this.ffxivFlag.AutoSize = true;
-            this.ffxivFlag.Location = new System.Drawing.Point(18, 109);
+            this.ffxivFlag.Location = new System.Drawing.Point(24, 159);
+            this.ffxivFlag.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ffxivFlag.Name = "ffxivFlag";
-            this.ffxivFlag.Size = new System.Drawing.Size(108, 17);
+            this.ffxivFlag.Size = new System.Drawing.Size(139, 21);
             this.ffxivFlag.TabIndex = 6;
             this.ffxivFlag.Text = "Final Fantasy XIV";
             this.ffxivFlag.UseVisualStyleBackColor = true;
             // 
+            // mouseModeFlag
+            // 
+            this.mouseModeFlag.AutoSize = true;
+            this.mouseModeFlag.Location = new System.Drawing.Point(24, 130);
+            this.mouseModeFlag.Margin = new System.Windows.Forms.Padding(4);
+            this.mouseModeFlag.Name = "mouseModeFlag";
+            this.mouseModeFlag.Size = new System.Drawing.Size(111, 21);
+            this.mouseModeFlag.TabIndex = 7;
+            this.mouseModeFlag.Text = "Mouse Mode";
+            this.mouseModeFlag.UseVisualStyleBackColor = true;
+            // 
             // Window_Main
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(608, 184);
+            this.ClientSize = new System.Drawing.Size(811, 226);
+            this.Controls.Add(this.mouseModeFlag);
             this.Controls.Add(this.ffxivFlag);
             this.Controls.Add(this.keyboardTypeGroupBox);
             this.Controls.Add(this.deadzoneGroupBox);
@@ -251,6 +280,7 @@
             this.Controls.Add(this.appLogTextbox);
             this.Controls.Add(this.chatpadTextBox);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "Window_Main";
             this.Text = "Xbox 360 Wireless Chatpad";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Window_Main_FormClosing);
@@ -288,6 +318,7 @@
         private System.Windows.Forms.RadioButton qwertzButton;
         private System.Windows.Forms.RadioButton qwertyButton;
         private System.Windows.Forms.CheckBox ffxivFlag;
+        private System.Windows.Forms.CheckBox mouseModeFlag;
     }
 }
 

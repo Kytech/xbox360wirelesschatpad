@@ -35,6 +35,9 @@ namespace Xbox360WirelessChatpad
         // Keep-Alive Thread, this will execute keep-alive commands periodically
         private System.Threading.Thread keepAliveThread = null;
 
+        // MouseMode Thread, this will execute to periodically move the mouse cursor
+        private System.Threading.Thread mouseModeThread = null;
+
         // Keep-Alive Toggle, this will determine which keep-alive command will be sent
         // during each execution cycle, True = Command 1, False = Commands 2a and 2b
         private bool keepAliveToggle = false;
@@ -120,11 +123,18 @@ namespace Xbox360WirelessChatpad
                 if (WirelessReceiverAttached)
                     sendData(deviceCommands["DisableController"]);
 
-                // Cleans up the timer
+                // Cleans up the keepAlive timer
                 if (keepAliveThread != null)
                 {
                     keepAliveThread.Abort();
                     keepAliveThread = null;
+                }
+
+                // Clean up the mouseMode timer
+                if (mouseModeThread != null) ;
+                {
+                    mouseModeThread.Abort();
+                    mouseModeThread = null;
                 }
 
                 // Cleans up the Wireless Receiver Data
@@ -346,6 +356,9 @@ namespace Xbox360WirelessChatpad
                         keepAliveThread.IsBackground = true;
                         keepAliveThread.Start();
 
+                        // TEMP DEBUG
+                        mouseModeToggle(true);
+
                         // Reports the Controller is Connected
                         Trace.WriteLine("Xbox 360 Wireless Controller 1 Connected.\r\n");
 
@@ -475,6 +488,30 @@ namespace Xbox360WirelessChatpad
             catch
             {
                 Trace.WriteLine("ERROR: Problem With Keep-Alive Commands.");
+            }
+        }
+
+        private void mouseModeToggle(bool mouseModeOn)
+        {
+            if (mouseModeOn)
+            {
+                mouseModeThread = new System.Threading.Thread(new System.Threading.ThreadStart(mouseModeTick));
+                mouseModeThread.IsBackground = true;
+                mouseModeThread.Start();
+            }
+            else
+            {
+                mouseModeThread.Abort();
+                mouseModeThread = null;
+            }
+        }
+
+        private void mouseModeTick()
+        {
+            while (true)
+            {
+                InputManager.Mouse.MoveRelative(xboxGamepad.relMouseX, xboxGamepad.relMouseY);
+                System.Threading.Thread.Sleep(100);
             }
         }
     }
