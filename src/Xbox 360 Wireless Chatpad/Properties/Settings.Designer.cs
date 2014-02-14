@@ -70,5 +70,17 @@ namespace Xbox360WirelessChatpad.Properties {
                 this["ffxivFlag"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Button")]
+        public string triggerType {
+            get {
+                return ((string)(this["triggerType"]));
+            }
+            set {
+                this["triggerType"] = value;
+            }
+        }
     }
 }

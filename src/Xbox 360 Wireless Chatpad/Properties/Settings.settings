@@ -14,5 +14,8 @@
     <Setting Name="ffxivFlag" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="triggerType" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Button</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
