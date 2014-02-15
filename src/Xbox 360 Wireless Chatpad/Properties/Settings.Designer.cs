@@ -25,61 +25,193 @@ namespace Xbox360WirelessChatpad.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("QWERTY")]
-        public string keyboardType {
+        [global::System.Configuration.DefaultSettingValueAttribute("Q W E R T Y")]
+        public string ctrl1KeyboardType {
             get {
-                return ((string)(this["keyboardType"]));
+                return ((string)(this["ctrl1KeyboardType"]));
             }
             set {
-                this["keyboardType"] = value;
+                this["ctrl1KeyboardType"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("18")]
-        public int leftDeadzone {
+        public int ctrl1DeadzoneL {
             get {
-                return ((int)(this["leftDeadzone"]));
+                return ((int)(this["ctrl1DeadzoneL"]));
             }
             set {
-                this["leftDeadzone"] = value;
+                this["ctrl1DeadzoneL"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("18")]
-        public int rightDeadzone {
+        public int ctrl1DeadzoneR {
             get {
-                return ((int)(this["rightDeadzone"]));
+                return ((int)(this["ctrl1DeadzoneR"]));
             }
             set {
-                this["rightDeadzone"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool ffxivFlag {
-            get {
-                return ((bool)(this["ffxivFlag"]));
-            }
-            set {
-                this["ffxivFlag"] = value;
+                this["ctrl1DeadzoneR"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Button")]
-        public string triggerType {
+        public string ctrl1TriggerType {
             get {
-                return ((string)(this["triggerType"]));
+                return ((string)(this["ctrl1TriggerType"]));
             }
             set {
-                this["triggerType"] = value;
+                this["ctrl1TriggerType"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Q W E R T Y")]
+        public string ctrl2KeyboardType {
+            get {
+                return ((string)(this["ctrl2KeyboardType"]));
+            }
+            set {
+                this["ctrl2KeyboardType"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("18")]
+        public int ctrl2DeadzoneL {
+            get {
+                return ((int)(this["ctrl2DeadzoneL"]));
+            }
+            set {
+                this["ctrl2DeadzoneL"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("18")]
+        public int ctrl2DeadzoneR {
+            get {
+                return ((int)(this["ctrl2DeadzoneR"]));
+            }
+            set {
+                this["ctrl2DeadzoneR"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Button")]
+        public string ctrl2TriggerType {
+            get {
+                return ((string)(this["ctrl2TriggerType"]));
+            }
+            set {
+                this["ctrl2TriggerType"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Q W E R T Y")]
+        public string ctrl3KeyboardType {
+            get {
+                return ((string)(this["ctrl3KeyboardType"]));
+            }
+            set {
+                this["ctrl3KeyboardType"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("18")]
+        public int ctrl3DeadzoneL {
+            get {
+                return ((int)(this["ctrl3DeadzoneL"]));
+            }
+            set {
+                this["ctrl3DeadzoneL"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("18")]
+        public int ctrl3DeadzoneR {
+            get {
+                return ((int)(this["ctrl3DeadzoneR"]));
+            }
+            set {
+                this["ctrl3DeadzoneR"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Button")]
+        public string ctrl3TriggerType {
+            get {
+                return ((string)(this["ctrl3TriggerType"]));
+            }
+            set {
+                this["ctrl3TriggerType"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Q W E R T Y")]
+        public string ctrl4KeyboardType {
+            get {
+                return ((string)(this["ctrl4KeyboardType"]));
+            }
+            set {
+                this["ctrl4KeyboardType"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("18")]
+        public int ctrl4DeadzoneL {
+            get {
+                return ((int)(this["ctrl4DeadzoneL"]));
+            }
+            set {
+                this["ctrl4DeadzoneL"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("18")]
+        public int ctrl4DeadzoneR {
+            get {
+                return ((int)(this["ctrl4DeadzoneR"]));
+            }
+            set {
+                this["ctrl4DeadzoneR"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Button")]
+        public string ctrl4TriggerType {
+            get {
+                return ((string)(this["ctrl4TriggerType"]));
+            }
+            set {
+                this["ctrl4TriggerType"] = value;
             }
         }
     }

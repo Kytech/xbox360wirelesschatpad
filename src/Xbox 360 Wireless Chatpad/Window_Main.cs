@@ -7,63 +7,167 @@ using System.Windows.Forms;
 namespace Xbox360WirelessChatpad
 {
     // Necessary to update the form items in a thread-safe manner
-    delegate void controllerDisconnectCallback();
-    delegate void controllerConnectCallback();
-    delegate void mouseModeLabelCallback(string labelText);
-    delegate void logCallback(string logMessage);
+    delegate void controllerDisconnectCallback(int ctrl);
+    delegate void controllerConnectCallback(int ctrl);
+    delegate void mouseModeLabelCallback(int ctrl, bool modeStatus);
+    delegate void logCallback(string message);
 
     public partial class Window_Main : Form
     {
         // The Xbox Wireless Receiver connected to the computer via USB
         private Receiver xboxReceiver;
 
-        // The Xbox Wireless Controller comprised of a Gamepad (Joystick and Buttons)
-        // and a Chatpad (Attached Keyboard)
-        private Controller xboxController;
+        // The Xbox Wireless Controllers. Each controller is comprised of a
+        // Gamepad (Joystick and Buttons) and a Chatpad (Attached Keyboard)
+        private Controller[] xboxControllers = new Controller[4];
 
         public Window_Main()
         {
+            // Instantiate the Controllers
+            xboxControllers[0] = new Controller(this);
+            xboxControllers[1] = new Controller(this);
+            xboxControllers[2] = new Controller(this);
+            xboxControllers[3] = new Controller(this);
+
+            // Initialize the Form Components
             InitializeComponent();
         }
 
         private void Window_Main_Load(object sender, EventArgs e)
         {
-            // Load the keyboardType configuration variable into the radio selections
-            switch (Properties.Settings.Default.keyboardType)
+            // Load Controller 1 Configuration
+            // Keyboard Type
+            xboxControllers[0].configureChatpad(Properties.Settings.Default.ctrl1KeyboardType);
+            switch (Properties.Settings.Default.ctrl1KeyboardType)
             {
-                case "QWERTY":
-                    qwertyButton.Checked = true;
+                case "Q W E RT Y":
+                    ctrl1QwertyButton.Checked = true;
                     break;
-                case "QWERTZ":
-                    qwertzButton.Checked = true;
+                case "Q W E R T Z":
+                    ctrl1QwertzButton.Checked = true;
                     break;
-                case "AZERTY":
-                    azertyButton.Checked = true;
+                case "A Z E R T Y":
+                    ctrl1AzertyButton.Checked = true;
                     break;
                 default:
                     // Use QWERTY if the configuration file has junk data
-                    qwertyButton.Checked = true;
+                    ctrl1QwertyButton.Checked = true;
                     break;
             }
 
-            // Load the ffxivFlag configuration variable into the checkbox
-            if (Properties.Settings.Default.ffxivFlag)
-                ffxivFlag.Checked = true;
+            // Trigger Type
+            xboxControllers[0].configureGamepad(Properties.Settings.Default.ctrl1TriggerType);
+            if (Properties.Settings.Default.ctrl1TriggerType == "Button")
+                ctrl1TriggerType.Checked = true;
             else
-                ffxivFlag.Checked = false;
+                ctrl1TriggerType.Checked = false;
 
-            // Instantiates the Controller and loads the keyboard and trigger configuration
-            xboxController = new Controller(this);
-            xboxController.configureChatpad(Properties.Settings.Default.keyboardType);
-            xboxController.configureGamepad(Properties.Settings.Default.triggerType);
+            // Deadzones
+            ctrl1LeftDeadzone.Value = Properties.Settings.Default.ctrl1DeadzoneL;
+            ctrl1RightDeadzone.Value = Properties.Settings.Default.ctrl1DeadzoneR;
 
-            // Instantiates the Receiver
-            xboxReceiver = new Receiver(this);
 
-            // Setup classes
-            xboxReceiver.registerClasses(xboxController);
+            // Load Controller 2 Configuration
+            // Keyboard Type
+            xboxControllers[1].configureChatpad(Properties.Settings.Default.ctrl2KeyboardType);
+            switch (Properties.Settings.Default.ctrl2KeyboardType)
+            {
+                case "Q W E RT Y":
+                    ctrl2QwertyButton.Checked = true;
+                    break;
+                case "Q W E R T Z":
+                    ctrl2QwertzButton.Checked = true;
+                    break;
+                case "A Z E R T Y":
+                    ctrl2AzertyButton.Checked = true;
+                    break;
+                default:
+                    // Use QWERTY if the configuration file has junk data
+                    ctrl2QwertyButton.Checked = true;
+                    break;
+            }
 
-            // Connect to the Wireless Receiver
+            // Trigger Type
+            xboxControllers[1].configureGamepad(Properties.Settings.Default.ctrl2TriggerType);
+            if (Properties.Settings.Default.ctrl2TriggerType == "Button")
+                ctrl2TriggerType.Checked = true;
+            else
+                ctrl2TriggerType.Checked = false;
+
+            // Deadzones
+            ctrl2LeftDeadzone.Value = Properties.Settings.Default.ctrl2DeadzoneL;
+            ctrl2RightDeadzone.Value = Properties.Settings.Default.ctrl2DeadzoneR;
+
+            // Load Controller 3 Configuration
+            // Keyboard Type
+            xboxControllers[2].configureChatpad(Properties.Settings.Default.ctrl3KeyboardType);
+            switch (Properties.Settings.Default.ctrl3KeyboardType)
+            {
+                case "Q W E RT Y":
+                    ctrl3QwertyButton.Checked = true;
+                    break;
+                case "Q W E R T Z":
+                    ctrl3QwertzButton.Checked = true;
+                    break;
+                case "A Z E R T Y":
+                    ctrl3AzertyButton.Checked = true;
+                    break;
+                default:
+                    // Use QWERTY if the configuration file has junk data
+                    ctrl3QwertyButton.Checked = true;
+                    break;
+            }
+
+            // Trigger Type
+            xboxControllers[2].configureGamepad(Properties.Settings.Default.ctrl3TriggerType);
+            if (Properties.Settings.Default.ctrl3TriggerType == "Button")
+                ctrl3TriggerType.Checked = true;
+            else
+                ctrl3TriggerType.Checked = false;
+
+            // Deadzones
+            ctrl3LeftDeadzone.Value = Properties.Settings.Default.ctrl3DeadzoneL;
+            ctrl3RightDeadzone.Value = Properties.Settings.Default.ctrl3DeadzoneR;
+
+            // Load Controller 4 Configuration
+            // Keyboard Type
+            xboxControllers[3].configureChatpad(Properties.Settings.Default.ctrl4KeyboardType);
+            switch (Properties.Settings.Default.ctrl4KeyboardType)
+            {
+                case "Q W E RT Y":
+                    ctrl4QwertyButton.Checked = true;
+                    break;
+                case "Q W E R T Z":
+                    ctrl4QwertzButton.Checked = true;
+                    break;
+                case "A Z E R T Y":
+                    ctrl4AzertyButton.Checked = true;
+                    break;
+                default:
+                    // Use QWERTY if the configuration file has junk data
+                    ctrl4QwertyButton.Checked = true;
+                    break;
+            }
+
+            // Trigger Type
+            xboxControllers[3].configureGamepad(Properties.Settings.Default.ctrl4TriggerType);
+            if (Properties.Settings.Default.ctrl4TriggerType == "Button")
+                ctrl4TriggerType.Checked = true;
+            else
+                ctrl4TriggerType.Checked = false;
+
+            // Deadzones
+            ctrl4LeftDeadzone.Value = Properties.Settings.Default.ctrl4DeadzoneL;
+            ctrl4RightDeadzone.Value = Properties.Settings.Default.ctrl4DeadzoneR;
+
+            // Register each Controller to a vJoy Joystick
+            xboxControllers[0].registerJoystick(1);
+            xboxControllers[1].registerJoystick(2);
+            xboxControllers[2].registerJoystick(3);
+            xboxControllers[3].registerJoystick(4);
+
+            // Instantiate and Connect to the Receiver
+            xboxReceiver = new Receiver(xboxControllers, this);
             xboxReceiver.connectReceiver();
         }
 
@@ -82,7 +186,6 @@ namespace Xbox360WirelessChatpad
                 xboxReceiver.killReceiver();
 
                 // Save the configuraiton file variables
-                Properties.Settings.Default.ffxivFlag = ffxivFlag.Checked;
                 Properties.Settings.Default.Save();
             }
             catch
@@ -113,13 +216,6 @@ namespace Xbox360WirelessChatpad
             appLogTextbox.Refresh();
         }
 
-        private void keyboardType_Selected(object sender, EventArgs e)
-        {
-            // Set the keyboardType setting to the selected radio button
-            if (((RadioButton)sender).Checked)
-                Properties.Settings.Default.keyboardType = ((RadioButton)sender).Text;
-        }
-
         private void chatpadTextBox_Enter(object sender, EventArgs e)
         {
             // Removes out pre-populated message in the chatpadTextBox
@@ -130,84 +226,243 @@ namespace Xbox360WirelessChatpad
             chatpadTextBox.Enter -= chatpadTextBox_Enter;
         }
 
-        private void leftDeadzone_ValueChanged(object sender, EventArgs e)
+        private void triggerType_CheckChanged(object sender, EventArgs e)
         {
-            // Set the left deadzone to slider percentage of 32767, the maximum
-            // value of an analog stick
-            xboxController.deadzoneL = (int)Math.Round(leftDeadzone.Value * 327.67);
+            // Set corresponding controller trigger type based on the check box
+            string checkBoxName = ((CheckBox)sender).Name;
 
-            // Set the left deadzone label to the new value
-            leftDeadzonePercentLabel.Text = leftDeadzone.Value.ToString() + "%";
-
-            // Set the left deadzone configuration property to the new value
-            Properties.Settings.Default.leftDeadzone = leftDeadzone.Value;
+            if (checkBoxName.Contains("1"))
+            {
+                if (((CheckBox)sender).Checked)
+                {
+                    Properties.Settings.Default.ctrl1TriggerType = "Button";
+                    xboxControllers[0].configureGamepad("Button");
+                }
+                else
+                {
+                    Properties.Settings.Default.ctrl1TriggerType = "Axis";
+                    xboxControllers[0].configureGamepad("Axis");
+                }
+            }
+            else if (checkBoxName.Contains("2"))
+            {
+                if (((CheckBox)sender).Checked)
+                {
+                    Properties.Settings.Default.ctrl2TriggerType = "Button";
+                    xboxControllers[1].configureGamepad("Button");
+                }
+                else
+                {
+                    Properties.Settings.Default.ctrl2TriggerType = "Axis";
+                    xboxControllers[1].configureGamepad("Axis");
+                }
+            }
+            else if (checkBoxName.Contains("3"))
+            {
+                if (((CheckBox)sender).Checked)
+                {
+                    Properties.Settings.Default.ctrl3TriggerType = "Button";
+                    xboxControllers[2].configureGamepad("Button");
+                }
+                else
+                {
+                    Properties.Settings.Default.ctrl3TriggerType = "Axis";
+                    xboxControllers[2].configureGamepad("Axis");
+                }
+            }
+            else
+            {
+                if (((CheckBox)sender).Checked)
+                {
+                    Properties.Settings.Default.ctrl4TriggerType = "Button";
+                    xboxControllers[3].configureGamepad("Button");
+                }
+                else
+                {
+                    Properties.Settings.Default.ctrl4TriggerType = "Axis";
+                    xboxControllers[3].configureGamepad("Axis");
+                }
+            }
         }
 
-        private void rightDeadzone_ValueChanged(object sender, EventArgs e)
+        private void keyboardType_Selected(object sender, EventArgs e)
         {
-            // Set the right deadzone to slider percentage of 32767, the maximum
-            // value of an analog stick
-            xboxController.deadzoneR = (int)Math.Round(rightDeadzone.Value * 327.67);
+            // Set the corresponding controller keyboard type based on the radio buttons
+            string radioButtonName = ((RadioButton)sender).Name;
 
-            // Set the right deadzone label to the new value
-            rightDeadzonePercentLabel.Text = rightDeadzone.Value.ToString() + "%";
-
-            // Set the right deadzone configuration property to the new value
-            Properties.Settings.Default.rightDeadzone = rightDeadzone.Value;
+            if (radioButtonName.Contains("1"))
+            {
+                if (((RadioButton)sender).Checked)
+                {
+                    Properties.Settings.Default.ctrl1KeyboardType = ((RadioButton)sender).Text;
+                    xboxControllers[0].configureChatpad(((RadioButton)sender).Text);
+                }
+            }
+            else if (radioButtonName.Contains("2"))
+            {   
+                if (((RadioButton)sender).Checked)
+                {
+                    Properties.Settings.Default.ctrl2KeyboardType = ((RadioButton)sender).Text;
+                    xboxControllers[1].configureChatpad(((RadioButton)sender).Text);
+                }
+            }
+            else if (radioButtonName.Contains("3"))
+            {
+                if (((RadioButton)sender).Checked)
+                {
+                    Properties.Settings.Default.ctrl3KeyboardType = ((RadioButton)sender).Text;
+                    xboxControllers[2].configureChatpad(((RadioButton)sender).Text);
+                }
+            }
+            else
+            {
+                if (((RadioButton)sender).Checked)
+                {
+                    Properties.Settings.Default.ctrl4KeyboardType = ((RadioButton)sender).Text;
+                    xboxControllers[3].configureChatpad(((RadioButton)sender).Text);
+                }
+            }
         }
 
-        public void controllerConnected()
+        private void deadzoneL_ValueChanged(object sender, EventArgs e)
         {
-            // Disable the Keyboard Type visibility
-            keyboardTypeGroupBox.Enabled = false;
+            // Set the corresponding controllers right deadzone based on the slider
+            string trackBarName = ((TrackBar)sender).Name;
 
-            // Disable the FFXIV check box
-            ffxivFlag.Enabled = false;
-
-            // Enable the chatpad test box
-            chatpadTextBox.Enabled = true;
-
-            // Enable the mouse mode visibility
-            mouseModeLabel.Enabled = true;
-
-            // Set the Controller deadzones to configuration values
-            // and enabled the deadzone visibility.
-            deadzoneGroupBox.Enabled = true;
-            leftDeadzone.Value = Properties.Settings.Default.leftDeadzone;
-            rightDeadzone.Value = Properties.Settings.Default.rightDeadzone;
-            xboxController.deadzoneL = (int)Math.Round(leftDeadzone.Value * 327.67);
-            xboxController.deadzoneR = (int)Math.Round(rightDeadzone.Value * 327.67);
+            if (trackBarName.Contains("1"))
+            {
+                // Controller 1
+                Properties.Settings.Default.ctrl1DeadzoneL = ctrl1LeftDeadzone.Value;
+                xboxControllers[0].deadzoneL = (int)Math.Round(ctrl1LeftDeadzone.Value * 327.67);
+                ctrl1LeftDeadzonePercentLabel.Text = ctrl1LeftDeadzone.Value.ToString() + "%";
+            }
+            else if (trackBarName.Contains("2"))
+            {
+                // Controller 2
+                Properties.Settings.Default.ctrl2DeadzoneL = ctrl2LeftDeadzone.Value;
+                xboxControllers[1].deadzoneL = (int)Math.Round(ctrl2LeftDeadzone.Value * 327.67);
+                ctrl2LeftDeadzonePercentLabel.Text = ctrl2LeftDeadzone.Value.ToString() + "%";
+            }
+            else if (trackBarName.Contains("3"))
+            {
+                // Controller 3
+                Properties.Settings.Default.ctrl3DeadzoneL = ctrl3LeftDeadzone.Value;
+                xboxControllers[2].deadzoneL = (int)Math.Round(ctrl3LeftDeadzone.Value * 327.67);
+                ctrl3LeftDeadzonePercentLabel.Text = ctrl3LeftDeadzone.Value.ToString() + "%";
+            }
+            else
+            {
+                // Controller 4
+                Properties.Settings.Default.ctrl4DeadzoneL = ctrl4LeftDeadzone.Value;
+                xboxControllers[3].deadzoneL = (int)Math.Round(ctrl4LeftDeadzone.Value * 327.67);
+                ctrl4LeftDeadzonePercentLabel.Text = ctrl4LeftDeadzone.Value.ToString() + "%";
+            }
         }
 
-        public void controllerDisconnected()
+        private void deadzoneR_ValueChanged(object sender, EventArgs e)
         {
-            // Reset the keyabord type box visibility
-            keyboardTypeGroupBox.Enabled = true;
+            // Set the corresponding controllers right deadzone based on the slider
+            string trackBarName = ((TrackBar)sender).Name;
 
-            // Reset the FFXIV check box visibility
-            ffxivFlag.Enabled = true;
-
-            // Reset the chatpad test box
-            chatpadTextBox.Enabled = false;
-            chatpadTextBox.TextAlign = HorizontalAlignment.Center;
-            chatpadTextBox.Text = "-Test Chatpad Here-";
-            chatpadTextBox.Enter += chatpadTextBox_Enter;
-
-            // Reset the mouse mode visibility
-            mouseModeLabel.Enabled = false;
-
-            // Reset the deadzone group visibility
-            deadzoneGroupBox.Enabled = false;
+            if (trackBarName.Contains("1"))
+            {
+                // Controller 1
+                Properties.Settings.Default.ctrl1DeadzoneR = ctrl1RightDeadzone.Value;
+                xboxControllers[0].deadzoneR = (int)Math.Round(ctrl1RightDeadzone.Value * 327.67);
+                ctrl1RightDeadzonePercentLabel.Text = ctrl1RightDeadzone.Value.ToString() + "%";
+            }
+            else if (trackBarName.Contains("2"))
+            {
+                // Controller 2
+                Properties.Settings.Default.ctrl2DeadzoneR = ctrl2RightDeadzone.Value;
+                xboxControllers[1].deadzoneR = (int)Math.Round(ctrl2RightDeadzone.Value * 327.67);
+                ctrl2RightDeadzonePercentLabel.Text = ctrl2RightDeadzone.Value.ToString() + "%";
+            }
+            else if (trackBarName.Contains("3"))
+            {
+                // Controller 3
+                Properties.Settings.Default.ctrl3DeadzoneR = ctrl3RightDeadzone.Value;
+                xboxControllers[2].deadzoneR = (int)Math.Round(ctrl3RightDeadzone.Value * 327.67);
+                ctrl3RightDeadzonePercentLabel.Text = ctrl3RightDeadzone.Value.ToString() + "%";
+            }
+            else
+            {
+                // Controller 4
+                Properties.Settings.Default.ctrl4DeadzoneR = ctrl4RightDeadzone.Value;
+                xboxControllers[3].deadzoneR = (int)Math.Round(ctrl4RightDeadzone.Value * 327.67);
+                ctrl4RightDeadzonePercentLabel.Text = ctrl4RightDeadzone.Value.ToString() + "%";
+            }            
         }
 
-        public void mouseModeLabelUpdate(string labelText)
+        public void controllerConnected(int ctrl)
         {
-            mouseModeLabel.Text = labelText;
+            switch (ctrl)
+            {
+                case 1:
+                    ctrl1Group.Enabled = true;
+                    break;
+                case 2:
+                    ctrl2Group.Enabled = true;
+                    break;
+                case 3:
+                    ctrl3Group.Enabled = true;
+                    break;
+                case 4:
+                    ctrl4Group.Enabled = true;
+                    break;
+                default:
+                    break;
+            }
         }
 
-        public void logUpdate(string logMessage)
+        public void controllerDisconnected(int ctrl)
         {
-            appLogTextbox.Text += logMessage;
+            switch (ctrl)
+            {
+                case 1:
+                    ctrl1Group.Enabled = false;
+                    break;
+                case 2:
+                    ctrl2Group.Enabled = false;
+                    break;
+                case 3:
+                    ctrl3Group.Enabled = false;
+                    break;
+                case 4:
+                    ctrl4Group.Enabled = false;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public void mouseModeUpdate(int ctrl, bool modeStatus)
+        {
+            switch (ctrl)
+            {
+                case 1:
+                    ctrl1MouseModeBox.Checked = modeStatus;
+                    break;
+                case 2:
+                    ctrl2MouseModeBox.Checked = modeStatus;
+                    break;
+                case 3:
+                    ctrl3MouseModeBox.Checked = modeStatus;
+                    break;
+                case 4:
+                    ctrl4MouseModeBox.Checked = modeStatus;
+                    break;
+                default:
+                    break;
+            }            
+        }
+
+        public void logMessage(string message)
+        {
+            string currentTime;
+            currentTime = DateTime.Now.ToString("G");
+
+            appLogTextbox.Text += "[" + currentTime + "] - " + message + "\r\n";
         }
     }
 }

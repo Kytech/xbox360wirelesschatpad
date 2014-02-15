@@ -2,19 +2,52 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Xbox360WirelessChatpad.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="keyboardType" Type="System.String" Scope="User">
-      <Value Profile="(Default)">QWERTY</Value>
+    <Setting Name="ctrl1KeyboardType" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Q W E R T Y</Value>
     </Setting>
-    <Setting Name="leftDeadzone" Type="System.Int32" Scope="User">
+    <Setting Name="ctrl1DeadzoneL" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">18</Value>
     </Setting>
-    <Setting Name="rightDeadzone" Type="System.Int32" Scope="User">
+    <Setting Name="ctrl1DeadzoneR" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">18</Value>
     </Setting>
-    <Setting Name="ffxivFlag" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+    <Setting Name="ctrl1TriggerType" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Button</Value>
     </Setting>
-    <Setting Name="triggerType" Type="System.String" Scope="User">
+    <Setting Name="ctrl2KeyboardType" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Q W E R T Y</Value>
+    </Setting>
+    <Setting Name="ctrl2DeadzoneL" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">18</Value>
+    </Setting>
+    <Setting Name="ctrl2DeadzoneR" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">18</Value>
+    </Setting>
+    <Setting Name="ctrl2TriggerType" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Button</Value>
+    </Setting>
+    <Setting Name="ctrl3KeyboardType" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Q W E R T Y</Value>
+    </Setting>
+    <Setting Name="ctrl3DeadzoneL" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">18</Value>
+    </Setting>
+    <Setting Name="ctrl3DeadzoneR" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">18</Value>
+    </Setting>
+    <Setting Name="ctrl3TriggerType" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Button</Value>
+    </Setting>
+    <Setting Name="ctrl4KeyboardType" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Q W E R T Y</Value>
+    </Setting>
+    <Setting Name="ctrl4DeadzoneL" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">18</Value>
+    </Setting>
+    <Setting Name="ctrl4DeadzoneR" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">18</Value>
+    </Setting>
+    <Setting Name="ctrl4TriggerType" Type="System.String" Scope="User">
       <Value Profile="(Default)">Button</Value>
     </Setting>
   </Settings>

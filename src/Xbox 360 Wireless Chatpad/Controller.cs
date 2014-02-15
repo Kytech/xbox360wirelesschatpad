@@ -10,12 +10,17 @@ using vJoyInterfaceWrap;
 using LibUsbDotNet;
 using LibUsbDotNet.Main;
 
+using Microsoft.Win32;
+
 namespace Xbox360WirelessChatpad
 {
     class Controller
     {
         // Tracks if the Wireless Controller is attached
         public bool controllerAttached = false;
+
+        // Tracks the connected controller's number
+        private int controllerNumber;
 
         // Tracks if the trigger will behave like a button or axis
         private string controllerTrigger;
@@ -38,10 +43,10 @@ namespace Xbox360WirelessChatpad
         private System.Threading.Thread mouseModeThread = null;
 
         // Determines if the chatpad needs initialization/handshake command.
-        public bool chatpadInitNeeded = true;
+        private bool chatpadInitNeeded = true;
 
-        // Mapping for useful device commands
-        public Dictionary<string, byte[]> controllerCommands = new Dictionary<string, byte[]>()
+        // Mapping for various device commands
+        private Dictionary<string, byte[]> controllerCommands = new Dictionary<string, byte[]>()
             {
                 // General Device Commands
                 { "RefreshConnection",  new byte[4] {0x08, 0x00, 0x00, 0x00} },
@@ -65,18 +70,19 @@ namespace Xbox360WirelessChatpad
                 { "CapslockOff",   new byte[4] {0x00, 0x00, 0x0C, 0x00} }
             };
 
-        // -----------------
-        // Chatpad Variables
-        // -----------------
-
         // Contains the mapping of Chatpad Buttons, Green Modifiers, and
         // Orange Modifiers respectively.
-        Dictionary<int, Keys> keyMap = new Dictionary<int, Keys>();
-        Dictionary<int, string> greenMap = new Dictionary<int, string>();
-        Dictionary<int, string> orangeMap = new Dictionary<int, string>();
+        private Dictionary<int, Keys> keyMap = new Dictionary<int, Keys>();
+        private Dictionary<int, string> greenMap = new Dictionary<int, string>();
+        private Dictionary<int, string> orangeMap = new Dictionary<int, string>();
 
-        // Identifies which Chatpad Modifiers are active
-        Dictionary<string, bool> chatpadMod = new Dictionary<string, bool>()
+        // Contains mappings of controller buttons, directional pad, and axes
+        private Dictionary<String, uint> buttonMap = new Dictionary<String, uint>();
+        private Dictionary<String, int> directionMap = new Dictionary<String, int>();
+        private Dictionary<String, HID_USAGES> axisMap = new Dictionary<String, HID_USAGES>();
+
+        // Tracks which Chatpad Modifiers are active
+        private Dictionary<string, bool> chatpadMod = new Dictionary<string, bool>()
             {
                 { "Green", false },
                 { "Orange", false },
@@ -85,19 +91,19 @@ namespace Xbox360WirelessChatpad
                 { "Messenger", false }
             };
 
-        // Identifies which keys are currently being held down, used to
+        // Tracks which keys are currently being held down, used to
         // determine if a keystroke should be sent or not
         private List<byte> chatpadKeysHeld = new List<byte>();
 
-        // Identifies which keyboard keys are down, used to track if a
+        // Tracks which keyboard keys are down, used to track if a
         // KeyUp command needs to be sent or not
         private List<Keys> keyboardKeysDown = new List<Keys>();
 
         // Identifies if the sent key data should be upper case or lower case
-        bool flagUpperCase = false;
+        private bool flagUpperCase = false;
 
         // Identifies if Alt-Tab cycling has begun
-        bool altTabActive = false;
+        private bool altTabActive = false;
 
         // Used to determine if the data has changed since the last packet
         private byte[] dataPacketLast = new byte[3]; 
@@ -107,74 +113,127 @@ namespace Xbox360WirelessChatpad
         // -----------------
 
         // The vJoy virtual joystick
-        vJoy vJoystick;
+        vJoy vJoyInt;
+
+        // Note: This is very close to being complete for deployment, all that's left is to programatically disable
+        // and re-enable the vJoy Device. Leaving in for now, but will wait until a future versiion for release
+        // after some user feedback.
+        //// Size variable and binary array for Button trigger type vJoy registry key
+        //byte vJoyButtonSize = 0x69;
+        //byte[] vJoyButtonDesctiptor = { 0x05, 0x01, 0x15, 0x00, 0x09, 0x04, 0xa1, 0x01, 0x05, 0x01, 0x85, 0x01,
+        //                             0x09, 0x01, 0x15, 0x00, 0x26, 0xff, 0x7f, 0x75, 0x20, 0x95, 0x01, 0xa1,
+        //                             0x00, 0x09, 0x30, 0x81, 0x02, 0x09, 0x31, 0x81, 0x02, 0x09, 0x32, 0x81,
+        //                             0x02, 0x81, 0x01, 0x81, 0x01, 0x09, 0x35, 0x81, 0x02, 0x81, 0x01, 0x81,
+        //                             0x01, 0xc0, 0x15, 0x00, 0x27, 0x3c, 0x8c, 0x00, 0x00, 0x35, 0x00, 0x47,
+        //                             0x3c, 0x8c, 0x00, 0x00, 0x65, 0x14, 0x75, 0x20, 0x95, 0x01, 0x09, 0x39,
+        //                             0x81, 0x02, 0x95, 0x03, 0x81, 0x01, 0x05, 0x09, 0x15, 0x00, 0x25, 0x01,
+        //                             0x55, 0x00, 0x65, 0x00, 0x19, 0x01, 0x29, 0x0d, 0x75, 0x01, 0x95, 0x0d,
+        //                             0x81, 0x02, 0x75, 0x13, 0x95, 0x01, 0x81, 0x01, 0xc0 };
+
+        //// Binary array for Axis trigger type vJoy registry key
+        //byte vJoyAxisSize = 0x6d;
+        //byte[] vJoyAxisDesctiptor = { 0x05, 0x01, 0x15, 0x00, 0x09, 0x04, 0xa1, 0x01, 0x05, 0x01, 0x85, 0x01,
+        //                                0x09, 0x01, 0x15, 0x00, 0x26, 0xff, 0x7f, 0x75, 0x20, 0x95, 0x01, 0xa1,
+        //                                0x00, 0x09, 0x30, 0x81, 0x02, 0x09, 0x31, 0x81, 0x02, 0x09, 0x32, 0x81,
+        //                                0x02, 0x09, 0x33, 0x81, 0x02, 0x09, 0x34, 0x81, 0x02, 0x09, 0x35, 0x81,
+        //                                0x02, 0x81, 0x01, 0x81, 0x01, 0xc0, 0x15, 0x00, 0x27, 0x3c, 0x8c, 0x00,
+        //                                0x00, 0x35, 0x00, 0x47, 0x3c, 0x8c, 0x00, 0x00, 0x65, 0x14, 0x75, 0x20,
+        //                                0x95, 0x01, 0x09, 0x39, 0x81, 0x02, 0x95, 0x03, 0x81, 0x01, 0x05, 0x09,
+        //                                0x15, 0x00, 0x25, 0x01, 0x55, 0x00, 0x65, 0x00, 0x19, 0x01, 0x29, 0x0b,
+        //                                0x75, 0x01, 0x95, 0x0b, 0x81, 0x02, 0x75, 0x15, 0x95, 0x01, 0x81, 0x01, 0xc0 };
 
         // Deadzone variables for the joysticks on the gamepad
         public int deadzoneL = 0;
         public int deadzoneR = 0;
 
         // Global Mouse Mode Flag for use by data packet processing
-        public bool mouseModeFlag = false;
+        private bool mouseModeFlag = false;
 
         // Relative Mouse Data based on Joystick location. This will
         // be used by a higher level timer function to continually move
         // the mouse.
-        public int mouseVelX, mouseVelY;
+        private int mouseVelX, mouseVelY;
 
         // Direction Data for the Right Joystick location. This will
         // be used by a higher level timer function to continually hold
         // down an arrow key, allowing for scrolling or other fast navigation.
         // 0 = Neutral, 
-        public int rightStickDir;
+        private int rightStickDir;
 
         // Special Command booleans used to detect when special button
         // combinations are pressed
-        public bool cmdKillController = false;
-        public bool cmdMouseModeToggle = false;
+        private bool cmdKillController = false;
+        private bool cmdMouseModeToggle = false;
 
         // Identifies if the left or right mouse buttons are depressed
         // Only used in Mouse Mode.
-        bool leftButtonDown = false;
-        bool rightButtonDown = false;
+        private bool leftButtonDown = false;
+        private bool rightButtonDown = false;
 
         // Shortcut keystrokes for Navigating Forward and Back
-        Keys[] navBack = new Keys[] { Keys.LMenu, Keys.Left };
-        Keys[] navForward = new Keys[] { Keys.LMenu, Keys.Right };
-
-        // Contains mappings of controller buttons, directional pad, and axes
-        Dictionary<String, uint> buttonMap = new Dictionary<String, uint>();
-        Dictionary<String, int> directionMap = new Dictionary<String, int>();
-        Dictionary<String, HID_USAGES> axisMap = new Dictionary<String, HID_USAGES>();
+        private Keys[] navBack = new Keys[] { Keys.LMenu, Keys.Left };
+        private Keys[] navForward = new Keys[] { Keys.LMenu, Keys.Right };
 
         public Controller(Window_Main window)
         {
             // Stores the passed window as parentWindow for furtue use
             parentWindow = window;
 
-            // Instantiate the virtual joystick
-            vJoystick = new vJoy();
-
-            // Get the driver attributes (Vendor ID, Product ID, Version Number)
-            if (!vJoystick.vJoyEnabled())
+            // Instantiate the vJoy interface
+            vJoyInt = new vJoy();
+            if (!vJoyInt.vJoyEnabled())
             {
-                parentWindow.Invoke(new logCallback(parentWindow.logUpdate),
-                    "ERROR: vJoy Driver Not Enabled.\r\n");
+                parentWindow.Invoke(new logCallback(parentWindow.logMessage),
+                    "ERROR: vJoy Driver Not Enabled.");
                 return;
             }
-
-            // Retreives the virtual joystick status
-            VjdStat vJoystickStatus = vJoystick.GetVJDStatus(1);
-
-            // Acquire the virtual joystick
-            if ((vJoystickStatus == VjdStat.VJD_STAT_OWN) ||
-                ((vJoystickStatus == VjdStat.VJD_STAT_FREE) && (!vJoystick.AcquireVJD(1))))
-                    parentWindow.Invoke(new logCallback(parentWindow.logUpdate),
-                        "ERROR: Failed to Acquire vJoy Gamepad Number 1.\r\n"); 
         }
 
-        public void registerEndpoint(UsbEndpointWriter writer)
+        public void registerEndpointWriter(UsbEndpointWriter writer)
         {
+            // Store the Endpoint Writer for future use
             epWriter = writer;
+        }
+
+        public void registerJoystick(int ctrlNum)
+        {
+            // Stores the passed controller number for future use
+            controllerNumber = ctrlNum;
+
+            // Note: This is very close to being complete for deployment, all that's left is to programatically disable
+            // and re-enable the vJoy Device. Leaving in for now, but will wait until a future versiion for release
+            // after some user feedback.
+            //// Create Registry Key for vjoy device
+            //string vJoyRegPath = @"SYSTEM\CurrentControlSet\services\vjoy\Parameters";
+            //RegistryKey vJoyDeviceKey = Registry.LocalMachine.CreateSubKey(vJoyRegPath + "\\Device0" + controllerNumber);
+
+            //// Populate Registry Key based on trigger type
+            //if (controllerTrigger == "Button")
+            //{
+            //    // Update Byte 12 to represent the current controller
+            //    vJoyButtonDesctiptor[11] = (byte)controllerNumber;
+            //    vJoyDeviceKey.SetValue("HidReportDesctiptor", vJoyButtonDesctiptor);
+            //    vJoyDeviceKey.SetValue("HidReportDesctiptorSize", vJoyButtonSize, RegistryValueKind.DWord);
+            //}
+            //else if (controllerTrigger == "Axis")
+            //{
+            //    // Update Byte 12 to represent the current controller
+            //    vJoyAxisDesctiptor[11] = (byte)controllerNumber;
+            //    vJoyDeviceKey.SetValue("HidDesctiptor", vJoyAxisDesctiptor);
+            //    vJoyDeviceKey.SetValue("HidReportDesctiptorSize", vJoyAxisSize, RegistryValueKind.DWord);
+            //}
+            //else
+            //    parentWindow.Invoke(new logCallback(parentWindow.logMessage),
+            //        "ERROR: Unknown Trigger Type.");
+
+            // Retreives the virtual joystick status
+            VjdStat vJoystickStatus = vJoyInt.GetVJDStatus((uint)controllerNumber);
+
+            // Acquire the virtual joystick
+            if ((vJoystickStatus != VjdStat.VJD_STAT_FREE) ||
+                ((vJoystickStatus == VjdStat.VJD_STAT_FREE) && (!vJoyInt.AcquireVJD((uint)controllerNumber))))
+                parentWindow.Invoke(new logCallback(parentWindow.logMessage),
+                    "ERROR: Failed to Acquire vJoy Gamepad Number " + controllerNumber + ".");
         }
 
         public void processDataPacket(object sender, EndpointDataEventArgs e)
@@ -187,10 +246,10 @@ namespace Xbox360WirelessChatpad
                 if (!controllerConnected)
                 {
                     // If the controller is not connected but used to be, report the error
-                    if (!controllerAttached)
+                    if (controllerAttached)
                     {
-                        parentWindow.Invoke(new logCallback(parentWindow.logUpdate),
-                            "Xbox 360 Wireless Controller Disconnected.\r\n");
+                        parentWindow.Invoke(new logCallback(parentWindow.logMessage),
+                            "Xbox 360 Wireless Controller " + controllerNumber + " Disconnected.");
 
                         // Disables mouse mode and kills the mouse mode thread
                         toggleMouseMode(false);
@@ -202,7 +261,7 @@ namespace Xbox360WirelessChatpad
                         killButtonCombo();
 
                         // Refresh the form due to a disconnection
-                        parentWindow.Invoke(new controllerDisconnectCallback(parentWindow.controllerDisconnected));
+                        parentWindow.Invoke(new controllerDisconnectCallback(parentWindow.controllerDisconnected), controllerNumber);
                     }
 
                     controllerAttached = false;
@@ -212,8 +271,26 @@ namespace Xbox360WirelessChatpad
                     // Flag that the controller has connected
                     controllerAttached = true;
 
-                    // Set the LED to Controller 1
-                    sendData(controllerCommands["SetControllerNum1"]);
+                    // Set the LED for the controller number
+                    switch (controllerNumber)
+                    {
+                        case 1:
+                            sendData(controllerCommands["SetControllerNum1"]);
+                            break;
+                        case 2:
+                            sendData(controllerCommands["SetControllerNum2"]);
+                            break;
+                        case 3:
+                            sendData(controllerCommands["SetControllerNum3"]);
+                            break;
+                        case 4:
+                            sendData(controllerCommands["SetControllerNum4"]);
+                            break;
+                        default:
+                            parentWindow.Invoke(new logCallback(parentWindow.logMessage),
+                                "ERROR: Unknown Controller Number.");
+                            break;
+                    }
 
                     // Create and start the Keep-Alive thread
                     threadKeepAlive = new System.Threading.Thread(new System.Threading.ThreadStart(tickKeepAlive));
@@ -226,10 +303,11 @@ namespace Xbox360WirelessChatpad
                     threadButtonCombo.Start();
 
                     // Refresh the form due to a connection
-                    parentWindow.Invoke(new controllerConnectCallback(parentWindow.controllerConnected));
+                    parentWindow.Invoke(new controllerConnectCallback(parentWindow.controllerConnected), controllerNumber);
 
                     // Reports the Controller is Connected
-                    parentWindow.Invoke(new logCallback(parentWindow.logUpdate), "Xbox 360 Wireless Controller 1 Connected.\r\n");
+                    parentWindow.Invoke(new logCallback(parentWindow.logMessage),
+                        "Xbox 360 Wireless Controller " + controllerNumber + " Connected.");
                 }
             }
             else if (e.Buffer[0] == 0x00 && e.Buffer[2] == 0x00 && e.Buffer[3] == 0xF0)
@@ -274,7 +352,7 @@ namespace Xbox360WirelessChatpad
                     //      Backlight = (dataPacket[26] & 0x80) > 0;
                 }
                 else
-                    parentWindow.Invoke(new logCallback(parentWindow.logUpdate), "WARNING: Unknown Chatpad Status Data.\r\n");
+                    parentWindow.Invoke(new logCallback(parentWindow.logMessage), "WARNING: Unknown Chatpad Status Data.");
             }
             else if (dataPacket[24] == 0x00)
             {
@@ -392,7 +470,7 @@ namespace Xbox360WirelessChatpad
                 }
             }
             else
-                parentWindow.Invoke(new logCallback(parentWindow.logUpdate), "WARNING: Unknown Chatpad Data.\r\n");
+                parentWindow.Invoke(new logCallback(parentWindow.logMessage), "WARNING: Unknown Chatpad Data.");
         }
 
         public void ProcessGamepadData(byte[] dataPacket)
@@ -408,31 +486,31 @@ namespace Xbox360WirelessChatpad
             switch (dataPacket[6])
             {
                 case 0x01:
-                    vJoystick.SetContPov(directionMap["Up"], 1, 1);
+                    vJoyInt.SetContPov(directionMap["Up"], (uint)controllerNumber, 1);
                     break;
                 case 0x02:
-                    vJoystick.SetContPov(directionMap["Down"], 1, 1);
+                    vJoyInt.SetContPov(directionMap["Down"], (uint)controllerNumber, 1);
                     break;
                 case 0x04:
-                    vJoystick.SetContPov(directionMap["Left"], 1, 1);
+                    vJoyInt.SetContPov(directionMap["Left"], (uint)controllerNumber, 1);
                     break;
                 case 0x08:
-                    vJoystick.SetContPov(directionMap["Right"], 1, 1);
+                    vJoyInt.SetContPov(directionMap["Right"], (uint)controllerNumber, 1);
                     break;
                 case 0x05:
-                    vJoystick.SetContPov(directionMap["UpLeft"], 1, 1);
+                    vJoyInt.SetContPov(directionMap["UpLeft"], (uint)controllerNumber, 1);
                     break;
                 case 0x06:
-                    vJoystick.SetContPov(directionMap["DownLeft"], 1, 1);
+                    vJoyInt.SetContPov(directionMap["DownLeft"], (uint)controllerNumber, 1);
                     break;
                 case 0x09:
-                    vJoystick.SetContPov(directionMap["UpRight"], 1, 1);
+                    vJoyInt.SetContPov(directionMap["UpRight"], (uint)controllerNumber, 1);
                     break;
                 case 0x0A:
-                    vJoystick.SetContPov(directionMap["DownRight"], 1, 1);
+                    vJoyInt.SetContPov(directionMap["DownRight"], (uint)controllerNumber, 1);
                     break;
                 default:
-                    vJoystick.SetContPov(directionMap["Neutral"], 1, 1);
+                    vJoyInt.SetContPov(directionMap["Neutral"], (uint)controllerNumber, 1);
                     break;
             }
 
@@ -485,17 +563,17 @@ namespace Xbox360WirelessChatpad
             }
             else
             {
-                vJoystick.SetBtn((dataPacket[7] & 0x10) > 0, 1, buttonMap["A"]);
-                vJoystick.SetBtn((dataPacket[7] & 0x20) > 0, 1, buttonMap["B"]);
+                vJoyInt.SetBtn((dataPacket[7] & 0x10) > 0, (uint)controllerNumber, buttonMap["A"]);
+                vJoyInt.SetBtn((dataPacket[7] & 0x20) > 0, (uint)controllerNumber, buttonMap["B"]);
             }
 
-            vJoystick.SetBtn((dataPacket[7] & 0x40) > 0, 1, buttonMap["X"]);
-            vJoystick.SetBtn((dataPacket[7] & 0x80) > 0, 1, buttonMap["Y"]);
-            vJoystick.SetBtn((dataPacket[6] & 0x10) > 0, 1, buttonMap["Start"]);
-            vJoystick.SetBtn((dataPacket[6] & 0x20) > 0, 1, buttonMap["Back"]);
-            vJoystick.SetBtn((dataPacket[6] & 0x40) > 0, 1, buttonMap["LStick"]);
-            vJoystick.SetBtn((dataPacket[6] & 0x80) > 0, 1, buttonMap["RStick"]);
-            vJoystick.SetBtn((dataPacket[7] & 0x04) > 0, 1, buttonMap["Guide"]);
+            vJoyInt.SetBtn((dataPacket[7] & 0x40) > 0, (uint)controllerNumber, buttonMap["X"]);
+            vJoyInt.SetBtn((dataPacket[7] & 0x80) > 0, (uint)controllerNumber, buttonMap["Y"]);
+            vJoyInt.SetBtn((dataPacket[6] & 0x10) > 0, (uint)controllerNumber, buttonMap["Start"]);
+            vJoyInt.SetBtn((dataPacket[6] & 0x20) > 0, (uint)controllerNumber, buttonMap["Back"]);
+            vJoyInt.SetBtn((dataPacket[6] & 0x40) > 0, (uint)controllerNumber, buttonMap["LStick"]);
+            vJoyInt.SetBtn((dataPacket[6] & 0x80) > 0, (uint)controllerNumber, buttonMap["RStick"]);
+            vJoyInt.SetBtn((dataPacket[7] & 0x04) > 0, (uint)controllerNumber, buttonMap["Guide"]);
 
             // If in mouse mode use Left and Rught bumpers as navigationg shortcuts;
             // otherwise set joystick buttons.
@@ -512,8 +590,8 @@ namespace Xbox360WirelessChatpad
             }
             else
             {
-                vJoystick.SetBtn((dataPacket[7] & 0x01) > 0, 1, buttonMap["LBump"]);
-                vJoystick.SetBtn((dataPacket[7] & 0x02) > 0, 1, buttonMap["RBump"]);
+                vJoyInt.SetBtn((dataPacket[7] & 0x01) > 0, (uint)controllerNumber, buttonMap["LBump"]);
+                vJoyInt.SetBtn((dataPacket[7] & 0x02) > 0, (uint)controllerNumber, buttonMap["RBump"]);
             }
 
             // ---------------
@@ -586,12 +664,12 @@ namespace Xbox360WirelessChatpad
             {
                 // Set the left stick X and Y values
                 // Note: For some reason, the left stick Y axis is inverted, multiplied by -1 to fix
-                vJoystick.SetAxis(leftX, 1, axisMap["LX"]);
-                vJoystick.SetAxis(-leftY, 1, axisMap["LY"]);
+                vJoyInt.SetAxis(leftX, (uint)controllerNumber, axisMap["LX"]);
+                vJoyInt.SetAxis(-leftY, (uint)controllerNumber, axisMap["LY"]);
 
                 // Set the right stick X and Y values
-                vJoystick.SetAxis(rightX, 1, axisMap["RX"]);
-                vJoystick.SetAxis(rightY, 1, axisMap["RY"]);
+                vJoyInt.SetAxis(rightX, (uint)controllerNumber, axisMap["RX"]);
+                vJoyInt.SetAxis(rightY, (uint)controllerNumber, axisMap["RY"]);
 
                 // If in FFXIV Mode the Left and Right Triggers are buttons otherwise
                 // they are separate axes.
@@ -599,23 +677,23 @@ namespace Xbox360WirelessChatpad
                 {
                     // Left Trigger
                     if (leftTrig >= 50)
-                        vJoystick.SetBtn(true, 1, buttonMap["LTrig"]);
+                        vJoyInt.SetBtn(true, (uint)controllerNumber, buttonMap["LTrig"]);
                     else
-                        vJoystick.SetBtn(false, 1, buttonMap["LTrig"]);
+                        vJoyInt.SetBtn(false, (uint)controllerNumber, buttonMap["LTrig"]);
 
                     // Right Trigger
                     if (rightTrig >= 50)
-                        vJoystick.SetBtn(true, 1, buttonMap["RTrig"]);
+                        vJoyInt.SetBtn(true, (uint)controllerNumber, buttonMap["RTrig"]);
                     else
-                        vJoystick.SetBtn(false, 1, buttonMap["RTrig"]);
+                        vJoyInt.SetBtn(false, (uint)controllerNumber, buttonMap["RTrig"]);
                 }
                 else
                 {
                     // Left Trigger
-                    vJoystick.SetAxis(leftTrig, 1, axisMap["LTrig"]);
+                    vJoyInt.SetAxis(leftTrig, (uint)controllerNumber, axisMap["LTrig"]);
 
                     // Right Trigger
-                    vJoystick.SetAxis(rightTrig, 1, axisMap["RTrig"]);
+                    vJoyInt.SetAxis(rightTrig, (uint)controllerNumber, axisMap["RTrig"]);
                 }
             }
 
@@ -651,7 +729,7 @@ namespace Xbox360WirelessChatpad
             ErrorCode ec = epWriter.Write(dataToSend, 2000, out bytesWritten);
 
             if (ec != ErrorCode.None)
-                parentWindow.Invoke(new logCallback(parentWindow.logUpdate),
+                parentWindow.Invoke(new logCallback(parentWindow.logMessage),
                     "ERROR: Problem Sending Controller Data.");
         }
 
@@ -844,8 +922,8 @@ namespace Xbox360WirelessChatpad
                     break;
 
                 default:
-                    parentWindow.Invoke(new logCallback(parentWindow.logUpdate),
-                        "ERROR: Unknown Keyboard Type.\r\n");
+                    parentWindow.Invoke(new logCallback(parentWindow.logMessage),
+                        "ERROR: Unknown Keyboard Type.");
                     break;
             }
         }
@@ -921,8 +999,8 @@ namespace Xbox360WirelessChatpad
                     break;
 
                 default:
-                    parentWindow.Invoke(new logCallback(parentWindow.logUpdate),
-                        "ERROR: Unknown Trigger Type.\r\n");
+                    parentWindow.Invoke(new logCallback(parentWindow.logMessage),
+                        "ERROR: Unknown Trigger Type.");
                     break;
             }
         }
@@ -938,8 +1016,9 @@ namespace Xbox360WirelessChatpad
         public void killController()
         {
             // Sends command to disable the controller
-            if (controllerAttached)
-                sendData(controllerCommands["DisableController"]);
+            sendData(controllerCommands["DisableController"]);
+            parentWindow.Invoke(new logCallback(parentWindow.logMessage),
+                "Disconnecting Xbox 360 Wireless Controller " + controllerNumber + ".");
         }
 
         private void tickButtonCombo()
@@ -1047,8 +1126,7 @@ namespace Xbox360WirelessChatpad
                 mouseModeThread.Start();
 
                 // Update to Mouse Mode Label to ON
-                parentWindow.Invoke(new mouseModeLabelCallback(parentWindow.mouseModeLabelUpdate),
-                    "Mouse Mode: ON");
+                parentWindow.Invoke(new mouseModeLabelCallback(parentWindow.mouseModeUpdate), controllerNumber, true);
             }
             else
             {
@@ -1059,8 +1137,7 @@ namespace Xbox360WirelessChatpad
                 killMouseMode();
 
                 // Update to Mouse Mode Label to OFF
-                parentWindow.Invoke(new mouseModeLabelCallback(parentWindow.mouseModeLabelUpdate),
-                    "Mouse Mode: OFF");
+                parentWindow.Invoke(new mouseModeLabelCallback(parentWindow.mouseModeUpdate), controllerNumber, false);
             }
         }
 
