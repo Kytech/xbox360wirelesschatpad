@@ -11,8 +11,11 @@
     <Setting Name="ctrl1DeadzoneR" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">18</Value>
     </Setting>
-    <Setting Name="ctrl1TriggerType" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Button</Value>
+    <Setting Name="ctrl1TriggerAsButton" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="ctrl1MouseMode" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="ctrl2KeyboardType" Type="System.String" Scope="User">
       <Value Profile="(Default)">Q W E R T Y</Value>
@@ -23,8 +26,11 @@
     <Setting Name="ctrl2DeadzoneR" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">18</Value>
     </Setting>
-    <Setting Name="ctrl2TriggerType" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Button</Value>
+    <Setting Name="ctrl2TriggerAsButton" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="ctrl2MouseMode" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="ctrl3KeyboardType" Type="System.String" Scope="User">
       <Value Profile="(Default)">Q W E R T Y</Value>
@@ -35,8 +41,11 @@
     <Setting Name="ctrl3DeadzoneR" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">18</Value>
     </Setting>
-    <Setting Name="ctrl3TriggerType" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Button</Value>
+    <Setting Name="ctrl3TriggerAsButton" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="ctrl3MouseMode" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="ctrl4KeyboardType" Type="System.String" Scope="User">
       <Value Profile="(Default)">Q W E R T Y</Value>
@@ -47,8 +56,11 @@
     <Setting Name="ctrl4DeadzoneR" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">18</Value>
     </Setting>
-    <Setting Name="ctrl4TriggerType" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Button</Value>
+    <Setting Name="ctrl4TriggerAsButton" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="ctrl4MouseMode" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>
 </SettingsFile>

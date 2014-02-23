@@ -23,7 +23,7 @@ namespace Xbox360WirelessChatpad
         private int controllerNumber;
 
         // Tracks if the trigger will behave like a button or axis
-        private string controllerTrigger;
+        private bool triggerAsButton;
 
         // The Controllers associated endpoint writer in the receiver
         private UsbEndpointWriter epWriter;
@@ -147,7 +147,7 @@ namespace Xbox360WirelessChatpad
         public int deadzoneR = 0;
 
         // Global Mouse Mode Flag for use by data packet processing
-        private bool mouseModeFlag = false;
+        public bool mouseModeFlag = false;
 
         // Relative Mouse Data based on Joystick location. This will
         // be used by a higher level timer function to continually move
@@ -233,7 +233,7 @@ namespace Xbox360WirelessChatpad
             if ((vJoystickStatus != VjdStat.VJD_STAT_FREE) ||
                 ((vJoystickStatus == VjdStat.VJD_STAT_FREE) && (!vJoyInt.AcquireVJD((uint)controllerNumber))))
                 parentWindow.Invoke(new logCallback(parentWindow.logMessage),
-                    "ERROR: Failed to Acquire vJoy Gamepad Number " + controllerNumber + ".");
+                    "WARNING: Failed to Acquire vJoy Gamepad Number " + controllerNumber + ".");
         }
 
         public void processDataPacket(object sender, EndpointDataEventArgs e)
@@ -251,8 +251,8 @@ namespace Xbox360WirelessChatpad
                         parentWindow.Invoke(new logCallback(parentWindow.logMessage),
                             "Xbox 360 Wireless Controller " + controllerNumber + " Disconnected.");
 
-                        // Disables mouse mode and kills the mouse mode thread
-                        toggleMouseMode(false);
+                        // Clean up the Mouse Mode thread
+                        killMouseMode();
 
                         // Clean up the Keep-Alive thread
                         killKeepAlive();
@@ -301,6 +301,10 @@ namespace Xbox360WirelessChatpad
                     threadButtonCombo = new System.Threading.Thread(new System.Threading.ThreadStart(tickButtonCombo));
                     threadButtonCombo.IsBackground = true;
                     threadButtonCombo.Start();
+
+                    // If Mouse Mode, create and start the Mouse Mode thread
+                    if (mouseModeFlag)
+                        startMouseMode();
 
                     // Refresh the form due to a connection
                     parentWindow.Invoke(new controllerConnectCallback(parentWindow.controllerConnected), controllerNumber);
@@ -673,7 +677,7 @@ namespace Xbox360WirelessChatpad
 
                 // If in FFXIV Mode the Left and Right Triggers are buttons otherwise
                 // they are separate axes.
-                if (controllerTrigger == "Button")
+                if (triggerAsButton)
                 {
                     // Left Trigger
                     if (leftTrig >= 50)
@@ -928,80 +932,73 @@ namespace Xbox360WirelessChatpad
             }
         }
 
-        public void configureGamepad(string triggerType)
+        public void configureGamepad(bool triggerAsBtn)
         {
             // Updates the controller dictionaries and record the specified
             // trigger type of either Button or Axis.
-            controllerTrigger = triggerType;
+            triggerAsButton = triggerAsBtn;
 
-            switch (triggerType)
+            if (triggerAsBtn)
             {
-                case "Button":
-                    buttonMap["A"]      = 3;
-                    buttonMap["B"]      = 4;
-                    buttonMap["X"]      = 1;
-                    buttonMap["Y"]      = 2;
-                    buttonMap["LStick"] = 9;
-                    buttonMap["RStick"] = 10;
-                    buttonMap["LBump"]  = 5;
-                    buttonMap["RBump"]  = 6;
-                    buttonMap["LTrig"]  = 7;
-                    buttonMap["RTrig"]  = 8;
-                    buttonMap["Back"]   = 11;
-                    buttonMap["Start"]  = 12;
-                    buttonMap["Guide"]  = 13;
+                buttonMap["A"]      = 3;
+                buttonMap["B"]      = 4;
+                buttonMap["X"]      = 1;
+                buttonMap["Y"]      = 2;
+                buttonMap["LStick"] = 9;
+                buttonMap["RStick"] = 10;
+                buttonMap["LBump"]  = 5;
+                buttonMap["RBump"]  = 6;
+                buttonMap["LTrig"]  = 7;
+                buttonMap["RTrig"]  = 8;
+                buttonMap["Back"]   = 11;
+                buttonMap["Start"]  = 12;
+                buttonMap["Guide"]  = 13;
 
-                    directionMap["Neutral"]     = -1;
-                    directionMap["Up"]          = 0;
-                    directionMap["UpRight"]     = 4500;
-                    directionMap["Right"]       = 9000;
-                    directionMap["DownRight"]   = 13500;
-                    directionMap["Down"]        = 18000;
-                    directionMap["DownLeft"]    = 22500;
-                    directionMap["Left"]        = 27000;
-                    directionMap["UpLeft"]      = 31500;
+                directionMap["Neutral"]     = -1;
+                directionMap["Up"]          = 0;
+                directionMap["UpRight"]     = 4500;
+                directionMap["Right"]       = 9000;
+                directionMap["DownRight"]   = 13500;
+                directionMap["Down"]        = 18000;
+                directionMap["DownLeft"]    = 22500;
+                directionMap["Left"]        = 27000;
+                directionMap["UpLeft"]      = 31500;
 
-                    axisMap["LX"] = HID_USAGES.HID_USAGE_X;
-                    axisMap["LY"] = HID_USAGES.HID_USAGE_Y;
-                    axisMap["RX"] = HID_USAGES.HID_USAGE_Z;
-                    axisMap["RY"] = HID_USAGES.HID_USAGE_RZ;
-                    break;
+                axisMap["LX"] = HID_USAGES.HID_USAGE_X;
+                axisMap["LY"] = HID_USAGES.HID_USAGE_Y;
+                axisMap["RX"] = HID_USAGES.HID_USAGE_Z;
+                axisMap["RY"] = HID_USAGES.HID_USAGE_RZ;
+            }
+            else
+            {
+                buttonMap["A"]      = 3;
+                buttonMap["B"]      = 4;
+                buttonMap["X"]      = 1;
+                buttonMap["Y"]      = 2;
+                buttonMap["LStick"] = 9;
+                buttonMap["RStick"] = 10;
+                buttonMap["LBump"]  = 5;
+                buttonMap["RBump"]  = 6;
+                buttonMap["Back"]   = 7;
+                buttonMap["Start"]  = 8;
+                buttonMap["Guide"]  = 11;
 
-                case "Axis":
-                    buttonMap["A"]      = 3;
-                    buttonMap["B"]      = 4;
-                    buttonMap["X"]      = 1;
-                    buttonMap["Y"]      = 2;
-                    buttonMap["LStick"] = 9;
-                    buttonMap["RStick"] = 10;
-                    buttonMap["LBump"]  = 5;
-                    buttonMap["RBump"]  = 6;
-                    buttonMap["Back"]   = 7;
-                    buttonMap["Start"]  = 8;
-                    buttonMap["Guide"]  = 11;
+                directionMap["Neutral"]     = -1;
+                directionMap["Up"]          = 0;
+                directionMap["UpRight"]     = 4500;
+                directionMap["Right"]       = 9000;
+                directionMap["DownRight"]   = 13500;
+                directionMap["Down"]        = 18000;
+                directionMap["DownLeft"]    = 22500;
+                directionMap["Left"]        = 27000;
+                directionMap["UpLeft"]      = 31500;
 
-                    directionMap["Neutral"]     = -1;
-                    directionMap["Up"]          = 0;
-                    directionMap["UpRight"]     = 4500;
-                    directionMap["Right"]       = 9000;
-                    directionMap["DownRight"]   = 13500;
-                    directionMap["Down"]        = 18000;
-                    directionMap["DownLeft"]    = 22500;
-                    directionMap["Left"]        = 27000;
-                    directionMap["UpLeft"]      = 31500;
-
-                    axisMap["LX"]       = HID_USAGES.HID_USAGE_X;
-                    axisMap["LY"]       = HID_USAGES.HID_USAGE_Y;
-                    axisMap["RX"]       = HID_USAGES.HID_USAGE_RX;
-                    axisMap["RY"]       = HID_USAGES.HID_USAGE_RY;
-                    axisMap["LTrig"]    = HID_USAGES.HID_USAGE_Z;
-                    axisMap["RTrig"]    = HID_USAGES.HID_USAGE_RZ;
-                    break;
-
-                default:
-                    parentWindow.Invoke(new logCallback(parentWindow.logMessage),
-                        "ERROR: Unknown Trigger Type.");
-                    break;
+                axisMap["LX"]       = HID_USAGES.HID_USAGE_X;
+                axisMap["LY"]       = HID_USAGES.HID_USAGE_Y;
+                axisMap["RX"]       = HID_USAGES.HID_USAGE_RX;
+                axisMap["RY"]       = HID_USAGES.HID_USAGE_RY;
+                axisMap["LTrig"]    = HID_USAGES.HID_USAGE_Z;
+                axisMap["RTrig"]    = HID_USAGES.HID_USAGE_RZ;
             }
         }
 
@@ -1112,35 +1109,6 @@ namespace Xbox360WirelessChatpad
             }
         }
 
-        private void toggleMouseMode(bool mouseMode)
-        {
-            // This function will be used to enable/disable Mouse Mode
-            if (mouseMode)
-            {
-                // Set the Gamepad instantiation to Mouse Mode
-                mouseModeFlag = true;
-
-                // Start the Mouse Mode thread
-                mouseModeThread = new System.Threading.Thread(new System.Threading.ThreadStart(tickMouseMode));
-                mouseModeThread.IsBackground = true;
-                mouseModeThread.Start();
-
-                // Update to Mouse Mode Label to ON
-                parentWindow.Invoke(new mouseModeLabelCallback(parentWindow.mouseModeUpdate), controllerNumber, true);
-            }
-            else
-            {
-                // Set the Gamepad instantiation to Normal Mode
-                mouseModeFlag = false;
-
-                // Kill the Mouse Mode thread
-                killMouseMode();
-
-                // Update to Mouse Mode Label to OFF
-                parentWindow.Invoke(new mouseModeLabelCallback(parentWindow.mouseModeUpdate), controllerNumber, false);
-            }
-        }
-
         private void tickMouseMode()
         {
             // This function is executed periodically to continually move the mouse based on
@@ -1173,6 +1141,50 @@ namespace Xbox360WirelessChatpad
             }
         }
 
+        private void startMouseMode()
+        {
+            // Start the Mouse Mode thread
+            mouseModeThread = new System.Threading.Thread(new System.Threading.ThreadStart(tickMouseMode));
+            mouseModeThread.IsBackground = true;
+            mouseModeThread.Start();
+
+            // Send Commands to Flash Green Modifier
+            for (int i = 0; i < 5; i++)
+            {
+                sendData(controllerCommands["GreenOn"]);
+                System.Threading.Thread.Sleep(150);
+                sendData(controllerCommands["GreenOff"]);
+                System.Threading.Thread.Sleep(150); 
+            }
+        }
+
+        private void toggleMouseMode(bool mouseMode)
+        {
+            // This function will be used to enable/disable Mouse Mode
+            if (mouseMode)
+            {
+                // Set the Gamepad instantiation to Mouse Mode
+                mouseModeFlag = true;
+
+                // Start the Mouse Mode thread
+                startMouseMode();
+
+                // Update to Mouse Mode Label to ON
+                parentWindow.Invoke(new mouseModeLabelCallback(parentWindow.mouseModeUpdate), controllerNumber, true);
+            }
+            else
+            {
+                // Set the Gamepad instantiation to Normal Mode
+                mouseModeFlag = false;
+
+                // Kill the Mouse Mode thread
+                killMouseMode();
+
+                // Update to Mouse Mode Label to OFF
+                parentWindow.Invoke(new mouseModeLabelCallback(parentWindow.mouseModeUpdate), controllerNumber, false);
+            }
+        }
+
         public void killMouseMode()
         {
             // Clean up the Mouse Mode thread
@@ -1180,6 +1192,15 @@ namespace Xbox360WirelessChatpad
             {
                 mouseModeThread.Abort();
                 mouseModeThread = null;
+            }
+
+            // Send Commands to Flash Orange Modifier
+            for (int i = 0; i < 5; i++)
+            {
+                sendData(controllerCommands["OrangeOn"]);
+                System.Threading.Thread.Sleep(150);
+                sendData(controllerCommands["OrangeOff"]);
+                System.Threading.Thread.Sleep(150);
             }
         }
     }

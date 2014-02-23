@@ -35,6 +35,9 @@ namespace Xbox360WirelessChatpad
 
         private void Window_Main_Load(object sender, EventArgs e)
         {
+            // Load the Configuration Settings
+            Properties.Settings.Default.Reload();
+
             // Load Controller 1 Configuration
             // Keyboard Type
             xboxControllers[0].configureChatpad(Properties.Settings.Default.ctrl1KeyboardType);
@@ -56,11 +59,18 @@ namespace Xbox360WirelessChatpad
             }
 
             // Trigger Type
-            xboxControllers[0].configureGamepad(Properties.Settings.Default.ctrl1TriggerType);
-            if (Properties.Settings.Default.ctrl1TriggerType == "Button")
-                ctrl1TriggerType.Checked = true;
+            xboxControllers[0].configureGamepad(Properties.Settings.Default.ctrl1TriggerAsButton);
+            if (Properties.Settings.Default.ctrl1TriggerAsButton)
+                ctrl1TriggerTypeBox.Checked = true;
             else
-                ctrl1TriggerType.Checked = false;
+                ctrl1TriggerTypeBox.Checked = false;
+
+            // Mouse Mode
+            xboxControllers[0].mouseModeFlag = Properties.Settings.Default.ctrl1MouseMode;
+            if (Properties.Settings.Default.ctrl1MouseMode)
+                ctrl1MouseModeBox.Checked = true;
+            else
+                ctrl1MouseModeBox.Checked = false;
 
             // Deadzones
             ctrl1LeftDeadzone.Value = Properties.Settings.Default.ctrl1DeadzoneL;
@@ -88,11 +98,18 @@ namespace Xbox360WirelessChatpad
             }
 
             // Trigger Type
-            xboxControllers[1].configureGamepad(Properties.Settings.Default.ctrl2TriggerType);
-            if (Properties.Settings.Default.ctrl2TriggerType == "Button")
-                ctrl2TriggerType.Checked = true;
+            xboxControllers[1].configureGamepad(Properties.Settings.Default.ctrl2TriggerAsButton);
+            if (Properties.Settings.Default.ctrl2TriggerAsButton)
+                ctrl2TriggerTypeBox.Checked = true;
             else
-                ctrl2TriggerType.Checked = false;
+                ctrl2TriggerTypeBox.Checked = false;
+
+            // Mouse Mode
+            xboxControllers[1].mouseModeFlag = Properties.Settings.Default.ctrl2MouseMode;
+            if (Properties.Settings.Default.ctrl2MouseMode)
+                ctrl2MouseModeBox.Checked = true;
+            else
+                ctrl2MouseModeBox.Checked = false;
 
             // Deadzones
             ctrl2LeftDeadzone.Value = Properties.Settings.Default.ctrl2DeadzoneL;
@@ -119,11 +136,18 @@ namespace Xbox360WirelessChatpad
             }
 
             // Trigger Type
-            xboxControllers[2].configureGamepad(Properties.Settings.Default.ctrl3TriggerType);
-            if (Properties.Settings.Default.ctrl3TriggerType == "Button")
-                ctrl3TriggerType.Checked = true;
+            xboxControllers[2].configureGamepad(Properties.Settings.Default.ctrl3TriggerAsButton);
+            if (Properties.Settings.Default.ctrl3TriggerAsButton)
+                ctrl3TriggerTypeBox.Checked = true;
             else
-                ctrl3TriggerType.Checked = false;
+                ctrl3TriggerTypeBox.Checked = false;
+
+            // Mouse Mode
+            xboxControllers[2].mouseModeFlag = Properties.Settings.Default.ctrl3MouseMode;
+            if (Properties.Settings.Default.ctrl3MouseMode)
+                ctrl3MouseModeBox.Checked = true;
+            else
+                ctrl3MouseModeBox.Checked = false;
 
             // Deadzones
             ctrl3LeftDeadzone.Value = Properties.Settings.Default.ctrl3DeadzoneL;
@@ -150,11 +174,18 @@ namespace Xbox360WirelessChatpad
             }
 
             // Trigger Type
-            xboxControllers[3].configureGamepad(Properties.Settings.Default.ctrl4TriggerType);
-            if (Properties.Settings.Default.ctrl4TriggerType == "Button")
-                ctrl4TriggerType.Checked = true;
+            xboxControllers[3].configureGamepad(Properties.Settings.Default.ctrl4TriggerAsButton);
+            if (Properties.Settings.Default.ctrl4TriggerAsButton)
+                ctrl4TriggerTypeBox.Checked = true;
             else
-                ctrl4TriggerType.Checked = false;
+                ctrl4TriggerTypeBox.Checked = false;
+
+            // Mouse Mode
+            xboxControllers[3].mouseModeFlag = Properties.Settings.Default.ctrl4MouseMode;
+            if (Properties.Settings.Default.ctrl4MouseMode)
+                ctrl4MouseModeBox.Checked = true;
+            else
+                ctrl4MouseModeBox.Checked = false;
 
             // Deadzones
             ctrl4LeftDeadzone.Value = Properties.Settings.Default.ctrl4DeadzoneL;
@@ -234,54 +265,38 @@ namespace Xbox360WirelessChatpad
             if (checkBoxName.Contains("1"))
             {
                 if (((CheckBox)sender).Checked)
-                {
-                    Properties.Settings.Default.ctrl1TriggerType = "Button";
-                    xboxControllers[0].configureGamepad("Button");
-                }
-                else
-                {
-                    Properties.Settings.Default.ctrl1TriggerType = "Axis";
-                    xboxControllers[0].configureGamepad("Axis");
-                }
+                    Properties.Settings.Default.ctrl1TriggerAsButton = true;
+               else
+                    Properties.Settings.Default.ctrl1TriggerAsButton = false;
+
+                xboxControllers[0].configureGamepad(Properties.Settings.Default.ctrl1TriggerAsButton);
             }
             else if (checkBoxName.Contains("2"))
             {
                 if (((CheckBox)sender).Checked)
-                {
-                    Properties.Settings.Default.ctrl2TriggerType = "Button";
-                    xboxControllers[1].configureGamepad("Button");
-                }
+                    Properties.Settings.Default.ctrl2TriggerAsButton = true;
                 else
-                {
-                    Properties.Settings.Default.ctrl2TriggerType = "Axis";
-                    xboxControllers[1].configureGamepad("Axis");
-                }
+                    Properties.Settings.Default.ctrl2TriggerAsButton = false;
+
+                xboxControllers[1].configureGamepad(Properties.Settings.Default.ctrl2TriggerAsButton);
             }
             else if (checkBoxName.Contains("3"))
             {
                 if (((CheckBox)sender).Checked)
-                {
-                    Properties.Settings.Default.ctrl3TriggerType = "Button";
-                    xboxControllers[2].configureGamepad("Button");
-                }
+                    Properties.Settings.Default.ctrl3TriggerAsButton = true;
                 else
-                {
-                    Properties.Settings.Default.ctrl3TriggerType = "Axis";
-                    xboxControllers[2].configureGamepad("Axis");
-                }
+                    Properties.Settings.Default.ctrl3TriggerAsButton = false;
+
+                xboxControllers[2].configureGamepad(Properties.Settings.Default.ctrl3TriggerAsButton);
             }
             else
             {
                 if (((CheckBox)sender).Checked)
-                {
-                    Properties.Settings.Default.ctrl4TriggerType = "Button";
-                    xboxControllers[3].configureGamepad("Button");
-                }
+                    Properties.Settings.Default.ctrl4TriggerAsButton = true;
                 else
-                {
-                    Properties.Settings.Default.ctrl4TriggerType = "Axis";
-                    xboxControllers[3].configureGamepad("Axis");
-                }
+                    Properties.Settings.Default.ctrl4TriggerAsButton = false;
+
+                xboxControllers[3].configureGamepad(Properties.Settings.Default.ctrl4TriggerAsButton);
             }
         }
 
@@ -462,7 +477,12 @@ namespace Xbox360WirelessChatpad
             string currentTime;
             currentTime = DateTime.Now.ToString("G");
 
-            appLogTextbox.Text += "[" + currentTime + "] - " + message + "\r\n";
+            // Pre-pend the Text Box text with timestamp and new message
+            appLogTextbox.Text = "[" + currentTime + "] - " + message + "\r\n" + appLogTextbox.Text;
+
+            // Scroll to Top of Textbox
+            appLogTextbox.Select(0, 0);
+            appLogTextbox.ScrollToCaret();
         }
     }
 }
