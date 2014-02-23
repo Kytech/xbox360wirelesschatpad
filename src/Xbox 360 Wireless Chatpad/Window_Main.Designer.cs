@@ -45,7 +45,7 @@
             this.ctrl1AzertyButton = new System.Windows.Forms.RadioButton();
             this.ctrl1QwertzButton = new System.Windows.Forms.RadioButton();
             this.ctrl1QwertyButton = new System.Windows.Forms.RadioButton();
-            this.ctrl1TriggerType = new System.Windows.Forms.CheckBox();
+            this.ctrl1TriggerTypeBox = new System.Windows.Forms.CheckBox();
             this.ctrl1Group = new System.Windows.Forms.GroupBox();
             this.ctrl1MouseModeBox = new System.Windows.Forms.CheckBox();
             this.ctrl1KeyboardGroup = new System.Windows.Forms.GroupBox();
@@ -55,7 +55,7 @@
             this.ctrl2AzertyButton = new System.Windows.Forms.RadioButton();
             this.ctrl2QwertyButton = new System.Windows.Forms.RadioButton();
             this.ctrl2QwertzButton = new System.Windows.Forms.RadioButton();
-            this.ctrl2TriggerType = new System.Windows.Forms.CheckBox();
+            this.ctrl2TriggerTypeBox = new System.Windows.Forms.CheckBox();
             this.ctrl2DeadzoneGroup = new System.Windows.Forms.GroupBox();
             this.ctrl2RightDeadzonePercentLabel = new System.Windows.Forms.Label();
             this.ctrl2LeftDeadzonePercentLabel = new System.Windows.Forms.Label();
@@ -69,7 +69,7 @@
             this.ctrl3AzertyButton = new System.Windows.Forms.RadioButton();
             this.ctrl3QwertyButton = new System.Windows.Forms.RadioButton();
             this.ctrl3QwertzButton = new System.Windows.Forms.RadioButton();
-            this.ctrl3TriggerType = new System.Windows.Forms.CheckBox();
+            this.ctrl3TriggerTypeBox = new System.Windows.Forms.CheckBox();
             this.ctrl3DeadzoneGroup = new System.Windows.Forms.GroupBox();
             this.ctrl3RightDeadzonePercentLabel = new System.Windows.Forms.Label();
             this.ctrl3LeftDeadzonePercentLabel = new System.Windows.Forms.Label();
@@ -83,7 +83,7 @@
             this.ctrl4AzertyButton = new System.Windows.Forms.RadioButton();
             this.ctrl4QwertyButton = new System.Windows.Forms.RadioButton();
             this.ctrl4QwertzButton = new System.Windows.Forms.RadioButton();
-            this.ctrl4TriggerType = new System.Windows.Forms.CheckBox();
+            this.ctrl4TriggerTypeBox = new System.Windows.Forms.CheckBox();
             this.ctrl4DeadzoneGroup = new System.Windows.Forms.GroupBox();
             this.ctrl4RightDeadzonePercentLabel = new System.Windows.Forms.Label();
             this.ctrl4LeftDeadzonePercentLabel = new System.Windows.Forms.Label();
@@ -116,12 +116,13 @@
             // 
             // appLogTextbox
             // 
-            this.appLogTextbox.Location = new System.Drawing.Point(11, 355);
+            this.appLogTextbox.Location = new System.Drawing.Point(15, 437);
+            this.appLogTextbox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.appLogTextbox.Multiline = true;
             this.appLogTextbox.Name = "appLogTextbox";
             this.appLogTextbox.ReadOnly = true;
             this.appLogTextbox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.appLogTextbox.Size = new System.Drawing.Size(649, 135);
+            this.appLogTextbox.Size = new System.Drawing.Size(864, 165);
             this.appLogTextbox.TabIndex = 5;
             this.appLogTextbox.TextChanged += new System.EventHandler(this.appLogTextbox_TextChanged);
             // 
@@ -138,22 +139,22 @@
             this.trayIconMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exitMenuItem});
             this.trayIconMenu.Name = "trayIconMenu";
-            this.trayIconMenu.Size = new System.Drawing.Size(93, 26);
+            this.trayIconMenu.Size = new System.Drawing.Size(103, 28);
             // 
             // exitMenuItem
             // 
             this.exitMenuItem.Name = "exitMenuItem";
-            this.exitMenuItem.Size = new System.Drawing.Size(92, 22);
+            this.exitMenuItem.Size = new System.Drawing.Size(102, 24);
             this.exitMenuItem.Text = "Exit";
             this.exitMenuItem.Click += new System.EventHandler(this.exitMenuItem_Click);
             // 
             // chatpadTextBox
             // 
             this.chatpadTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chatpadTextBox.Location = new System.Drawing.Point(10, 495);
-            this.chatpadTextBox.Margin = new System.Windows.Forms.Padding(2);
+            this.chatpadTextBox.Location = new System.Drawing.Point(13, 609);
+            this.chatpadTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.chatpadTextBox.Name = "chatpadTextBox";
-            this.chatpadTextBox.Size = new System.Drawing.Size(650, 20);
+            this.chatpadTextBox.Size = new System.Drawing.Size(865, 23);
             this.chatpadTextBox.TabIndex = 3;
             this.chatpadTextBox.Text = "-Test Chatpad Here-";
             this.chatpadTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -167,64 +168,72 @@
             this.ctrl1DeadzoneGroup.Controls.Add(this.rightDeadzoneLabel);
             this.ctrl1DeadzoneGroup.Controls.Add(this.ctrl1LeftDeadzone);
             this.ctrl1DeadzoneGroup.Controls.Add(this.leftDeadzoneLabel);
-            this.ctrl1DeadzoneGroup.Location = new System.Drawing.Point(6, 73);
+            this.ctrl1DeadzoneGroup.Location = new System.Drawing.Point(8, 90);
+            this.ctrl1DeadzoneGroup.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ctrl1DeadzoneGroup.Name = "ctrl1DeadzoneGroup";
-            this.ctrl1DeadzoneGroup.Size = new System.Drawing.Size(147, 157);
+            this.ctrl1DeadzoneGroup.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.ctrl1DeadzoneGroup.Size = new System.Drawing.Size(196, 193);
             this.ctrl1DeadzoneGroup.TabIndex = 4;
             this.ctrl1DeadzoneGroup.TabStop = false;
             this.ctrl1DeadzoneGroup.Text = "Analog Deadzones";
             // 
             // ctrl1RightDeadzonePercentLabel
             // 
-            this.ctrl1RightDeadzonePercentLabel.Location = new System.Drawing.Point(111, 90);
+            this.ctrl1RightDeadzonePercentLabel.Location = new System.Drawing.Point(148, 111);
+            this.ctrl1RightDeadzonePercentLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.ctrl1RightDeadzonePercentLabel.Name = "ctrl1RightDeadzonePercentLabel";
-            this.ctrl1RightDeadzonePercentLabel.Size = new System.Drawing.Size(30, 13);
+            this.ctrl1RightDeadzonePercentLabel.Size = new System.Drawing.Size(40, 16);
             this.ctrl1RightDeadzonePercentLabel.TabIndex = 5;
             this.ctrl1RightDeadzonePercentLabel.Text = "0%";
             this.ctrl1RightDeadzonePercentLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // ctrl1LeftDeadzonePercentLabel
             // 
-            this.ctrl1LeftDeadzonePercentLabel.Location = new System.Drawing.Point(111, 21);
+            this.ctrl1LeftDeadzonePercentLabel.Location = new System.Drawing.Point(148, 26);
+            this.ctrl1LeftDeadzonePercentLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.ctrl1LeftDeadzonePercentLabel.Name = "ctrl1LeftDeadzonePercentLabel";
-            this.ctrl1LeftDeadzonePercentLabel.Size = new System.Drawing.Size(30, 13);
+            this.ctrl1LeftDeadzonePercentLabel.Size = new System.Drawing.Size(40, 16);
             this.ctrl1LeftDeadzonePercentLabel.TabIndex = 4;
             this.ctrl1LeftDeadzonePercentLabel.Text = "0%";
             this.ctrl1LeftDeadzonePercentLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // ctrl1RightDeadzone
             // 
-            this.ctrl1RightDeadzone.Location = new System.Drawing.Point(7, 106);
+            this.ctrl1RightDeadzone.Location = new System.Drawing.Point(9, 130);
+            this.ctrl1RightDeadzone.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ctrl1RightDeadzone.Maximum = 30;
             this.ctrl1RightDeadzone.Name = "ctrl1RightDeadzone";
-            this.ctrl1RightDeadzone.Size = new System.Drawing.Size(134, 45);
+            this.ctrl1RightDeadzone.Size = new System.Drawing.Size(179, 56);
             this.ctrl1RightDeadzone.TabIndex = 3;
             this.ctrl1RightDeadzone.ValueChanged += new System.EventHandler(this.deadzoneR_ValueChanged);
             // 
             // rightDeadzoneLabel
             // 
             this.rightDeadzoneLabel.AutoSize = true;
-            this.rightDeadzoneLabel.Location = new System.Drawing.Point(6, 90);
+            this.rightDeadzoneLabel.Location = new System.Drawing.Point(8, 111);
+            this.rightDeadzoneLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.rightDeadzoneLabel.Name = "rightDeadzoneLabel";
-            this.rightDeadzoneLabel.Size = new System.Drawing.Size(95, 13);
+            this.rightDeadzoneLabel.Size = new System.Drawing.Size(123, 17);
             this.rightDeadzoneLabel.TabIndex = 2;
             this.rightDeadzoneLabel.Text = "Right Analog Stick";
             // 
             // ctrl1LeftDeadzone
             // 
-            this.ctrl1LeftDeadzone.Location = new System.Drawing.Point(7, 37);
+            this.ctrl1LeftDeadzone.Location = new System.Drawing.Point(9, 46);
+            this.ctrl1LeftDeadzone.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ctrl1LeftDeadzone.Maximum = 30;
             this.ctrl1LeftDeadzone.Name = "ctrl1LeftDeadzone";
-            this.ctrl1LeftDeadzone.Size = new System.Drawing.Size(134, 45);
+            this.ctrl1LeftDeadzone.Size = new System.Drawing.Size(179, 56);
             this.ctrl1LeftDeadzone.TabIndex = 1;
             this.ctrl1LeftDeadzone.ValueChanged += new System.EventHandler(this.deadzoneL_ValueChanged);
             // 
             // leftDeadzoneLabel
             // 
             this.leftDeadzoneLabel.AutoSize = true;
-            this.leftDeadzoneLabel.Location = new System.Drawing.Point(6, 21);
+            this.leftDeadzoneLabel.Location = new System.Drawing.Point(8, 26);
+            this.leftDeadzoneLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.leftDeadzoneLabel.Name = "leftDeadzoneLabel";
-            this.leftDeadzoneLabel.Size = new System.Drawing.Size(88, 13);
+            this.leftDeadzoneLabel.Size = new System.Drawing.Size(114, 17);
             this.leftDeadzoneLabel.TabIndex = 0;
             this.leftDeadzoneLabel.Text = "Left Analog Stick";
             // 
@@ -232,9 +241,10 @@
             // 
             this.ctrl1AzertyButton.AutoSize = true;
             this.ctrl1AzertyButton.Font = new System.Drawing.Font("Courier New", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ctrl1AzertyButton.Location = new System.Drawing.Point(5, 63);
+            this.ctrl1AzertyButton.Location = new System.Drawing.Point(7, 78);
+            this.ctrl1AzertyButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ctrl1AzertyButton.Name = "ctrl1AzertyButton";
-            this.ctrl1AzertyButton.Size = new System.Drawing.Size(136, 22);
+            this.ctrl1AzertyButton.Size = new System.Drawing.Size(163, 26);
             this.ctrl1AzertyButton.TabIndex = 2;
             this.ctrl1AzertyButton.TabStop = true;
             this.ctrl1AzertyButton.Text = "A Z E R T Y";
@@ -245,9 +255,10 @@
             // 
             this.ctrl1QwertzButton.AutoSize = true;
             this.ctrl1QwertzButton.Font = new System.Drawing.Font("Courier New", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ctrl1QwertzButton.Location = new System.Drawing.Point(5, 41);
+            this.ctrl1QwertzButton.Location = new System.Drawing.Point(7, 50);
+            this.ctrl1QwertzButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ctrl1QwertzButton.Name = "ctrl1QwertzButton";
-            this.ctrl1QwertzButton.Size = new System.Drawing.Size(136, 22);
+            this.ctrl1QwertzButton.Size = new System.Drawing.Size(163, 26);
             this.ctrl1QwertzButton.TabIndex = 1;
             this.ctrl1QwertzButton.TabStop = true;
             this.ctrl1QwertzButton.Text = "Q W E R T Z";
@@ -258,37 +269,41 @@
             // 
             this.ctrl1QwertyButton.AutoSize = true;
             this.ctrl1QwertyButton.Font = new System.Drawing.Font("Courier New", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ctrl1QwertyButton.Location = new System.Drawing.Point(5, 19);
+            this.ctrl1QwertyButton.Location = new System.Drawing.Point(7, 23);
+            this.ctrl1QwertyButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ctrl1QwertyButton.Name = "ctrl1QwertyButton";
-            this.ctrl1QwertyButton.Size = new System.Drawing.Size(136, 22);
+            this.ctrl1QwertyButton.Size = new System.Drawing.Size(163, 26);
             this.ctrl1QwertyButton.TabIndex = 0;
             this.ctrl1QwertyButton.TabStop = true;
             this.ctrl1QwertyButton.Text = "Q W E R T Y";
             this.ctrl1QwertyButton.UseVisualStyleBackColor = true;
             this.ctrl1QwertyButton.CheckedChanged += new System.EventHandler(this.keyboardType_Selected);
             // 
-            // ctrl1TriggerType
+            // ctrl1TriggerTypeBox
             // 
-            this.ctrl1TriggerType.AutoSize = true;
-            this.ctrl1TriggerType.Location = new System.Drawing.Point(21, 47);
-            this.ctrl1TriggerType.Name = "ctrl1TriggerType";
-            this.ctrl1TriggerType.Size = new System.Drawing.Size(117, 17);
-            this.ctrl1TriggerType.TabIndex = 6;
-            this.ctrl1TriggerType.Text = "Triggers as Buttons";
-            this.ctrl1TriggerType.UseVisualStyleBackColor = true;
-            this.ctrl1TriggerType.CheckedChanged += new System.EventHandler(this.triggerType_CheckChanged);
-            this.ctrl1TriggerType.EnabledChanged += new System.EventHandler(this.triggerType_CheckChanged);
+            this.ctrl1TriggerTypeBox.AutoSize = true;
+            this.ctrl1TriggerTypeBox.Location = new System.Drawing.Point(28, 58);
+            this.ctrl1TriggerTypeBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.ctrl1TriggerTypeBox.Name = "ctrl1TriggerTypeBox";
+            this.ctrl1TriggerTypeBox.Size = new System.Drawing.Size(154, 21);
+            this.ctrl1TriggerTypeBox.TabIndex = 6;
+            this.ctrl1TriggerTypeBox.Text = "Triggers as Buttons";
+            this.ctrl1TriggerTypeBox.UseVisualStyleBackColor = true;
+            this.ctrl1TriggerTypeBox.CheckedChanged += new System.EventHandler(this.triggerType_CheckChanged);
+            this.ctrl1TriggerTypeBox.EnabledChanged += new System.EventHandler(this.triggerType_CheckChanged);
             // 
             // ctrl1Group
             // 
             this.ctrl1Group.Controls.Add(this.ctrl1MouseModeBox);
             this.ctrl1Group.Controls.Add(this.ctrl1KeyboardGroup);
-            this.ctrl1Group.Controls.Add(this.ctrl1TriggerType);
+            this.ctrl1Group.Controls.Add(this.ctrl1TriggerTypeBox);
             this.ctrl1Group.Controls.Add(this.ctrl1DeadzoneGroup);
             this.ctrl1Group.Enabled = false;
-            this.ctrl1Group.Location = new System.Drawing.Point(11, 12);
+            this.ctrl1Group.Location = new System.Drawing.Point(15, 15);
+            this.ctrl1Group.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ctrl1Group.Name = "ctrl1Group";
-            this.ctrl1Group.Size = new System.Drawing.Size(158, 337);
+            this.ctrl1Group.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.ctrl1Group.Size = new System.Drawing.Size(211, 415);
             this.ctrl1Group.TabIndex = 8;
             this.ctrl1Group.TabStop = false;
             this.ctrl1Group.Text = "Controller 1";
@@ -297,9 +312,10 @@
             // 
             this.ctrl1MouseModeBox.AutoSize = true;
             this.ctrl1MouseModeBox.Enabled = false;
-            this.ctrl1MouseModeBox.Location = new System.Drawing.Point(35, 19);
+            this.ctrl1MouseModeBox.Location = new System.Drawing.Point(47, 23);
+            this.ctrl1MouseModeBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ctrl1MouseModeBox.Name = "ctrl1MouseModeBox";
-            this.ctrl1MouseModeBox.Size = new System.Drawing.Size(88, 17);
+            this.ctrl1MouseModeBox.Size = new System.Drawing.Size(111, 21);
             this.ctrl1MouseModeBox.TabIndex = 9;
             this.ctrl1MouseModeBox.Text = "Mouse Mode";
             this.ctrl1MouseModeBox.UseVisualStyleBackColor = true;
@@ -309,9 +325,11 @@
             this.ctrl1KeyboardGroup.Controls.Add(this.ctrl1AzertyButton);
             this.ctrl1KeyboardGroup.Controls.Add(this.ctrl1QwertyButton);
             this.ctrl1KeyboardGroup.Controls.Add(this.ctrl1QwertzButton);
-            this.ctrl1KeyboardGroup.Location = new System.Drawing.Point(6, 236);
+            this.ctrl1KeyboardGroup.Location = new System.Drawing.Point(8, 290);
+            this.ctrl1KeyboardGroup.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ctrl1KeyboardGroup.Name = "ctrl1KeyboardGroup";
-            this.ctrl1KeyboardGroup.Size = new System.Drawing.Size(147, 91);
+            this.ctrl1KeyboardGroup.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.ctrl1KeyboardGroup.Size = new System.Drawing.Size(196, 112);
             this.ctrl1KeyboardGroup.TabIndex = 9;
             this.ctrl1KeyboardGroup.TabStop = false;
             this.ctrl1KeyboardGroup.Text = "Keyboard Type";
@@ -320,12 +338,14 @@
             // 
             this.ctrl2Group.Controls.Add(this.ctrl2MouseModeBox);
             this.ctrl2Group.Controls.Add(this.ctrl2KeyboardGroup);
-            this.ctrl2Group.Controls.Add(this.ctrl2TriggerType);
+            this.ctrl2Group.Controls.Add(this.ctrl2TriggerTypeBox);
             this.ctrl2Group.Controls.Add(this.ctrl2DeadzoneGroup);
             this.ctrl2Group.Enabled = false;
-            this.ctrl2Group.Location = new System.Drawing.Point(175, 12);
+            this.ctrl2Group.Location = new System.Drawing.Point(233, 15);
+            this.ctrl2Group.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ctrl2Group.Name = "ctrl2Group";
-            this.ctrl2Group.Size = new System.Drawing.Size(158, 337);
+            this.ctrl2Group.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.ctrl2Group.Size = new System.Drawing.Size(211, 415);
             this.ctrl2Group.TabIndex = 9;
             this.ctrl2Group.TabStop = false;
             this.ctrl2Group.Text = "Controller 2";
@@ -334,9 +354,10 @@
             // 
             this.ctrl2MouseModeBox.AutoSize = true;
             this.ctrl2MouseModeBox.Enabled = false;
-            this.ctrl2MouseModeBox.Location = new System.Drawing.Point(40, 19);
+            this.ctrl2MouseModeBox.Location = new System.Drawing.Point(53, 23);
+            this.ctrl2MouseModeBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ctrl2MouseModeBox.Name = "ctrl2MouseModeBox";
-            this.ctrl2MouseModeBox.Size = new System.Drawing.Size(88, 17);
+            this.ctrl2MouseModeBox.Size = new System.Drawing.Size(111, 21);
             this.ctrl2MouseModeBox.TabIndex = 9;
             this.ctrl2MouseModeBox.Text = "Mouse Mode";
             this.ctrl2MouseModeBox.UseVisualStyleBackColor = true;
@@ -346,9 +367,11 @@
             this.ctrl2KeyboardGroup.Controls.Add(this.ctrl2AzertyButton);
             this.ctrl2KeyboardGroup.Controls.Add(this.ctrl2QwertyButton);
             this.ctrl2KeyboardGroup.Controls.Add(this.ctrl2QwertzButton);
-            this.ctrl2KeyboardGroup.Location = new System.Drawing.Point(6, 236);
+            this.ctrl2KeyboardGroup.Location = new System.Drawing.Point(8, 290);
+            this.ctrl2KeyboardGroup.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ctrl2KeyboardGroup.Name = "ctrl2KeyboardGroup";
-            this.ctrl2KeyboardGroup.Size = new System.Drawing.Size(147, 91);
+            this.ctrl2KeyboardGroup.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.ctrl2KeyboardGroup.Size = new System.Drawing.Size(196, 112);
             this.ctrl2KeyboardGroup.TabIndex = 9;
             this.ctrl2KeyboardGroup.TabStop = false;
             this.ctrl2KeyboardGroup.Text = "Keyboard Type";
@@ -357,9 +380,10 @@
             // 
             this.ctrl2AzertyButton.AutoSize = true;
             this.ctrl2AzertyButton.Font = new System.Drawing.Font("Courier New", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ctrl2AzertyButton.Location = new System.Drawing.Point(5, 63);
+            this.ctrl2AzertyButton.Location = new System.Drawing.Point(7, 78);
+            this.ctrl2AzertyButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ctrl2AzertyButton.Name = "ctrl2AzertyButton";
-            this.ctrl2AzertyButton.Size = new System.Drawing.Size(136, 22);
+            this.ctrl2AzertyButton.Size = new System.Drawing.Size(163, 26);
             this.ctrl2AzertyButton.TabIndex = 2;
             this.ctrl2AzertyButton.TabStop = true;
             this.ctrl2AzertyButton.Text = "A Z E R T Y";
@@ -370,9 +394,10 @@
             // 
             this.ctrl2QwertyButton.AutoSize = true;
             this.ctrl2QwertyButton.Font = new System.Drawing.Font("Courier New", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ctrl2QwertyButton.Location = new System.Drawing.Point(5, 19);
+            this.ctrl2QwertyButton.Location = new System.Drawing.Point(7, 23);
+            this.ctrl2QwertyButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ctrl2QwertyButton.Name = "ctrl2QwertyButton";
-            this.ctrl2QwertyButton.Size = new System.Drawing.Size(136, 22);
+            this.ctrl2QwertyButton.Size = new System.Drawing.Size(163, 26);
             this.ctrl2QwertyButton.TabIndex = 0;
             this.ctrl2QwertyButton.TabStop = true;
             this.ctrl2QwertyButton.Text = "Q W E R T Y";
@@ -383,25 +408,27 @@
             // 
             this.ctrl2QwertzButton.AutoSize = true;
             this.ctrl2QwertzButton.Font = new System.Drawing.Font("Courier New", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ctrl2QwertzButton.Location = new System.Drawing.Point(5, 41);
+            this.ctrl2QwertzButton.Location = new System.Drawing.Point(7, 50);
+            this.ctrl2QwertzButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ctrl2QwertzButton.Name = "ctrl2QwertzButton";
-            this.ctrl2QwertzButton.Size = new System.Drawing.Size(136, 22);
+            this.ctrl2QwertzButton.Size = new System.Drawing.Size(163, 26);
             this.ctrl2QwertzButton.TabIndex = 1;
             this.ctrl2QwertzButton.TabStop = true;
             this.ctrl2QwertzButton.Text = "Q W E R T Z";
             this.ctrl2QwertzButton.UseVisualStyleBackColor = true;
             this.ctrl2QwertzButton.CheckedChanged += new System.EventHandler(this.keyboardType_Selected);
             // 
-            // ctrl2TriggerType
+            // ctrl2TriggerTypeBox
             // 
-            this.ctrl2TriggerType.AutoSize = true;
-            this.ctrl2TriggerType.Location = new System.Drawing.Point(21, 47);
-            this.ctrl2TriggerType.Name = "ctrl2TriggerType";
-            this.ctrl2TriggerType.Size = new System.Drawing.Size(117, 17);
-            this.ctrl2TriggerType.TabIndex = 6;
-            this.ctrl2TriggerType.Text = "Triggers as Buttons";
-            this.ctrl2TriggerType.UseVisualStyleBackColor = true;
-            this.ctrl2TriggerType.CheckedChanged += new System.EventHandler(this.triggerType_CheckChanged);
+            this.ctrl2TriggerTypeBox.AutoSize = true;
+            this.ctrl2TriggerTypeBox.Location = new System.Drawing.Point(28, 58);
+            this.ctrl2TriggerTypeBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.ctrl2TriggerTypeBox.Name = "ctrl2TriggerTypeBox";
+            this.ctrl2TriggerTypeBox.Size = new System.Drawing.Size(154, 21);
+            this.ctrl2TriggerTypeBox.TabIndex = 6;
+            this.ctrl2TriggerTypeBox.Text = "Triggers as Buttons";
+            this.ctrl2TriggerTypeBox.UseVisualStyleBackColor = true;
+            this.ctrl2TriggerTypeBox.CheckedChanged += new System.EventHandler(this.triggerType_CheckChanged);
             // 
             // ctrl2DeadzoneGroup
             // 
@@ -411,64 +438,72 @@
             this.ctrl2DeadzoneGroup.Controls.Add(this.label3);
             this.ctrl2DeadzoneGroup.Controls.Add(this.ctrl2LeftDeadzone);
             this.ctrl2DeadzoneGroup.Controls.Add(this.label4);
-            this.ctrl2DeadzoneGroup.Location = new System.Drawing.Point(6, 73);
+            this.ctrl2DeadzoneGroup.Location = new System.Drawing.Point(8, 90);
+            this.ctrl2DeadzoneGroup.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ctrl2DeadzoneGroup.Name = "ctrl2DeadzoneGroup";
-            this.ctrl2DeadzoneGroup.Size = new System.Drawing.Size(147, 157);
+            this.ctrl2DeadzoneGroup.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.ctrl2DeadzoneGroup.Size = new System.Drawing.Size(196, 193);
             this.ctrl2DeadzoneGroup.TabIndex = 4;
             this.ctrl2DeadzoneGroup.TabStop = false;
             this.ctrl2DeadzoneGroup.Text = "Analog Deadzones";
             // 
             // ctrl2RightDeadzonePercentLabel
             // 
-            this.ctrl2RightDeadzonePercentLabel.Location = new System.Drawing.Point(111, 90);
+            this.ctrl2RightDeadzonePercentLabel.Location = new System.Drawing.Point(148, 111);
+            this.ctrl2RightDeadzonePercentLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.ctrl2RightDeadzonePercentLabel.Name = "ctrl2RightDeadzonePercentLabel";
-            this.ctrl2RightDeadzonePercentLabel.Size = new System.Drawing.Size(30, 13);
+            this.ctrl2RightDeadzonePercentLabel.Size = new System.Drawing.Size(40, 16);
             this.ctrl2RightDeadzonePercentLabel.TabIndex = 5;
             this.ctrl2RightDeadzonePercentLabel.Text = "0%";
             this.ctrl2RightDeadzonePercentLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // ctrl2LeftDeadzonePercentLabel
             // 
-            this.ctrl2LeftDeadzonePercentLabel.Location = new System.Drawing.Point(111, 21);
+            this.ctrl2LeftDeadzonePercentLabel.Location = new System.Drawing.Point(148, 26);
+            this.ctrl2LeftDeadzonePercentLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.ctrl2LeftDeadzonePercentLabel.Name = "ctrl2LeftDeadzonePercentLabel";
-            this.ctrl2LeftDeadzonePercentLabel.Size = new System.Drawing.Size(30, 13);
+            this.ctrl2LeftDeadzonePercentLabel.Size = new System.Drawing.Size(40, 16);
             this.ctrl2LeftDeadzonePercentLabel.TabIndex = 4;
             this.ctrl2LeftDeadzonePercentLabel.Text = "0%";
             this.ctrl2LeftDeadzonePercentLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // ctrl2RightDeadzone
             // 
-            this.ctrl2RightDeadzone.Location = new System.Drawing.Point(7, 106);
+            this.ctrl2RightDeadzone.Location = new System.Drawing.Point(9, 130);
+            this.ctrl2RightDeadzone.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ctrl2RightDeadzone.Maximum = 30;
             this.ctrl2RightDeadzone.Name = "ctrl2RightDeadzone";
-            this.ctrl2RightDeadzone.Size = new System.Drawing.Size(134, 45);
+            this.ctrl2RightDeadzone.Size = new System.Drawing.Size(179, 56);
             this.ctrl2RightDeadzone.TabIndex = 3;
             this.ctrl2RightDeadzone.ValueChanged += new System.EventHandler(this.deadzoneR_ValueChanged);
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 90);
+            this.label3.Location = new System.Drawing.Point(8, 111);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(95, 13);
+            this.label3.Size = new System.Drawing.Size(123, 17);
             this.label3.TabIndex = 2;
             this.label3.Text = "Right Analog Stick";
             // 
             // ctrl2LeftDeadzone
             // 
-            this.ctrl2LeftDeadzone.Location = new System.Drawing.Point(7, 37);
+            this.ctrl2LeftDeadzone.Location = new System.Drawing.Point(9, 46);
+            this.ctrl2LeftDeadzone.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ctrl2LeftDeadzone.Maximum = 30;
             this.ctrl2LeftDeadzone.Name = "ctrl2LeftDeadzone";
-            this.ctrl2LeftDeadzone.Size = new System.Drawing.Size(134, 45);
+            this.ctrl2LeftDeadzone.Size = new System.Drawing.Size(179, 56);
             this.ctrl2LeftDeadzone.TabIndex = 1;
             this.ctrl2LeftDeadzone.ValueChanged += new System.EventHandler(this.deadzoneL_ValueChanged);
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 21);
+            this.label4.Location = new System.Drawing.Point(8, 26);
+            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(88, 13);
+            this.label4.Size = new System.Drawing.Size(114, 17);
             this.label4.TabIndex = 0;
             this.label4.Text = "Left Analog Stick";
             // 
@@ -476,12 +511,14 @@
             // 
             this.ctrl3Group.Controls.Add(this.ctrl3MouseModeBox);
             this.ctrl3Group.Controls.Add(this.ctrl3KeyboardGroup);
-            this.ctrl3Group.Controls.Add(this.ctrl3TriggerType);
+            this.ctrl3Group.Controls.Add(this.ctrl3TriggerTypeBox);
             this.ctrl3Group.Controls.Add(this.ctrl3DeadzoneGroup);
             this.ctrl3Group.Enabled = false;
-            this.ctrl3Group.Location = new System.Drawing.Point(339, 12);
+            this.ctrl3Group.Location = new System.Drawing.Point(452, 15);
+            this.ctrl3Group.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ctrl3Group.Name = "ctrl3Group";
-            this.ctrl3Group.Size = new System.Drawing.Size(158, 337);
+            this.ctrl3Group.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.ctrl3Group.Size = new System.Drawing.Size(211, 415);
             this.ctrl3Group.TabIndex = 10;
             this.ctrl3Group.TabStop = false;
             this.ctrl3Group.Text = "Controller 3";
@@ -490,9 +527,10 @@
             // 
             this.ctrl3MouseModeBox.AutoSize = true;
             this.ctrl3MouseModeBox.Enabled = false;
-            this.ctrl3MouseModeBox.Location = new System.Drawing.Point(40, 19);
+            this.ctrl3MouseModeBox.Location = new System.Drawing.Point(53, 23);
+            this.ctrl3MouseModeBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ctrl3MouseModeBox.Name = "ctrl3MouseModeBox";
-            this.ctrl3MouseModeBox.Size = new System.Drawing.Size(88, 17);
+            this.ctrl3MouseModeBox.Size = new System.Drawing.Size(111, 21);
             this.ctrl3MouseModeBox.TabIndex = 9;
             this.ctrl3MouseModeBox.Text = "Mouse Mode";
             this.ctrl3MouseModeBox.UseVisualStyleBackColor = true;
@@ -502,9 +540,11 @@
             this.ctrl3KeyboardGroup.Controls.Add(this.ctrl3AzertyButton);
             this.ctrl3KeyboardGroup.Controls.Add(this.ctrl3QwertyButton);
             this.ctrl3KeyboardGroup.Controls.Add(this.ctrl3QwertzButton);
-            this.ctrl3KeyboardGroup.Location = new System.Drawing.Point(6, 236);
+            this.ctrl3KeyboardGroup.Location = new System.Drawing.Point(8, 290);
+            this.ctrl3KeyboardGroup.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ctrl3KeyboardGroup.Name = "ctrl3KeyboardGroup";
-            this.ctrl3KeyboardGroup.Size = new System.Drawing.Size(147, 91);
+            this.ctrl3KeyboardGroup.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.ctrl3KeyboardGroup.Size = new System.Drawing.Size(196, 112);
             this.ctrl3KeyboardGroup.TabIndex = 9;
             this.ctrl3KeyboardGroup.TabStop = false;
             this.ctrl3KeyboardGroup.Text = "Keyboard Type";
@@ -513,9 +553,10 @@
             // 
             this.ctrl3AzertyButton.AutoSize = true;
             this.ctrl3AzertyButton.Font = new System.Drawing.Font("Courier New", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ctrl3AzertyButton.Location = new System.Drawing.Point(5, 63);
+            this.ctrl3AzertyButton.Location = new System.Drawing.Point(7, 78);
+            this.ctrl3AzertyButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ctrl3AzertyButton.Name = "ctrl3AzertyButton";
-            this.ctrl3AzertyButton.Size = new System.Drawing.Size(136, 22);
+            this.ctrl3AzertyButton.Size = new System.Drawing.Size(163, 26);
             this.ctrl3AzertyButton.TabIndex = 2;
             this.ctrl3AzertyButton.TabStop = true;
             this.ctrl3AzertyButton.Text = "A Z E R T Y";
@@ -526,9 +567,10 @@
             // 
             this.ctrl3QwertyButton.AutoSize = true;
             this.ctrl3QwertyButton.Font = new System.Drawing.Font("Courier New", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ctrl3QwertyButton.Location = new System.Drawing.Point(5, 19);
+            this.ctrl3QwertyButton.Location = new System.Drawing.Point(7, 23);
+            this.ctrl3QwertyButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ctrl3QwertyButton.Name = "ctrl3QwertyButton";
-            this.ctrl3QwertyButton.Size = new System.Drawing.Size(136, 22);
+            this.ctrl3QwertyButton.Size = new System.Drawing.Size(163, 26);
             this.ctrl3QwertyButton.TabIndex = 0;
             this.ctrl3QwertyButton.TabStop = true;
             this.ctrl3QwertyButton.Text = "Q W E R T Y";
@@ -539,25 +581,27 @@
             // 
             this.ctrl3QwertzButton.AutoSize = true;
             this.ctrl3QwertzButton.Font = new System.Drawing.Font("Courier New", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ctrl3QwertzButton.Location = new System.Drawing.Point(5, 41);
+            this.ctrl3QwertzButton.Location = new System.Drawing.Point(7, 50);
+            this.ctrl3QwertzButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ctrl3QwertzButton.Name = "ctrl3QwertzButton";
-            this.ctrl3QwertzButton.Size = new System.Drawing.Size(136, 22);
+            this.ctrl3QwertzButton.Size = new System.Drawing.Size(163, 26);
             this.ctrl3QwertzButton.TabIndex = 1;
             this.ctrl3QwertzButton.TabStop = true;
             this.ctrl3QwertzButton.Text = "Q W E R T Z";
             this.ctrl3QwertzButton.UseVisualStyleBackColor = true;
             this.ctrl3QwertzButton.CheckedChanged += new System.EventHandler(this.keyboardType_Selected);
             // 
-            // ctrl3TriggerType
+            // ctrl3TriggerTypeBox
             // 
-            this.ctrl3TriggerType.AutoSize = true;
-            this.ctrl3TriggerType.Location = new System.Drawing.Point(21, 47);
-            this.ctrl3TriggerType.Name = "ctrl3TriggerType";
-            this.ctrl3TriggerType.Size = new System.Drawing.Size(117, 17);
-            this.ctrl3TriggerType.TabIndex = 6;
-            this.ctrl3TriggerType.Text = "Triggers as Buttons";
-            this.ctrl3TriggerType.UseVisualStyleBackColor = true;
-            this.ctrl3TriggerType.CheckedChanged += new System.EventHandler(this.triggerType_CheckChanged);
+            this.ctrl3TriggerTypeBox.AutoSize = true;
+            this.ctrl3TriggerTypeBox.Location = new System.Drawing.Point(28, 58);
+            this.ctrl3TriggerTypeBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.ctrl3TriggerTypeBox.Name = "ctrl3TriggerTypeBox";
+            this.ctrl3TriggerTypeBox.Size = new System.Drawing.Size(154, 21);
+            this.ctrl3TriggerTypeBox.TabIndex = 6;
+            this.ctrl3TriggerTypeBox.Text = "Triggers as Buttons";
+            this.ctrl3TriggerTypeBox.UseVisualStyleBackColor = true;
+            this.ctrl3TriggerTypeBox.CheckedChanged += new System.EventHandler(this.triggerType_CheckChanged);
             // 
             // ctrl3DeadzoneGroup
             // 
@@ -567,64 +611,72 @@
             this.ctrl3DeadzoneGroup.Controls.Add(this.label7);
             this.ctrl3DeadzoneGroup.Controls.Add(this.ctrl3LeftDeadzone);
             this.ctrl3DeadzoneGroup.Controls.Add(this.label8);
-            this.ctrl3DeadzoneGroup.Location = new System.Drawing.Point(6, 73);
+            this.ctrl3DeadzoneGroup.Location = new System.Drawing.Point(8, 90);
+            this.ctrl3DeadzoneGroup.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ctrl3DeadzoneGroup.Name = "ctrl3DeadzoneGroup";
-            this.ctrl3DeadzoneGroup.Size = new System.Drawing.Size(147, 157);
+            this.ctrl3DeadzoneGroup.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.ctrl3DeadzoneGroup.Size = new System.Drawing.Size(196, 193);
             this.ctrl3DeadzoneGroup.TabIndex = 4;
             this.ctrl3DeadzoneGroup.TabStop = false;
             this.ctrl3DeadzoneGroup.Text = "Analog Deadzones";
             // 
             // ctrl3RightDeadzonePercentLabel
             // 
-            this.ctrl3RightDeadzonePercentLabel.Location = new System.Drawing.Point(111, 90);
+            this.ctrl3RightDeadzonePercentLabel.Location = new System.Drawing.Point(148, 111);
+            this.ctrl3RightDeadzonePercentLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.ctrl3RightDeadzonePercentLabel.Name = "ctrl3RightDeadzonePercentLabel";
-            this.ctrl3RightDeadzonePercentLabel.Size = new System.Drawing.Size(30, 13);
+            this.ctrl3RightDeadzonePercentLabel.Size = new System.Drawing.Size(40, 16);
             this.ctrl3RightDeadzonePercentLabel.TabIndex = 5;
             this.ctrl3RightDeadzonePercentLabel.Text = "0%";
             this.ctrl3RightDeadzonePercentLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // ctrl3LeftDeadzonePercentLabel
             // 
-            this.ctrl3LeftDeadzonePercentLabel.Location = new System.Drawing.Point(111, 21);
+            this.ctrl3LeftDeadzonePercentLabel.Location = new System.Drawing.Point(148, 26);
+            this.ctrl3LeftDeadzonePercentLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.ctrl3LeftDeadzonePercentLabel.Name = "ctrl3LeftDeadzonePercentLabel";
-            this.ctrl3LeftDeadzonePercentLabel.Size = new System.Drawing.Size(30, 13);
+            this.ctrl3LeftDeadzonePercentLabel.Size = new System.Drawing.Size(40, 16);
             this.ctrl3LeftDeadzonePercentLabel.TabIndex = 4;
             this.ctrl3LeftDeadzonePercentLabel.Text = "0%";
             this.ctrl3LeftDeadzonePercentLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // ctrl3RightDeadzone
             // 
-            this.ctrl3RightDeadzone.Location = new System.Drawing.Point(7, 106);
+            this.ctrl3RightDeadzone.Location = new System.Drawing.Point(9, 130);
+            this.ctrl3RightDeadzone.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ctrl3RightDeadzone.Maximum = 30;
             this.ctrl3RightDeadzone.Name = "ctrl3RightDeadzone";
-            this.ctrl3RightDeadzone.Size = new System.Drawing.Size(134, 45);
+            this.ctrl3RightDeadzone.Size = new System.Drawing.Size(179, 56);
             this.ctrl3RightDeadzone.TabIndex = 3;
             this.ctrl3RightDeadzone.ValueChanged += new System.EventHandler(this.deadzoneR_ValueChanged);
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(6, 90);
+            this.label7.Location = new System.Drawing.Point(8, 111);
+            this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(95, 13);
+            this.label7.Size = new System.Drawing.Size(123, 17);
             this.label7.TabIndex = 2;
             this.label7.Text = "Right Analog Stick";
             // 
             // ctrl3LeftDeadzone
             // 
-            this.ctrl3LeftDeadzone.Location = new System.Drawing.Point(7, 37);
+            this.ctrl3LeftDeadzone.Location = new System.Drawing.Point(9, 46);
+            this.ctrl3LeftDeadzone.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ctrl3LeftDeadzone.Maximum = 30;
             this.ctrl3LeftDeadzone.Name = "ctrl3LeftDeadzone";
-            this.ctrl3LeftDeadzone.Size = new System.Drawing.Size(134, 45);
+            this.ctrl3LeftDeadzone.Size = new System.Drawing.Size(179, 56);
             this.ctrl3LeftDeadzone.TabIndex = 1;
             this.ctrl3LeftDeadzone.ValueChanged += new System.EventHandler(this.deadzoneL_ValueChanged);
             // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(6, 21);
+            this.label8.Location = new System.Drawing.Point(8, 26);
+            this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(88, 13);
+            this.label8.Size = new System.Drawing.Size(114, 17);
             this.label8.TabIndex = 0;
             this.label8.Text = "Left Analog Stick";
             // 
@@ -632,12 +684,14 @@
             // 
             this.ctrl4Group.Controls.Add(this.ctrl4MouseModeBox);
             this.ctrl4Group.Controls.Add(this.ctrl4KeyboardGroup);
-            this.ctrl4Group.Controls.Add(this.ctrl4TriggerType);
+            this.ctrl4Group.Controls.Add(this.ctrl4TriggerTypeBox);
             this.ctrl4Group.Controls.Add(this.ctrl4DeadzoneGroup);
             this.ctrl4Group.Enabled = false;
-            this.ctrl4Group.Location = new System.Drawing.Point(503, 12);
+            this.ctrl4Group.Location = new System.Drawing.Point(671, 15);
+            this.ctrl4Group.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ctrl4Group.Name = "ctrl4Group";
-            this.ctrl4Group.Size = new System.Drawing.Size(158, 337);
+            this.ctrl4Group.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.ctrl4Group.Size = new System.Drawing.Size(211, 415);
             this.ctrl4Group.TabIndex = 11;
             this.ctrl4Group.TabStop = false;
             this.ctrl4Group.Text = "Controller 4";
@@ -646,9 +700,10 @@
             // 
             this.ctrl4MouseModeBox.AutoSize = true;
             this.ctrl4MouseModeBox.Enabled = false;
-            this.ctrl4MouseModeBox.Location = new System.Drawing.Point(40, 19);
+            this.ctrl4MouseModeBox.Location = new System.Drawing.Point(53, 23);
+            this.ctrl4MouseModeBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ctrl4MouseModeBox.Name = "ctrl4MouseModeBox";
-            this.ctrl4MouseModeBox.Size = new System.Drawing.Size(88, 17);
+            this.ctrl4MouseModeBox.Size = new System.Drawing.Size(111, 21);
             this.ctrl4MouseModeBox.TabIndex = 9;
             this.ctrl4MouseModeBox.Text = "Mouse Mode";
             this.ctrl4MouseModeBox.UseVisualStyleBackColor = true;
@@ -658,9 +713,11 @@
             this.ctrl4KeyboardGroup.Controls.Add(this.ctrl4AzertyButton);
             this.ctrl4KeyboardGroup.Controls.Add(this.ctrl4QwertyButton);
             this.ctrl4KeyboardGroup.Controls.Add(this.ctrl4QwertzButton);
-            this.ctrl4KeyboardGroup.Location = new System.Drawing.Point(6, 236);
+            this.ctrl4KeyboardGroup.Location = new System.Drawing.Point(8, 290);
+            this.ctrl4KeyboardGroup.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ctrl4KeyboardGroup.Name = "ctrl4KeyboardGroup";
-            this.ctrl4KeyboardGroup.Size = new System.Drawing.Size(147, 91);
+            this.ctrl4KeyboardGroup.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.ctrl4KeyboardGroup.Size = new System.Drawing.Size(196, 112);
             this.ctrl4KeyboardGroup.TabIndex = 9;
             this.ctrl4KeyboardGroup.TabStop = false;
             this.ctrl4KeyboardGroup.Text = "Keyboard Type";
@@ -669,9 +726,10 @@
             // 
             this.ctrl4AzertyButton.AutoSize = true;
             this.ctrl4AzertyButton.Font = new System.Drawing.Font("Courier New", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ctrl4AzertyButton.Location = new System.Drawing.Point(5, 63);
+            this.ctrl4AzertyButton.Location = new System.Drawing.Point(7, 78);
+            this.ctrl4AzertyButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ctrl4AzertyButton.Name = "ctrl4AzertyButton";
-            this.ctrl4AzertyButton.Size = new System.Drawing.Size(136, 22);
+            this.ctrl4AzertyButton.Size = new System.Drawing.Size(163, 26);
             this.ctrl4AzertyButton.TabIndex = 2;
             this.ctrl4AzertyButton.TabStop = true;
             this.ctrl4AzertyButton.Text = "A Z E R T Y";
@@ -682,9 +740,10 @@
             // 
             this.ctrl4QwertyButton.AutoSize = true;
             this.ctrl4QwertyButton.Font = new System.Drawing.Font("Courier New", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ctrl4QwertyButton.Location = new System.Drawing.Point(5, 19);
+            this.ctrl4QwertyButton.Location = new System.Drawing.Point(7, 23);
+            this.ctrl4QwertyButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ctrl4QwertyButton.Name = "ctrl4QwertyButton";
-            this.ctrl4QwertyButton.Size = new System.Drawing.Size(136, 22);
+            this.ctrl4QwertyButton.Size = new System.Drawing.Size(163, 26);
             this.ctrl4QwertyButton.TabIndex = 0;
             this.ctrl4QwertyButton.TabStop = true;
             this.ctrl4QwertyButton.Text = "Q W E R T Y";
@@ -695,25 +754,27 @@
             // 
             this.ctrl4QwertzButton.AutoSize = true;
             this.ctrl4QwertzButton.Font = new System.Drawing.Font("Courier New", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ctrl4QwertzButton.Location = new System.Drawing.Point(5, 41);
+            this.ctrl4QwertzButton.Location = new System.Drawing.Point(7, 50);
+            this.ctrl4QwertzButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ctrl4QwertzButton.Name = "ctrl4QwertzButton";
-            this.ctrl4QwertzButton.Size = new System.Drawing.Size(136, 22);
+            this.ctrl4QwertzButton.Size = new System.Drawing.Size(163, 26);
             this.ctrl4QwertzButton.TabIndex = 1;
             this.ctrl4QwertzButton.TabStop = true;
             this.ctrl4QwertzButton.Text = "Q W E R T Z";
             this.ctrl4QwertzButton.UseVisualStyleBackColor = true;
             this.ctrl4QwertzButton.CheckedChanged += new System.EventHandler(this.keyboardType_Selected);
             // 
-            // ctrl4TriggerType
+            // ctrl4TriggerTypeBox
             // 
-            this.ctrl4TriggerType.AutoSize = true;
-            this.ctrl4TriggerType.Location = new System.Drawing.Point(21, 47);
-            this.ctrl4TriggerType.Name = "ctrl4TriggerType";
-            this.ctrl4TriggerType.Size = new System.Drawing.Size(117, 17);
-            this.ctrl4TriggerType.TabIndex = 6;
-            this.ctrl4TriggerType.Text = "Triggers as Buttons";
-            this.ctrl4TriggerType.UseVisualStyleBackColor = true;
-            this.ctrl4TriggerType.CheckedChanged += new System.EventHandler(this.triggerType_CheckChanged);
+            this.ctrl4TriggerTypeBox.AutoSize = true;
+            this.ctrl4TriggerTypeBox.Location = new System.Drawing.Point(28, 58);
+            this.ctrl4TriggerTypeBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.ctrl4TriggerTypeBox.Name = "ctrl4TriggerTypeBox";
+            this.ctrl4TriggerTypeBox.Size = new System.Drawing.Size(154, 21);
+            this.ctrl4TriggerTypeBox.TabIndex = 6;
+            this.ctrl4TriggerTypeBox.Text = "Triggers as Buttons";
+            this.ctrl4TriggerTypeBox.UseVisualStyleBackColor = true;
+            this.ctrl4TriggerTypeBox.CheckedChanged += new System.EventHandler(this.triggerType_CheckChanged);
             // 
             // ctrl4DeadzoneGroup
             // 
@@ -723,72 +784,80 @@
             this.ctrl4DeadzoneGroup.Controls.Add(this.label11);
             this.ctrl4DeadzoneGroup.Controls.Add(this.ctrl4LeftDeadzone);
             this.ctrl4DeadzoneGroup.Controls.Add(this.label12);
-            this.ctrl4DeadzoneGroup.Location = new System.Drawing.Point(6, 73);
+            this.ctrl4DeadzoneGroup.Location = new System.Drawing.Point(8, 90);
+            this.ctrl4DeadzoneGroup.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ctrl4DeadzoneGroup.Name = "ctrl4DeadzoneGroup";
-            this.ctrl4DeadzoneGroup.Size = new System.Drawing.Size(147, 157);
+            this.ctrl4DeadzoneGroup.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.ctrl4DeadzoneGroup.Size = new System.Drawing.Size(196, 193);
             this.ctrl4DeadzoneGroup.TabIndex = 4;
             this.ctrl4DeadzoneGroup.TabStop = false;
             this.ctrl4DeadzoneGroup.Text = "Analog Deadzones";
             // 
             // ctrl4RightDeadzonePercentLabel
             // 
-            this.ctrl4RightDeadzonePercentLabel.Location = new System.Drawing.Point(111, 90);
+            this.ctrl4RightDeadzonePercentLabel.Location = new System.Drawing.Point(148, 111);
+            this.ctrl4RightDeadzonePercentLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.ctrl4RightDeadzonePercentLabel.Name = "ctrl4RightDeadzonePercentLabel";
-            this.ctrl4RightDeadzonePercentLabel.Size = new System.Drawing.Size(30, 13);
+            this.ctrl4RightDeadzonePercentLabel.Size = new System.Drawing.Size(40, 16);
             this.ctrl4RightDeadzonePercentLabel.TabIndex = 5;
             this.ctrl4RightDeadzonePercentLabel.Text = "0%";
             this.ctrl4RightDeadzonePercentLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // ctrl4LeftDeadzonePercentLabel
             // 
-            this.ctrl4LeftDeadzonePercentLabel.Location = new System.Drawing.Point(111, 21);
+            this.ctrl4LeftDeadzonePercentLabel.Location = new System.Drawing.Point(148, 26);
+            this.ctrl4LeftDeadzonePercentLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.ctrl4LeftDeadzonePercentLabel.Name = "ctrl4LeftDeadzonePercentLabel";
-            this.ctrl4LeftDeadzonePercentLabel.Size = new System.Drawing.Size(30, 13);
+            this.ctrl4LeftDeadzonePercentLabel.Size = new System.Drawing.Size(40, 16);
             this.ctrl4LeftDeadzonePercentLabel.TabIndex = 4;
             this.ctrl4LeftDeadzonePercentLabel.Text = "0%";
             this.ctrl4LeftDeadzonePercentLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // ctrl4RightDeadzone
             // 
-            this.ctrl4RightDeadzone.Location = new System.Drawing.Point(7, 106);
+            this.ctrl4RightDeadzone.Location = new System.Drawing.Point(9, 130);
+            this.ctrl4RightDeadzone.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ctrl4RightDeadzone.Maximum = 30;
             this.ctrl4RightDeadzone.Name = "ctrl4RightDeadzone";
-            this.ctrl4RightDeadzone.Size = new System.Drawing.Size(134, 45);
+            this.ctrl4RightDeadzone.Size = new System.Drawing.Size(179, 56);
             this.ctrl4RightDeadzone.TabIndex = 3;
             this.ctrl4RightDeadzone.ValueChanged += new System.EventHandler(this.deadzoneR_ValueChanged);
             // 
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(6, 90);
+            this.label11.Location = new System.Drawing.Point(8, 111);
+            this.label11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(95, 13);
+            this.label11.Size = new System.Drawing.Size(123, 17);
             this.label11.TabIndex = 2;
             this.label11.Text = "Right Analog Stick";
             // 
             // ctrl4LeftDeadzone
             // 
-            this.ctrl4LeftDeadzone.Location = new System.Drawing.Point(7, 37);
+            this.ctrl4LeftDeadzone.Location = new System.Drawing.Point(9, 46);
+            this.ctrl4LeftDeadzone.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ctrl4LeftDeadzone.Maximum = 30;
             this.ctrl4LeftDeadzone.Name = "ctrl4LeftDeadzone";
-            this.ctrl4LeftDeadzone.Size = new System.Drawing.Size(134, 45);
+            this.ctrl4LeftDeadzone.Size = new System.Drawing.Size(179, 56);
             this.ctrl4LeftDeadzone.TabIndex = 1;
             this.ctrl4LeftDeadzone.ValueChanged += new System.EventHandler(this.deadzoneL_ValueChanged);
             // 
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(6, 21);
+            this.label12.Location = new System.Drawing.Point(8, 26);
+            this.label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(88, 13);
+            this.label12.Size = new System.Drawing.Size(114, 17);
             this.label12.TabIndex = 0;
             this.label12.Text = "Left Analog Stick";
             // 
             // Window_Main
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(670, 525);
+            this.ClientSize = new System.Drawing.Size(893, 646);
             this.Controls.Add(this.ctrl4Group);
             this.Controls.Add(this.ctrl3Group);
             this.Controls.Add(this.ctrl2Group);
@@ -796,6 +865,7 @@
             this.Controls.Add(this.appLogTextbox);
             this.Controls.Add(this.chatpadTextBox);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "Window_Main";
             this.Text = "Xbox 360 Wireless Chatpad";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Window_Main_FormClosing);
@@ -856,7 +926,7 @@
         private System.Windows.Forms.RadioButton ctrl1AzertyButton;
         private System.Windows.Forms.RadioButton ctrl1QwertzButton;
         private System.Windows.Forms.RadioButton ctrl1QwertyButton;
-        private System.Windows.Forms.CheckBox ctrl1TriggerType;
+        private System.Windows.Forms.CheckBox ctrl1TriggerTypeBox;
         private System.Windows.Forms.GroupBox ctrl1Group;
         private System.Windows.Forms.GroupBox ctrl1KeyboardGroup;
         private System.Windows.Forms.CheckBox ctrl1MouseModeBox;
@@ -866,7 +936,7 @@
         private System.Windows.Forms.RadioButton ctrl2AzertyButton;
         private System.Windows.Forms.RadioButton ctrl2QwertyButton;
         private System.Windows.Forms.RadioButton ctrl2QwertzButton;
-        private System.Windows.Forms.CheckBox ctrl2TriggerType;
+        private System.Windows.Forms.CheckBox ctrl2TriggerTypeBox;
         private System.Windows.Forms.GroupBox ctrl2DeadzoneGroup;
         private System.Windows.Forms.Label ctrl2RightDeadzonePercentLabel;
         private System.Windows.Forms.Label ctrl2LeftDeadzonePercentLabel;
@@ -880,7 +950,7 @@
         private System.Windows.Forms.RadioButton ctrl3AzertyButton;
         private System.Windows.Forms.RadioButton ctrl3QwertyButton;
         private System.Windows.Forms.RadioButton ctrl3QwertzButton;
-        private System.Windows.Forms.CheckBox ctrl3TriggerType;
+        private System.Windows.Forms.CheckBox ctrl3TriggerTypeBox;
         private System.Windows.Forms.GroupBox ctrl3DeadzoneGroup;
         private System.Windows.Forms.Label ctrl3RightDeadzonePercentLabel;
         private System.Windows.Forms.Label ctrl3LeftDeadzonePercentLabel;
@@ -894,7 +964,7 @@
         private System.Windows.Forms.RadioButton ctrl4AzertyButton;
         private System.Windows.Forms.RadioButton ctrl4QwertyButton;
         private System.Windows.Forms.RadioButton ctrl4QwertzButton;
-        private System.Windows.Forms.CheckBox ctrl4TriggerType;
+        private System.Windows.Forms.CheckBox ctrl4TriggerTypeBox;
         private System.Windows.Forms.GroupBox ctrl4DeadzoneGroup;
         private System.Windows.Forms.Label ctrl4RightDeadzonePercentLabel;
         private System.Windows.Forms.Label ctrl4LeftDeadzonePercentLabel;
