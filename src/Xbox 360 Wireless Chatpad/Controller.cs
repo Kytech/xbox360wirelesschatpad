@@ -673,7 +673,7 @@ namespace Xbox360WirelessChatpad
 
                 // Set the right stick X and Y values
                 vJoyInt.SetAxis(rightX, (uint)controllerNumber, axisMap["RX"]);
-                vJoyInt.SetAxis(rightY, (uint)controllerNumber, axisMap["RY"]);
+                vJoyInt.SetAxis(-rightY, (uint)controllerNumber, axisMap["RY"]);
 
                 // If in FFXIV Mode the Left and Right Triggers are buttons otherwise
                 // they are separate axes.
@@ -971,10 +971,10 @@ namespace Xbox360WirelessChatpad
             }
             else
             {
-                buttonMap["A"]      = 3;
-                buttonMap["B"]      = 4;
-                buttonMap["X"]      = 1;
-                buttonMap["Y"]      = 2;
+                buttonMap["A"]      = 1;
+                buttonMap["B"]      = 2;
+                buttonMap["X"]      = 3;
+                buttonMap["Y"]      = 4;
                 buttonMap["LStick"] = 9;
                 buttonMap["RStick"] = 10;
                 buttonMap["LBump"]  = 5;
