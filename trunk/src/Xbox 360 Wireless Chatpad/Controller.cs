@@ -170,9 +170,7 @@ namespace Xbox360WirelessChatpad
         private bool leftButtonDown = false;
         private bool rightButtonDown = false;
 
-        // Shortcut keystrokes for Navigating Forward and Back
-        private Keys[] navBack = new Keys[] { Keys.LMenu, Keys.Left };
-        private Keys[] navForward = new Keys[] { Keys.LMenu, Keys.Right };
+        private bool navActive = false;
 
         public Controller(Window_Main window)
         {
@@ -584,13 +582,24 @@ namespace Xbox360WirelessChatpad
             if (mouseModeFlag)
             {
                 // Left Bumper - Navigate Back
-                if ((dataPacket[7] & 0x01) > 0)
-                    Keyboard.ShortcutKeys(navBack);
+                if ((dataPacket[7] & 0x01) > 0 && !navActive)
+                {
+                    navActive = true;
+                    Keyboard.KeyDown(Keys.LMenu);
+                    Keyboard.KeyDown(Keys.Left);
+                    Keyboard.KeyUp(Keys.Left);
+                    Keyboard.KeyUp(Keys.LMenu);
+                }
 
                 // Right Bumper - Navigate Forward
-                if ((dataPacket[7] & 0x02) > 0)
-                    Keyboard.ShortcutKeys(navForward);
-
+                if ((dataPacket[7] & 0x02) > 0 && !navActive)
+                {
+                    navActive = true;
+                    Keyboard.KeyDown(Keys.LMenu);
+                    Keyboard.KeyDown(Keys.Right);
+                    Keyboard.KeyUp(Keys.Right);
+                    Keyboard.KeyUp(Keys.LMenu);
+                }
             }
             else
             {
@@ -673,7 +682,7 @@ namespace Xbox360WirelessChatpad
 
                 // Set the right stick X and Y values
                 vJoyInt.SetAxis(rightX, (uint)controllerNumber, axisMap["RX"]);
-                vJoyInt.SetAxis(-rightY, (uint)controllerNumber, axisMap["RY"]);
+                vJoyInt.SetAxis(rightY, (uint)controllerNumber, axisMap["RY"]);
 
                 // If in FFXIV Mode the Left and Right Triggers are buttons otherwise
                 // they are separate axes.
@@ -1117,13 +1126,17 @@ namespace Xbox360WirelessChatpad
             // Note: For some reason, the left stick Y axis is inverted, multiplied by -1 to fix
             int tickCount = 0;
 
+            // This will count for tracking the navigation active boolean, to help avoid double
+            // navigation commands
+            int navActCount = 0;
+
             while (true)
             {
                 if ((Math.Abs(mouseVelX) > 0) || ((Math.Abs(mouseVelY) > 0)))
                     Mouse.MoveRelative(mouseVelX, -mouseVelY);
 
-                // The tickCount will get incremented each time this thread executes. The check for 5
-                // will allow the resulting code to execute every 5th iteration. This necessary to
+                // The tickCount will get incremented each time this thread executes. The check for 4
+                // will allow the resulting code to execute every 4th iteration. This necessary to
                 // keep the cursor speed fluid while still having a usable scroll speed.
                 if (tickCount == 4)
                 {
@@ -1133,6 +1146,16 @@ namespace Xbox360WirelessChatpad
                         Mouse.Scroll(Mouse.ScrollDirection.Up);
 
                     tickCount = 0;
+                }
+
+                if (navActive)
+                {
+                    if (navActCount == 25)
+                    {
+                        navActive = false;
+                        navActCount = 0;
+                    }
+                    navActCount++;
                 }
 
                 tickCount++;
@@ -1149,12 +1172,12 @@ namespace Xbox360WirelessChatpad
             mouseModeThread.Start();
 
             // Send Commands to Flash Green Modifier
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 3; i++)
             {
                 sendData(controllerCommands["GreenOn"]);
-                System.Threading.Thread.Sleep(150);
+                System.Threading.Thread.Sleep(100);
                 sendData(controllerCommands["GreenOff"]);
-                System.Threading.Thread.Sleep(150); 
+                System.Threading.Thread.Sleep(100); 
             }
         }
 
@@ -1195,12 +1218,12 @@ namespace Xbox360WirelessChatpad
             }
 
             // Send Commands to Flash Orange Modifier
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 3; i++)
             {
                 sendData(controllerCommands["OrangeOn"]);
-                System.Threading.Thread.Sleep(150);
+                System.Threading.Thread.Sleep(100);
                 sendData(controllerCommands["OrangeOff"]);
-                System.Threading.Thread.Sleep(150);
+                System.Threading.Thread.Sleep(100);
             }
         }
     }
