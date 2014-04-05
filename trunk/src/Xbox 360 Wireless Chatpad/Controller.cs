@@ -1171,6 +1171,13 @@ namespace Xbox360WirelessChatpad
             mouseModeThread.IsBackground = true;
             mouseModeThread.Start();
 
+
+            // When toggling mouse mode, some buttons will still be processed as being held down.
+            // The buttons need to be set in the released position to stop this from occuring.
+            vJoyInt.SetBtn(false, (uint)controllerNumber, buttonMap["LBump"]);
+            vJoyInt.SetBtn(false, (uint)controllerNumber, buttonMap["RBump"]);
+            vJoyInt.SetBtn(false, (uint)controllerNumber, buttonMap["Back"]);
+
             // Send Commands to Flash Green Modifier
             for (int i = 0; i < 3; i++)
             {
@@ -1224,6 +1231,37 @@ namespace Xbox360WirelessChatpad
                 System.Threading.Thread.Sleep(100);
                 sendData(controllerCommands["OrangeOff"]);
                 System.Threading.Thread.Sleep(100);
+            }
+        }
+
+        private void resetComboButtons()
+        {
+            // When the controller disconnects using the button combo, the buttons are still
+            // processed as being pressed even when the controller is disconnected. The buttons
+            // must be set as released to stop this from occurring.
+            if (!mouseModeFlag)
+            {
+                if (triggerAsButton)
+                {
+                    vJoyInt.SetBtn(false, (uint)controllerNumber, buttonMap["LTrig"]);
+                    vJoyInt.SetBtn(false, (uint)controllerNumber, buttonMap["RTrig"]);
+                    vJoyInt.SetBtn(false, (uint)controllerNumber, buttonMap["Back"]);
+                }
+                else
+                {
+                    vJoyInt.SetAxis(0, (uint)controllerNumber, axisMap["LTrig"]);
+                    vJoyInt.SetAxis(0, (uint)controllerNumber, axisMap["RTrig"]);
+                    vJoyInt.SetBtn(false, (uint)controllerNumber, buttonMap["Back"]);
+                }
+            }
+            else
+            {
+                if (mouseModeFlag)
+                {
+                    vJoyInt.SetBtn(false, (uint)controllerNumber, buttonMap["Back"]);
+                    vJoyInt.SetBtn(false, (uint)controllerNumber, buttonMap["LBump"]);
+                    vJoyInt.SetBtn(false, (uint)controllerNumber, buttonMap["RBump"]);
+                }
             }
         }
     }
