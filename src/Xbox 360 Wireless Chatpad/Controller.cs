@@ -33,6 +33,8 @@ namespace Xbox360WirelessChatpad
 
         // Keep-Alive Thread, this will execute keep-alive commands periodically
         private System.Threading.Thread threadKeepAlive = null;
+        private bool inhibitKeepAlive = false;
+        private int inhibitCounter = 0;
 
         // Button Combo Thread, this will execute to monitor for special button
         // combinations like Mouse Mode and Shutdown
@@ -87,6 +89,15 @@ namespace Xbox360WirelessChatpad
                 { "Green", false },
                 { "Orange", false },
                 { "Shift", false },
+                { "Capslock", false },
+                { "Messenger", false }
+            };
+
+        // Tracks which Chatpad LEDs are illuminated
+        private Dictionary<string, bool> chatpadLED = new Dictionary<string, bool>()
+            {
+                { "Green", false },
+                { "Orange", false },
                 { "Capslock", false },
                 { "Messenger", false }
             };
@@ -344,14 +355,12 @@ namespace Xbox360WirelessChatpad
                     chatpadInitNeeded = true;
                 else if (dataPacket[25] == 0x04)
                 {
-                    // This data represents the LED status, no need for these.
-                    // Note: This is commented out because we don't need them but the code
-                    // is a good reference of how to parse the data
-                    //      Green = (dataPacket[26] & 0x08) > 0;
-                    //      Orange = (dataPacket[26] & 0x10) > 0;
-                    //      Messenger = (dataPacket[26] & 0x01) > 0;
-                    //      Capslock = (dataPacket[26] & 0x20) > 0;
-                    //      Backlight = (dataPacket[26] & 0x80) > 0;
+                    // This data represents the LED status. Not used because unsure of workings
+                    //chatpadLED["Green"] = (dataPacket[26] & 0x08) > 0;
+                    //chatpadLED["Orange"] = (dataPacket[26] & 0x10) > 0;
+                    //chatpadLED["Messenger"] = (dataPacket[26] & 0x01) > 0;
+                    //chatpadLED["Capslock"] = (dataPacket[26] & 0x20) > 0;
+                    //Backlight = (dataPacket[26] & 0x80) > 0;
                 }
                 else
                     parentWindow.Invoke(new logCallback(parentWindow.logMessage), "WARNING: Unknown Chatpad Status Data.");
@@ -380,6 +389,10 @@ namespace Xbox360WirelessChatpad
 
                 if (dataChanged)
                 {
+                    // Restart the keep alive inhibiter
+                    inhibitKeepAlive = true;
+                    inhibitCounter = 0;
+
                     // Record the Modifier Statuses
                     chatpadMod["Green"] = (dataPacket[25] & 0x02) > 0;
                     chatpadMod["Orange"] = (dataPacket[25] & 0x04) > 0;
@@ -391,25 +404,49 @@ namespace Xbox360WirelessChatpad
                         chatpadMod["Capslock"] = !chatpadMod["Capslock"];
 
                     // Set LEDs based on Modifiers
-                    if (chatpadMod["Green"])
+                    // Turning the LEDs on.
+                    if (chatpadMod["Green"] && !chatpadLED["Green"])
+                    {
                         sendData(controllerCommands["GreenOn"]);
-                    else
-                        sendData(controllerCommands["GreenOff"]);
-
-                    if (chatpadMod["Orange"])
+                        chatpadLED["Green"] = true;
+                    }
+                    if (chatpadMod["Orange"] && !chatpadLED["Orange"])
+                    {
                         sendData(controllerCommands["OrangeOn"]);
-                    else
-                        sendData(controllerCommands["OrangeOff"]);
-
-                    if (chatpadMod["Messenger"])
+                        chatpadLED["Orange"] = true;
+                    }
+                    if (chatpadMod["Messenger"] && !chatpadLED["Messenger"])
+                    {
                         sendData(controllerCommands["MessengerOn"]);
-                    else
-                        sendData(controllerCommands["MessengerOff"]);
-
-                    if (chatpadMod["Capslock"])
+                        chatpadLED["Messenger"] = true;
+                    }
+                    if (chatpadMod["Capslock"] && !chatpadLED["Capslock"])
+                    {
                         sendData(controllerCommands["CapslockOn"]);
-                    else
+                        chatpadLED["Capslock"] = true;
+                    }
+
+                    // Turning the LEDs off.
+                    if (!chatpadMod["Green"] && chatpadLED["Green"])
+                    {
+                        sendData(controllerCommands["GreenOff"]);
+                        chatpadLED["Green"] = false;
+                    }
+                    if (!chatpadMod["Orange"] && chatpadLED["Orange"])
+                    {
+                        sendData(controllerCommands["OrangeOff"]);
+                        chatpadLED["Orange"] = false;
+                    }
+                    if (!chatpadMod["Messenger"] && chatpadLED["Messenger"])
+                    {
+                        sendData(controllerCommands["MessengerOff"]);
+                        chatpadLED["Messenger"] = false;
+                    }
+                    if (!chatpadMod["Capslock"] && chatpadLED["Capslock"])
+                    {
                         sendData(controllerCommands["CapslockOff"]);
+                        chatpadLED["Capslock"] = false;
+                    }
 
                     // Set the Upper-Case flag and Shift Key status based on the
                     // XOR of Shift and Capslock Modifiers.
@@ -1080,19 +1117,32 @@ namespace Xbox360WirelessChatpad
             // chatpad initialization commands.
 
             // Keep-Alive Toggle, this will determine which keep-alive command will be sent
-            // during each execution cycle, True = Command 1, False = Commands 2a and 2b
+            // during each execution cycle, True = Command 1, False = Command 2
             bool keepAliveToggle = false;
 
             while (true)
             {
                 if (epWriter != null)
                 {
-                    if (keepAliveToggle)
-                        sendData(controllerCommands["KeepAlive1"]);
+                    if (inhibitKeepAlive)
+                    {
+                        if (inhibitCounter >= 2)
+                        {
+                            inhibitCounter = 0;
+                            inhibitKeepAlive = false;
+                        }
+                        else
+                            inhibitCounter++;
+                    }
                     else
-                        sendData(controllerCommands["KeepAlive2"]);
+                    {
+                        if (keepAliveToggle)
+                            sendData(controllerCommands["KeepAlive1"]);
+                        else
+                            sendData(controllerCommands["KeepAlive2"]);
 
-                    keepAliveToggle = !keepAliveToggle;
+                        keepAliveToggle = !keepAliveToggle;
+                    }
 
                     if (chatpadInitNeeded)
                     {
