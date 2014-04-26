@@ -457,15 +457,19 @@ namespace Xbox360WirelessChatpad
             {
                 case 1:
                     ctrl1MouseModeBox.Checked = modeStatus;
+                    Properties.Settings.Default.ctrl1MouseMode = modeStatus;
                     break;
                 case 2:
                     ctrl2MouseModeBox.Checked = modeStatus;
+                    Properties.Settings.Default.ctrl1MouseMode = modeStatus;
                     break;
                 case 3:
                     ctrl3MouseModeBox.Checked = modeStatus;
+                    Properties.Settings.Default.ctrl1MouseMode = modeStatus;
                     break;
                 case 4:
                     ctrl4MouseModeBox.Checked = modeStatus;
+                    Properties.Settings.Default.ctrl1MouseMode = modeStatus;
                     break;
                 default:
                     break;
