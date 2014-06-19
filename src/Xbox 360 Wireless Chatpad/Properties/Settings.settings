@@ -12,7 +12,7 @@
       <Value Profile="(Default)">18</Value>
     </Setting>
     <Setting Name="ctrl1TriggerAsButton" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="ctrl1MouseMode" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
@@ -61,6 +61,30 @@
     </Setting>
     <Setting Name="ctrl4MouseMode" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="ctrl1CustomConfig" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="ctrl2CustomConfig" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="ctrl3CustomConfig" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="ctrl4CustomConfig" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="ctrl1Profile" Type="System.String" Scope="User">
+      <Value Profile="(Default)">none</Value>
+    </Setting>
+    <Setting Name="ctrl2Profile" Type="System.String" Scope="User">
+      <Value Profile="(Default)">none</Value>
+    </Setting>
+    <Setting Name="ctrl3Profile" Type="System.String" Scope="User">
+      <Value Profile="(Default)">none</Value>
+    </Setting>
+    <Setting Name="ctrl4Profile" Type="System.String" Scope="User">
+      <Value Profile="(Default)">none</Value>
     </Setting>
   </Settings>
 </SettingsFile>
