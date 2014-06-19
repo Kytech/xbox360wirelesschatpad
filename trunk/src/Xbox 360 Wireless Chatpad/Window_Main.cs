@@ -76,6 +76,12 @@ namespace Xbox360WirelessChatpad
             ctrl1LeftDeadzone.Value = Properties.Settings.Default.ctrl1DeadzoneL;
             ctrl1RightDeadzone.Value = Properties.Settings.Default.ctrl1DeadzoneR;
 
+            // Custom Mappings
+            if (Properties.Settings.Default.ctrl1CustomConfig)
+                ctrl1CustomBox.Checked = true;
+            else
+                ctrl1CustomBox.Checked = false;
+
 
             // Load Controller 2 Configuration
             // Keyboard Type
@@ -115,6 +121,12 @@ namespace Xbox360WirelessChatpad
             ctrl2LeftDeadzone.Value = Properties.Settings.Default.ctrl2DeadzoneL;
             ctrl2RightDeadzone.Value = Properties.Settings.Default.ctrl2DeadzoneR;
 
+            // Custom Mappings
+            if (Properties.Settings.Default.ctrl2CustomConfig)
+                ctrl2CustomBox.Checked = true;
+            else
+                ctrl2CustomBox.Checked = false;
+
             // Load Controller 3 Configuration
             // Keyboard Type
             xboxControllers[2].configureChatpad(Properties.Settings.Default.ctrl3KeyboardType);
@@ -153,6 +165,12 @@ namespace Xbox360WirelessChatpad
             ctrl3LeftDeadzone.Value = Properties.Settings.Default.ctrl3DeadzoneL;
             ctrl3RightDeadzone.Value = Properties.Settings.Default.ctrl3DeadzoneR;
 
+            // Custom Mappings
+            if (Properties.Settings.Default.ctrl3CustomConfig)
+                ctrl3CustomBox.Checked = true;
+            else
+                ctrl3CustomBox.Checked = false;
+
             // Load Controller 4 Configuration
             // Keyboard Type
             xboxControllers[3].configureChatpad(Properties.Settings.Default.ctrl4KeyboardType);
@@ -190,6 +208,12 @@ namespace Xbox360WirelessChatpad
             // Deadzones
             ctrl4LeftDeadzone.Value = Properties.Settings.Default.ctrl4DeadzoneL;
             ctrl4RightDeadzone.Value = Properties.Settings.Default.ctrl4DeadzoneR;
+
+            // Custom Mappings
+            if (Properties.Settings.Default.ctrl4CustomConfig)
+                ctrl4CustomBox.Checked = true;
+            else
+                ctrl4CustomBox.Checked = false;
 
             // Register each Controller to a vJoy Joystick
             xboxControllers[0].registerJoystick(1);
@@ -487,6 +511,65 @@ namespace Xbox360WirelessChatpad
             // Scroll to Top of Textbox
             appLogTextbox.Select(0, 0);
             appLogTextbox.ScrollToCaret();
+        }
+
+        public void customBox_CheckChanged(object sender, EventArgs e)
+        {
+            // Enable corresponding controller custom mappings option based on the check box
+            string checkBoxName = ((CheckBox)sender).Name;
+
+            if (checkBoxName.Contains("1"))
+            {
+                if (((CheckBox)sender).Checked)
+                {
+                    Properties.Settings.Default.ctrl1CustomConfig = true;
+                    ctrl1ConfigButton.Enabled = true;
+                }
+                else
+                {
+                    Properties.Settings.Default.ctrl1CustomConfig = false;
+                    ctrl1ConfigButton.Enabled = false;
+                }
+            }
+            else if (checkBoxName.Contains("2"))
+            {
+                if (((CheckBox)sender).Checked)
+                {
+                    Properties.Settings.Default.ctrl2CustomConfig = true;
+                    ctrl2ConfigButton.Enabled = true;
+                }
+                else
+                {
+                    Properties.Settings.Default.ctrl2CustomConfig = false;
+                    ctrl2ConfigButton.Enabled = false;
+                }
+            }
+            else if (checkBoxName.Contains("3"))
+            {
+                if (((CheckBox)sender).Checked)
+                {
+                    Properties.Settings.Default.ctrl3CustomConfig = true;
+                    ctrl3ConfigButton.Enabled = true;
+                }
+                else
+                {
+                    Properties.Settings.Default.ctrl3CustomConfig = false;
+                    ctrl3ConfigButton.Enabled = false;
+                }
+            }
+            else
+            {
+                if (((CheckBox)sender).Checked)
+                {
+                    Properties.Settings.Default.ctrl4CustomConfig = true;
+                    ctrl4ConfigButton.Enabled = true;
+                }
+                else
+                {
+                    Properties.Settings.Default.ctrl4CustomConfig = false;
+                    ctrl4ConfigButton.Enabled = false;
+                }
+            }
         }
     }
 }

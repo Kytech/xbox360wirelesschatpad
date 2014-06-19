@@ -77,6 +77,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Custom_Settings_Window.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Custom_Settings_Window.Designer.cs">
+      <DependentUpon>Custom_Settings_Window.cs</DependentUpon>
+    </Compile>
     <Compile Include="Receiver.cs" />
     <Compile Include="Window_Main.cs">
       <SubType>Form</SubType>
@@ -87,6 +93,9 @@
     <Compile Include="MainApplication.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controller.cs" />
+    <EmbeddedResource Include="Custom_Settings_Window.resx">
+      <DependentUpon>Custom_Settings_Window.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Window_Main.resx">
       <DependentUpon>Window_Main.cs</DependentUpon>
     </EmbeddedResource>
