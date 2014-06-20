@@ -611,9 +611,9 @@ namespace Xbox360WirelessChatpad
 
         private void showCtrlConfigDialog(int ctrlnumber)
         {
-            Custom_Settings_Window ctrldlg = new Custom_Settings_Window(ctrlnumber);
-            ctrldlg.Parent = this;
-            if (ctrldlg.ShowDialog() == DialogResult.OK)
+            Custom_Settings_Window ctrldlg = new Custom_Settings_Window(ctrlnumber, this);
+            ctrldlg.ShowDialog();
+            if (ctrldlg.DialogResult == DialogResult.OK)
             {
                 switch (ctrldlg.controllerNumber) {
                     case 1:
@@ -634,19 +634,19 @@ namespace Xbox360WirelessChatpad
                     switch (ctrldlg.controllerNumber)
                     {
                         case 1:
-                            xboxControllers[0].configureGamepad(ctrldlg.profilePath);
+                            xboxControllers[0].configureGamepad(Properties.Settings.Default.ctrl1Profile);
                             ctrl1TriggerTypeBox.Enabled = false;
                             break;
                         case 2:
-                            xboxControllers[1].configureGamepad(ctrldlg.profilePath);
+                            xboxControllers[1].configureGamepad(Properties.Settings.Default.ctrl2Profile);
                             ctrl2TriggerTypeBox.Enabled = false;
                             break;
                         case 3:
-                            xboxControllers[2].configureGamepad(ctrldlg.profilePath);
+                            xboxControllers[2].configureGamepad(Properties.Settings.Default.ctrl3Profile);
                             ctrl3TriggerTypeBox.Enabled = false;
                             break;
                         case 4:
-                            xboxControllers[3].configureGamepad(ctrldlg.profilePath);
+                            xboxControllers[3].configureGamepad(Properties.Settings.Default.ctrl4Profile);
                             ctrl3TriggerTypeBox.Enabled = false;
                             break;
                     }
@@ -671,6 +671,21 @@ namespace Xbox360WirelessChatpad
                 }
             }
             ctrldlg.Dispose();
+        }
+
+        private void ctrl2ConfigButton_Click(object sender, EventArgs e)
+        {
+            showCtrlConfigDialog(2);
+        }
+
+        private void ctrl3ConfigButton_Click(object sender, EventArgs e)
+        {
+            showCtrlConfigDialog(3);
+        }
+
+        private void ctrl4ConfigButton_Click(object sender, EventArgs e)
+        {
+            showCtrlConfigDialog(4);
         }
     }
 }
