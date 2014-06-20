@@ -18,10 +18,11 @@ namespace Xbox360WirelessChatpad
         // stores the path for the controller profile
         public string profilePath;
 
-        public Custom_Settings_Window(int ctrlNum)
+        public Custom_Settings_Window(int ctrlNum, Window_Main parent)
         {
             InitializeComponent();
             this.controllerNumber = ctrlNum;
+            this.Owner = parent;
         }
 
         private void Custom_Settings_Window_Load(object sender, EventArgs e)
@@ -55,7 +56,7 @@ namespace Xbox360WirelessChatpad
             string cd = Environment.CurrentDirectory;
             if (Directory.Exists(cd + @"\Profiles") == false)
             {
-                Directory.CreateDirectory(cd + @"Profiles");
+                Directory.CreateDirectory(cd + @"\Profiles");
             }
             profileSelector.InitialDirectory = cd + @"\Profiles";
             profileSelector.ShowDialog();

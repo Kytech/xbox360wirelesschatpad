@@ -401,6 +401,7 @@
             this.ctrl2ConfigButton.TabIndex = 11;
             this.ctrl2ConfigButton.Text = "Configure...";
             this.ctrl2ConfigButton.UseVisualStyleBackColor = true;
+            this.ctrl2ConfigButton.Click += new System.EventHandler(this.ctrl2ConfigButton_Click);
             // 
             // ctrl2CustomBox
             // 
@@ -590,6 +591,7 @@
             this.ctrl3ConfigButton.TabIndex = 11;
             this.ctrl3ConfigButton.Text = "Configure...";
             this.ctrl3ConfigButton.UseVisualStyleBackColor = true;
+            this.ctrl3ConfigButton.Click += new System.EventHandler(this.ctrl3ConfigButton_Click);
             // 
             // ctrl3CustomBox
             // 
@@ -779,6 +781,7 @@
             this.ctrl4ConfigButton.TabIndex = 11;
             this.ctrl4ConfigButton.Text = "Configure...";
             this.ctrl4ConfigButton.UseVisualStyleBackColor = true;
+            this.ctrl4ConfigButton.Click += new System.EventHandler(this.ctrl4ConfigButton_Click);
             // 
             // ctrl4CustomBox
             // 
