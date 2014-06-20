@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("SkyAg")]
-[assembly: AssemblyProduct("WindowsFormsApplication1")]
+[assembly: AssemblyProduct("Xbox 360 Wireless Chatpad")]
 [assembly: AssemblyCopyright("Copyright © SkyAg")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
