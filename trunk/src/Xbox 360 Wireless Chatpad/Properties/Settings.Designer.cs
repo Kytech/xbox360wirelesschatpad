@@ -313,7 +313,7 @@ namespace Xbox360WirelessChatpad.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("none")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string ctrl1Profile {
             get {
                 return ((string)(this["ctrl1Profile"]));
@@ -325,7 +325,7 @@ namespace Xbox360WirelessChatpad.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("none")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string ctrl2Profile {
             get {
                 return ((string)(this["ctrl2Profile"]));
@@ -337,7 +337,7 @@ namespace Xbox360WirelessChatpad.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("none")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string ctrl3Profile {
             get {
                 return ((string)(this["ctrl3Profile"]));
@@ -349,7 +349,7 @@ namespace Xbox360WirelessChatpad.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("none")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string ctrl4Profile {
             get {
                 return ((string)(this["ctrl4Profile"]));

@@ -330,6 +330,7 @@
             this.ctrl1ConfigButton.TabIndex = 11;
             this.ctrl1ConfigButton.Text = "Configure...";
             this.ctrl1ConfigButton.UseVisualStyleBackColor = true;
+            this.ctrl1ConfigButton.Click += new System.EventHandler(this.ctrl1ConfigButton_Click);
             // 
             // ctrl1CustomBox
             // 
