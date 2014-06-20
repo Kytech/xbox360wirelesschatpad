@@ -75,16 +75,16 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="ctrl1Profile" Type="System.String" Scope="User">
-      <Value Profile="(Default)">none</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="ctrl2Profile" Type="System.String" Scope="User">
-      <Value Profile="(Default)">none</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="ctrl3Profile" Type="System.String" Scope="User">
-      <Value Profile="(Default)">none</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="ctrl4Profile" Type="System.String" Scope="User">
-      <Value Profile="(Default)">none</Value>
+      <Value Profile="(Default)" />
     </Setting>
   </Settings>
 </SettingsFile>

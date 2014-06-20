@@ -1048,6 +1048,11 @@ namespace Xbox360WirelessChatpad
             }
         }
 
+        public void configureGamepad(string customCfgFile)
+        {
+
+        }
+
         public void startController()
         {
             // Sends command to begin polling for controller data

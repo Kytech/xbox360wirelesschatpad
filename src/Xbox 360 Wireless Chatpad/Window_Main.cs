@@ -59,11 +59,14 @@ namespace Xbox360WirelessChatpad
             }
 
             // Trigger Type
-            xboxControllers[0].configureGamepad(Properties.Settings.Default.ctrl1TriggerAsButton);
-            if (Properties.Settings.Default.ctrl1TriggerAsButton)
-                ctrl1TriggerTypeBox.Checked = true;
-            else
-                ctrl1TriggerTypeBox.Checked = false;
+            if (!Properties.Settings.Default.ctrl1CustomConfig || Properties.Settings.Default.ctrl1Profile == "")
+            {
+                xboxControllers[0].configureGamepad(Properties.Settings.Default.ctrl1TriggerAsButton);
+                if (Properties.Settings.Default.ctrl1TriggerAsButton)
+                    ctrl1TriggerTypeBox.Checked = true;
+                else
+                    ctrl1TriggerTypeBox.Checked = false;
+            }
 
             // Mouse Mode
             xboxControllers[0].mouseModeFlag = Properties.Settings.Default.ctrl1MouseMode;
@@ -77,8 +80,11 @@ namespace Xbox360WirelessChatpad
             ctrl1RightDeadzone.Value = Properties.Settings.Default.ctrl1DeadzoneR;
 
             // Custom Mappings
-            if (Properties.Settings.Default.ctrl1CustomConfig)
+            if (Properties.Settings.Default.ctrl1CustomConfig && Properties.Settings.Default.ctrl1Profile != "")
+            {
+                xboxControllers[0].configureGamepad(Properties.Settings.Default.ctrl1Profile);
                 ctrl1CustomBox.Checked = true;
+            }
             else
                 ctrl1CustomBox.Checked = false;
 
@@ -104,11 +110,14 @@ namespace Xbox360WirelessChatpad
             }
 
             // Trigger Type
-            xboxControllers[1].configureGamepad(Properties.Settings.Default.ctrl2TriggerAsButton);
-            if (Properties.Settings.Default.ctrl2TriggerAsButton)
-                ctrl2TriggerTypeBox.Checked = true;
-            else
-                ctrl2TriggerTypeBox.Checked = false;
+            if (!Properties.Settings.Default.ctrl2CustomConfig || Properties.Settings.Default.ctrl2Profile == "")
+            {
+                xboxControllers[1].configureGamepad(Properties.Settings.Default.ctrl2TriggerAsButton);
+                if (Properties.Settings.Default.ctrl2TriggerAsButton)
+                    ctrl2TriggerTypeBox.Checked = true;
+                else
+                    ctrl2TriggerTypeBox.Checked = false;
+            }
 
             // Mouse Mode
             xboxControllers[1].mouseModeFlag = Properties.Settings.Default.ctrl2MouseMode;
@@ -122,8 +131,11 @@ namespace Xbox360WirelessChatpad
             ctrl2RightDeadzone.Value = Properties.Settings.Default.ctrl2DeadzoneR;
 
             // Custom Mappings
-            if (Properties.Settings.Default.ctrl2CustomConfig)
+            if (Properties.Settings.Default.ctrl2CustomConfig && Properties.Settings.Default.ctrl2Profile != "")
+            {
+                xboxControllers[1].configureGamepad(Properties.Settings.Default.ctrl2Profile);
                 ctrl2CustomBox.Checked = true;
+            }
             else
                 ctrl2CustomBox.Checked = false;
 
@@ -148,11 +160,14 @@ namespace Xbox360WirelessChatpad
             }
 
             // Trigger Type
-            xboxControllers[2].configureGamepad(Properties.Settings.Default.ctrl3TriggerAsButton);
-            if (Properties.Settings.Default.ctrl3TriggerAsButton)
-                ctrl3TriggerTypeBox.Checked = true;
-            else
-                ctrl3TriggerTypeBox.Checked = false;
+            if (!Properties.Settings.Default.ctrl3CustomConfig || Properties.Settings.Default.ctrl3Profile == "")
+            {
+                xboxControllers[2].configureGamepad(Properties.Settings.Default.ctrl3TriggerAsButton);
+                if (Properties.Settings.Default.ctrl3TriggerAsButton)
+                    ctrl3TriggerTypeBox.Checked = true;
+                else
+                    ctrl3TriggerTypeBox.Checked = false;
+            }
 
             // Mouse Mode
             xboxControllers[2].mouseModeFlag = Properties.Settings.Default.ctrl3MouseMode;
@@ -166,8 +181,11 @@ namespace Xbox360WirelessChatpad
             ctrl3RightDeadzone.Value = Properties.Settings.Default.ctrl3DeadzoneR;
 
             // Custom Mappings
-            if (Properties.Settings.Default.ctrl3CustomConfig)
+            if (Properties.Settings.Default.ctrl3CustomConfig && Properties.Settings.Default.ctrl3Profile != "")
+            {
+                xboxControllers[2].configureGamepad(Properties.Settings.Default.ctrl3Profile);
                 ctrl3CustomBox.Checked = true;
+            }
             else
                 ctrl3CustomBox.Checked = false;
 
@@ -192,11 +210,14 @@ namespace Xbox360WirelessChatpad
             }
 
             // Trigger Type
-            xboxControllers[3].configureGamepad(Properties.Settings.Default.ctrl4TriggerAsButton);
-            if (Properties.Settings.Default.ctrl4TriggerAsButton)
-                ctrl4TriggerTypeBox.Checked = true;
-            else
-                ctrl4TriggerTypeBox.Checked = false;
+            if (!Properties.Settings.Default.ctrl4CustomConfig || Properties.Settings.Default.ctrl4Profile == "")
+            {
+                xboxControllers[3].configureGamepad(Properties.Settings.Default.ctrl4TriggerAsButton);
+                if (Properties.Settings.Default.ctrl4TriggerAsButton)
+                    ctrl4TriggerTypeBox.Checked = true;
+                else
+                    ctrl4TriggerTypeBox.Checked = false;
+            }
 
             // Mouse Mode
             xboxControllers[3].mouseModeFlag = Properties.Settings.Default.ctrl4MouseMode;
@@ -210,8 +231,11 @@ namespace Xbox360WirelessChatpad
             ctrl4RightDeadzone.Value = Properties.Settings.Default.ctrl4DeadzoneR;
 
             // Custom Mappings
-            if (Properties.Settings.Default.ctrl4CustomConfig)
+            if (Properties.Settings.Default.ctrl4CustomConfig && Properties.Settings.Default.ctrl4Profile != "")
+            {
+                xboxControllers[3].configureGamepad(Properties.Settings.Default.ctrl4Profile);
                 ctrl4CustomBox.Checked = true;
+            }
             else
                 ctrl4CustomBox.Checked = false;
 
@@ -513,9 +537,9 @@ namespace Xbox360WirelessChatpad
             appLogTextbox.ScrollToCaret();
         }
 
-        public void customBox_CheckChanged(object sender, EventArgs e)
+        private void customBox_CheckChanged(object sender, EventArgs e)
         {
-            // Enable corresponding controller custom mappings option based on the check box
+            // Enable corresponding controller custom mappings option based on the check box name
             string checkBoxName = ((CheckBox)sender).Name;
 
             if (checkBoxName.Contains("1"))
@@ -524,11 +548,13 @@ namespace Xbox360WirelessChatpad
                 {
                     Properties.Settings.Default.ctrl1CustomConfig = true;
                     ctrl1ConfigButton.Enabled = true;
+                    ctrl1TriggerTypeBox.Enabled = false;
                 }
                 else
                 {
                     Properties.Settings.Default.ctrl1CustomConfig = false;
                     ctrl1ConfigButton.Enabled = false;
+                    ctrl1TriggerTypeBox.Enabled = true;
                 }
             }
             else if (checkBoxName.Contains("2"))
@@ -537,11 +563,13 @@ namespace Xbox360WirelessChatpad
                 {
                     Properties.Settings.Default.ctrl2CustomConfig = true;
                     ctrl2ConfigButton.Enabled = true;
+                    ctrl2TriggerTypeBox.Enabled = false;
                 }
                 else
                 {
                     Properties.Settings.Default.ctrl2CustomConfig = false;
                     ctrl2ConfigButton.Enabled = false;
+                    ctrl2TriggerTypeBox.Enabled = true;
                 }
             }
             else if (checkBoxName.Contains("3"))
@@ -550,11 +578,13 @@ namespace Xbox360WirelessChatpad
                 {
                     Properties.Settings.Default.ctrl3CustomConfig = true;
                     ctrl3ConfigButton.Enabled = true;
+                    ctrl3TriggerTypeBox.Enabled = false;
                 }
                 else
                 {
                     Properties.Settings.Default.ctrl3CustomConfig = false;
                     ctrl3ConfigButton.Enabled = false;
+                    ctrl3TriggerTypeBox.Enabled = true;
                 }
             }
             else
@@ -563,13 +593,84 @@ namespace Xbox360WirelessChatpad
                 {
                     Properties.Settings.Default.ctrl4CustomConfig = true;
                     ctrl4ConfigButton.Enabled = true;
+                    ctrl4TriggerTypeBox.Enabled = false;
                 }
                 else
                 {
                     Properties.Settings.Default.ctrl4CustomConfig = false;
                     ctrl4ConfigButton.Enabled = false;
+                    ctrl4TriggerTypeBox.Enabled = true;
                 }
             }
+        }
+
+        private void ctrl1ConfigButton_Click(object sender, EventArgs e)
+        {
+            showCtrlConfigDialog(1);
+        }
+
+        private void showCtrlConfigDialog(int ctrlnumber)
+        {
+            Custom_Settings_Window ctrldlg = new Custom_Settings_Window(ctrlnumber);
+            ctrldlg.Parent = this;
+            if (ctrldlg.ShowDialog() == DialogResult.OK)
+            {
+                switch (ctrldlg.controllerNumber) {
+                    case 1:
+                        Properties.Settings.Default.ctrl1Profile = ctrldlg.profilePath;
+                        break;
+                    case 2:
+                        Properties.Settings.Default.ctrl2Profile = ctrldlg.profilePath;
+                        break;
+                    case 3:
+                        Properties.Settings.Default.ctrl3Profile = ctrldlg.profilePath;
+                        break;
+                    case 4:
+                        Properties.Settings.Default.ctrl4Profile = ctrldlg.profilePath;
+                        break;
+                }
+                if (ctrldlg.profilePath != "")
+                {
+                    switch (ctrldlg.controllerNumber)
+                    {
+                        case 1:
+                            xboxControllers[0].configureGamepad(ctrldlg.profilePath);
+                            ctrl1TriggerTypeBox.Enabled = false;
+                            break;
+                        case 2:
+                            xboxControllers[1].configureGamepad(ctrldlg.profilePath);
+                            ctrl2TriggerTypeBox.Enabled = false;
+                            break;
+                        case 3:
+                            xboxControllers[2].configureGamepad(ctrldlg.profilePath);
+                            ctrl3TriggerTypeBox.Enabled = false;
+                            break;
+                        case 4:
+                            xboxControllers[3].configureGamepad(ctrldlg.profilePath);
+                            ctrl3TriggerTypeBox.Enabled = false;
+                            break;
+                    }
+                }
+                else
+                {
+                    switch (ctrldlg.controllerNumber)
+                    {
+                        case 1:
+                            xboxControllers[0].configureGamepad(Properties.Settings.Default.ctrl1TriggerAsButton);
+                            break;
+                        case 2:
+                            xboxControllers[1].configureGamepad(Properties.Settings.Default.ctrl2TriggerAsButton);
+                            break;
+                        case 3:
+                            xboxControllers[2].configureGamepad(Properties.Settings.Default.ctrl3TriggerAsButton);
+                            break;
+                        case 4:
+                            xboxControllers[3].configureGamepad(Properties.Settings.Default.ctrl4TriggerAsButton);
+                            break;
+                    }
+                }
+            }
+            ctrldlg.Dispose();
         }
     }
 }
