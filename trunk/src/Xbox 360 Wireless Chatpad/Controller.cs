@@ -12,6 +12,9 @@ using LibUsbDotNet.Main;
 
 using Microsoft.Win32;
 
+using IniParser;
+using IniParser.Model;
+
 namespace Xbox360WirelessChatpad
 {
     class Controller
@@ -1050,7 +1053,30 @@ namespace Xbox360WirelessChatpad
 
         public void configureGamepad(string customCfgFile)
         {
+            var profileINI = new FileIniDataParser();
+            IniData profileData = profileINI.LoadFile(customCfgFile);
 
+            buttonMap["A"] = Convert.ToUInt32(profileData["ButtonMapping"]["buttonA"]);
+            buttonMap["B"] = Convert.ToUInt32(profileData["ButtonMapping"]["buttonB"]);
+            buttonMap["X"] = 3;
+            buttonMap["Y"] = 4;
+            buttonMap["LStick"] = 9;
+            buttonMap["RStick"] = 10;
+            buttonMap["LBump"] = 5;
+            buttonMap["RBump"] = 6;
+            buttonMap["Back"] = 7;
+            buttonMap["Start"] = 8;
+            buttonMap["Guide"] = 11;
+
+            directionMap["Neutral"] = -1;
+            directionMap["Up"] = 0;
+            directionMap["UpRight"] = 4500;
+            directionMap["Right"] = 9000;
+            directionMap["DownRight"] = 13500;
+            directionMap["Down"] = 18000;
+            directionMap["DownLeft"] = 22500;
+            directionMap["Left"] = 27000;
+            directionMap["UpLeft"] = 31500;
         }
 
         public void startController()

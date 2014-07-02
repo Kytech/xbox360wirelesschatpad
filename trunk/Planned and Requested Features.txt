@@ -1,0 +1,8 @@
+Headset - Requested
+Xinput - Requested
+Driver Switching - Requested
+Custom media button mapping (Volume, Play/Pause) - Requested
+Adjustable mouse mode sensitivity - Requested
+Toggling modifiers and shift (messenger key maybe?) - Requested
+Custom controller mapping - Started
+Custom Axis Inverts - Maybe

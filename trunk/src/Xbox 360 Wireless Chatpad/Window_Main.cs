@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Windows.Forms;
+using System.IO;
 
 namespace Xbox360WirelessChatpad
 {
@@ -82,8 +83,17 @@ namespace Xbox360WirelessChatpad
             // Custom Mappings
             if (Properties.Settings.Default.ctrl1CustomConfig && Properties.Settings.Default.ctrl1Profile != "")
             {
-                xboxControllers[0].configureGamepad(Properties.Settings.Default.ctrl1Profile);
-                ctrl1CustomBox.Checked = true;
+                if (File.Exists(Properties.Settings.Default.ctrl1Profile))
+                {
+                    xboxControllers[0].configureGamepad(Properties.Settings.Default.ctrl1Profile);
+                    ctrl1CustomBox.Checked = true; 
+                }
+                else
+                {
+                    xboxControllers[0].configureGamepad(Properties.Settings.Default.ctrl1TriggerAsButton);
+                    Properties.Settings.Default.ctrl1Profile = "";
+                    ctrl1CustomBox.Checked = false;
+                }
             }
             else
                 ctrl1CustomBox.Checked = false;
@@ -133,8 +143,17 @@ namespace Xbox360WirelessChatpad
             // Custom Mappings
             if (Properties.Settings.Default.ctrl2CustomConfig && Properties.Settings.Default.ctrl2Profile != "")
             {
-                xboxControllers[1].configureGamepad(Properties.Settings.Default.ctrl2Profile);
-                ctrl2CustomBox.Checked = true;
+                if (File.Exists(Properties.Settings.Default.ctrl2Profile))
+                {
+                    xboxControllers[1].configureGamepad(Properties.Settings.Default.ctrl2Profile);
+                    ctrl2CustomBox.Checked = true;
+                }
+                else
+                {
+                    xboxControllers[1].configureGamepad(Properties.Settings.Default.ctrl2TriggerAsButton);
+                    Properties.Settings.Default.ctrl2Profile = "";
+                    ctrl2CustomBox.Checked = false;
+                }
             }
             else
                 ctrl2CustomBox.Checked = false;
@@ -183,8 +202,17 @@ namespace Xbox360WirelessChatpad
             // Custom Mappings
             if (Properties.Settings.Default.ctrl3CustomConfig && Properties.Settings.Default.ctrl3Profile != "")
             {
-                xboxControllers[2].configureGamepad(Properties.Settings.Default.ctrl3Profile);
-                ctrl3CustomBox.Checked = true;
+                if (File.Exists(Properties.Settings.Default.ctrl3Profile))
+                {
+                    xboxControllers[2].configureGamepad(Properties.Settings.Default.ctrl3Profile);
+                    ctrl3CustomBox.Checked = true;
+                }
+                else
+                {
+                    xboxControllers[2].configureGamepad(Properties.Settings.Default.ctrl3TriggerAsButton);
+                    Properties.Settings.Default.ctrl3Profile = "";
+                    ctrl3CustomBox.Checked = false;
+                }
             }
             else
                 ctrl3CustomBox.Checked = false;
@@ -233,8 +261,17 @@ namespace Xbox360WirelessChatpad
             // Custom Mappings
             if (Properties.Settings.Default.ctrl4CustomConfig && Properties.Settings.Default.ctrl4Profile != "")
             {
-                xboxControllers[3].configureGamepad(Properties.Settings.Default.ctrl4Profile);
-                ctrl4CustomBox.Checked = true;
+                if (File.Exists(Properties.Settings.Default.ctrl4Profile))
+                {
+                    xboxControllers[3].configureGamepad(Properties.Settings.Default.ctrl4Profile);
+                    ctrl4CustomBox.Checked = true;
+                }
+                else
+                {
+                    xboxControllers[3].configureGamepad(Properties.Settings.Default.ctrl4TriggerAsButton);
+                    Properties.Settings.Default.ctrl4Profile = "";
+                    ctrl4CustomBox.Checked = false;
+                }
             }
             else
                 ctrl4CustomBox.Checked = false;
