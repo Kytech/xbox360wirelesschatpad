@@ -42,6 +42,12 @@ namespace Xbox360WirelessChatpad
                     filePath.Text = Properties.Settings.Default.ctrl4Profile;
                     break;
             }
+            if (!File.Exists(filePath.Text))
+            {
+                MessageBox.Show(this, "Profile Not Found. The selected profile was moved or deleted", "Profile Not Found", MessageBoxButtons.OK);
+                filePath.Text = "";
+
+            }
         }
 
         private void profileSelector_FileOk(object sender, CancelEventArgs e)

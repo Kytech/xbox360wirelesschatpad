@@ -35,6 +35,7 @@
             this.filePath = new System.Windows.Forms.TextBox();
             this.browse = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.editButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // profileSelector
@@ -99,6 +100,15 @@
             this.label1.TabIndex = 5;
             this.label1.Text = "Select Controller File";
             // 
+            // editButton
+            // 
+            this.editButton.Location = new System.Drawing.Point(190, 55);
+            this.editButton.Name = "editButton";
+            this.editButton.Size = new System.Drawing.Size(75, 23);
+            this.editButton.TabIndex = 6;
+            this.editButton.Text = "Edit...";
+            this.editButton.UseVisualStyleBackColor = true;
+            // 
             // Custom_Settings_Window
             // 
             this.AcceptButton = this.ok;
@@ -107,6 +117,7 @@
             this.CancelButton = this.cancel;
             this.ClientSize = new System.Drawing.Size(457, 90);
             this.ControlBox = false;
+            this.Controls.Add(this.editButton);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.browse);
             this.Controls.Add(this.filePath);
@@ -136,5 +147,6 @@
         private System.Windows.Forms.TextBox filePath;
         private System.Windows.Forms.Button browse;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button editButton;
     }
 }
