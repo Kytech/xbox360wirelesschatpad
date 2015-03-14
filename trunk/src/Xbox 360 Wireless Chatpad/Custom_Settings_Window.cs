@@ -18,7 +18,7 @@ namespace Xbox360WirelessChatpad
         // stores the path for the controller profile
         public string profilePath;
 
-        public Custom_Settings_Window(int ctrlNum, Window_Main parent)
+        public Custom_Settings_Window(int ctrlNum, Form parent)
         {
             InitializeComponent();
             this.controllerNumber = ctrlNum;
