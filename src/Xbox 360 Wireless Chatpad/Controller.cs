@@ -1058,15 +1058,15 @@ namespace Xbox360WirelessChatpad
 
             buttonMap["A"] = Convert.ToUInt32(profileData["ButtonMapping"]["buttonA"]);
             buttonMap["B"] = Convert.ToUInt32(profileData["ButtonMapping"]["buttonB"]);
-            buttonMap["X"] = 3;
-            buttonMap["Y"] = 4;
-            buttonMap["LStick"] = 9;
-            buttonMap["RStick"] = 10;
-            buttonMap["LBump"] = 5;
-            buttonMap["RBump"] = 6;
-            buttonMap["Back"] = 7;
-            buttonMap["Start"] = 8;
-            buttonMap["Guide"] = 11;
+            buttonMap["X"] = Convert.ToUInt32(profileData["ButtonMapping"]["buttonX"]);
+            buttonMap["Y"] = Convert.ToUInt32(profileData["ButtonMapping"]["buttonY"]);
+            buttonMap["LStick"] = Convert.ToUInt32(profileData["ButtonMapping"]["Lstick"]);
+            buttonMap["RStick"] = Convert.ToUInt32(profileData["ButtonMapping"]["Rstick"]);
+            buttonMap["LBump"] = Convert.ToUInt32(profileData["ButtonMapping"]["Lbump"]);
+            buttonMap["RBump"] = Convert.ToUInt32(profileData["ButtonMapping"]["Rbump"]);
+            buttonMap["Back"] = Convert.ToUInt32(profileData["ButtonMapping"]["back"]);
+            buttonMap["Start"] = Convert.ToUInt32(profileData["ButtonMapping"]["start"]);
+            buttonMap["Guide"] = Convert.ToUInt32(profileData["ButtonMapping"]["guide"]);
 
             directionMap["Neutral"] = -1;
             directionMap["Up"] = 0;
@@ -1077,6 +1077,26 @@ namespace Xbox360WirelessChatpad
             directionMap["DownLeft"] = 22500;
             directionMap["Left"] = 27000;
             directionMap["UpLeft"] = 31500;
+
+            if (Convert.ToBoolean(profileData["TriggerSettings"]["trigAsBttn"]))
+            {
+                buttonMap["LTrig"]  = Convert.ToUInt32(profileData["TriggerSettings"]["Ltrig"]);
+                buttonMap["RTrig"]  = Convert.ToUInt32(profileData["TriggerSettings"]["Rtrig"]);
+
+                axisMap["LX"] = HID_USAGES.HID_USAGE_X;
+                axisMap["LY"] = HID_USAGES.HID_USAGE_Y;
+                axisMap["RX"] = HID_USAGES.HID_USAGE_Z;
+                axisMap["RY"] = HID_USAGES.HID_USAGE_RZ;
+            }
+            else
+            {
+                axisMap["LX"] = HID_USAGES.HID_USAGE_X;
+                axisMap["LY"] = HID_USAGES.HID_USAGE_Y;
+                axisMap["RX"] = HID_USAGES.HID_USAGE_RX;
+                axisMap["RY"] = HID_USAGES.HID_USAGE_RY;
+                axisMap["LTrig"] = HID_USAGES.HID_USAGE_Z;
+                axisMap["RTrig"] = HID_USAGES.HID_USAGE_RZ;
+            }
         }
 
         public void startController()
