@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using LibUsbDotNet;
 using LibUsbDotNet.Main;
@@ -70,7 +67,7 @@ namespace Xbox360WirelessChatpad
                         parentWindow.Invoke(new logCallback(parentWindow.logMessage),
                             "Xbox 360 Wireless Receiver Connected.");
 
-                        // Connect Endpoint Readers/Writers and register the receiving event handler
+                        // Connect Bulk Endpoint Readers/Writers and register the receiving event handler
                         // Controller 1
                         epReaders[0] = wirelessReceiver.OpenEndpointReader(ReadEndpointID.Ep01);
                         epWriters[0] = wirelessReceiver.OpenEndpointWriter(WriteEndpointID.Ep01);
