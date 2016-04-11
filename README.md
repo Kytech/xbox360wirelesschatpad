@@ -65,7 +65,7 @@ _Installing the vJoy Driver_
   1. Note: For multiple controller support you can specify additional configurations with this utility. Use the counter in the bottom right of the program to change between 1, 2, 3, and 4 controllers.
 
 _Running the Xbox 360 Wireless Chatpad Application_
-  1. Download the latest version of the application [here](https://xbox360wirelesschatpad.googlecode.com/svn/trunk/Xbox%20360%20Wireless%20Chatpad.zip).
+  1. Download the latest version of the application [here](https://github.com/KytechN24/xbox360wirelesschatpad/raw/master/Xbox%20360%20Wireless%20Chatpad.zip).
   1. Extract all of the files in the archive to a single directory.
   1. Execute "Xbox 360 Wireless Chatpad.exe"
   1. Follow in instruction in the application to connect your controller.
