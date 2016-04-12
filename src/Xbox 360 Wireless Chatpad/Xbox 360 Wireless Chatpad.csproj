@@ -52,10 +52,10 @@
   <ItemGroup>
     <Reference Include="InputManager, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Debug\InputManager.dll</HintPath>
+      <HintPath>bin\Release\InputManager.dll</HintPath>
     </Reference>
     <Reference Include="LibUsbDotNet">
-      <HintPath>..\LibUsbDotNet.dll</HintPath>
+      <HintPath>bin\Release\LibUsbDotNet.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -68,7 +68,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="vJoyInterfaceWrap">
-      <HintPath>..\vJoyInterfaceWrap.dll</HintPath>
+      <HintPath>bin\Release\vJoyInterfaceWrap.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
