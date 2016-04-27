@@ -20,11 +20,22 @@ namespace Xbox360WirelessChatpad
 
         public Window_Main()
         {
-            // Instantiate the Controllers
-            xboxControllers[0] = new Controller(this);
-            xboxControllers[1] = new Controller(this);
-            xboxControllers[2] = new Controller(this);
-            xboxControllers[3] = new Controller(this);
+            try
+            {
+                // Instantiate the Controllers
+                xboxControllers[0] = new Controller(this);
+                xboxControllers[1] = new Controller(this);
+                xboxControllers[2] = new Controller(this);
+                xboxControllers[3] = new Controller(this);
+            }
+            catch (VjoyNotEnabledException)
+            {
+                MessageBox.Show("Unable to start Xbox 360 Wireless Chatpad. vjoy is either not enabled or not installed.",
+                    "Xbox 360 Wireless Chatpad Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                Environment.Exit(1);
+            }
 
             // Initialize the Form Components
             InitializeComponent();

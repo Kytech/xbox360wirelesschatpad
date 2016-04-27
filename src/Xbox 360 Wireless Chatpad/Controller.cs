@@ -188,9 +188,15 @@ namespace Xbox360WirelessChatpad
             vJoyInt = new vJoy();
             if (!vJoyInt.vJoyEnabled())
             {
+                  // If vJoy not enabled, throw exception
+                  throw new VjoyNotEnabledException();
+
+/*              This is the old method of handling disabled vjoy error. This threw several different
+                exceptions down the line bacause main window handle didn't exist at this time.
                 parentWindow.Invoke(new logCallback(parentWindow.logMessage),
                     "ERROR: vJoy Driver Not Enabled.");
                 return;
+*/
             }
         }
 
@@ -1309,6 +1315,13 @@ namespace Xbox360WirelessChatpad
                     vJoyInt.SetBtn(false, (uint)controllerNumber, buttonMap["RBump"]);
                 }
             }
+        }
+    }
+
+    class VjoyNotEnabledException : Exception
+    {
+        internal VjoyNotEnabledException()
+        {
         }
     }
 }
