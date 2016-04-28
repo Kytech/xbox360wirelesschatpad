@@ -7,10 +7,6 @@ Special Thanks to [Ryan](http://thepocketofresistance.wordpress.com) and [Brando
 
 Disclaimer: As this is free, open-source software I hold no liability for any damages it may cause to you or your equipment. There isn't too much being installed, and I believe everything can be un-done but, use at your own risk. See the Readme.txt inside the archive for more details.
 
-**Latest Version:** [Revision 30](https://github.com/KytechN24/xbox360wirelesschatpad/raw/master/Xbox%20360%20Wireless%20Chatpad.zip)
-
-  * Cleaned up a good amount of extraneous I/O traffic with the chatpad. This should help reduce any random disconnect problems or missed key presses when the host computer is running something intensive like an MMO. Also fixed a bug where Mouse Mode was not being remembered properly.
-
 **Previous Updates**
   * Fixed issue with controller connection and multiple navigation shortcuts executing.
   * Updated with closer Xbox button mappings. Hopefully this help until custom button mapings can be implemented (soon-ish)
@@ -65,7 +61,7 @@ _Installing the vJoy Driver_
   1. Note: For multiple controller support you can specify additional configurations with this utility. Use the counter in the bottom right of the program to change between 1, 2, 3, and 4 controllers.
 
 _Running the Xbox 360 Wireless Chatpad Application_
-  1. Download the latest version of the application [here](https://github.com/KytechN24/xbox360wirelesschatpad/raw/master/Xbox%20360%20Wireless%20Chatpad.zip).
+  1. Download the latest version of the application [here](https://github.com/KytechN24/xbox360wirelesschatpad/releases).
   1. Extract all of the files in the archive to a single directory.
   1. Execute "Xbox 360 Wireless Chatpad.exe"
   1. Follow in instruction in the application to connect your controller.
