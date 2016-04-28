@@ -30,7 +30,7 @@ namespace Xbox360WirelessChatpad
             }
             catch (VjoyNotEnabledException)
             {
-                MessageBox.Show("Unable to start Xbox 360 Wireless Chatpad. vjoy is either not enabled or not installed.",
+                MessageBox.Show("Xbox 360 Wireless Chatpad could not be loaded.\n\nThe vJoy driver is not enabled or it is not installed. You can enable vJoy using the \"Configure vJoy\" tool or go to https://github.com/KytechN24/xbox360wirelesschatpad for more information on how to install and configure vJoy for this application.",
                     "Xbox 360 Wireless Chatpad Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);

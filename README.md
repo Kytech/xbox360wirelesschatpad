@@ -31,7 +31,7 @@ Disclaimer: As this is free, open-source software I hold no liability for any da
 
 -Headset not supported. The scope of this application is not to create a driver but drive existing drivers (vJoy). To implement this I would need to find a virtual audio driver or create my own, and it may not work great due to latency issues anyway. Also, because this is windows, there are many ways to attach a headset/microphone other than through the Xbox 360 Controller. In short, I don't see a huge need for this functionality, but feel free to post an issue if you'd really like to see it added. With enough support, I may try to explore it.
 
--Force Feedback not supported. This could be quite difficult to implement, I know how to tell the controller to rumble, but the vJoy device does not have a force feedback status. The result, I cannot determine when a game is commanding a rumble.
+-Force Feedback not supported. This can be done now since vJoy supports force feedback using the latest version, but I don't know how to send the commands to the controller since the developer who knew how to send these signals has not had any activity on this project since the Google Code Shutdown.
 
 ## Installation Directions ##
 There's a unique method of getting this driver to work which requires two other applications to be installed. Follow these installation instructions exactly before submitting any issues.
