@@ -8,6 +8,7 @@ Special Thanks to [Ryan](http://thepocketofresistance.wordpress.com) and [Brando
 Disclaimer: As this is free, open-source software I hold no liability for any damages it may cause to you or your equipment. There isn't too much being installed, and I believe everything can be un-done but, use at your own risk. See the Readme.txt inside the archive for more details.
 
 **Previous Updates**
+  * Improved error handling.
   * Fixed issue with controller connection and multiple navigation shortcuts executing.
   * Updated with closer Xbox button mappings. Hopefully this help until custom button mapings can be implemented (soon-ish)
   * Added Mouse Mode to be remembered as a setting over multiple launches.
@@ -18,16 +19,18 @@ Disclaimer: As this is free, open-source software I hold no liability for any da
   * New Feature: Special Command - Toggle Mouse Mode by holding down Left Bumper + Right Bumper + Back for more than 3 seconds. See below for further details.
   * Added Multiple Controller Support. This is preliminary and is VERY difficult for me to test properly with the lack of controllers. I make no guarantees that it will work flawlessly but please open an issue if you're having problems. For multiple controllers to work you must have multiple vJoy devices configured using the vJoyConf utility like described below. There is a counter on the bottom right of the utility you can increment to specify additional devices.
   * Changed FFXIV Compatibility mode to Trigger As Button mode. The biggest difference the compatibility mode did was make the left and right triggers react as normal buttons instead of a full ranged axis. This was necessary for FFXIV to properly address them. Note that the non-FFXIV button mapping no longer exist as an option without compiling the source individually. I'm looking into making the customization more flexible (there has been much outcry over it) but it will take some time.
-  * Massive reorganization and cleanup of the code and SVN repository as a whole.
+  * Massive reorganization and cleanup of the code and repository as a whole.
   * Attempted having the application create the vJoy configuration, skipping a full install step. However this will take a bit more time.
 
 **Known Functional Limitations**
 
--The native XInput driver is replaced with a non XInput driver. This may cause issue when using the controller in newer games that are expecting XInput functionality.
+-The native XInput driver is replaced with a non XInput driver. This may cause issues when using the controller in newer games that are expecting XInput functionality. **It is planned to add a feature that allows for the switching between the chatpad driver and native XInput driver to work around this issue.** Another workaround is to use the [x360ce](http://www.x360ce.com/) program which allows a non-XInput device to emulate an XInput device.
 
 -Headset not supported. The scope of this application is not to create a driver but drive existing drivers (vJoy). To implement this I would need to find a virtual audio driver or create my own, and it may not work great due to latency issues anyway. Also, because this is windows, there are many ways to attach a headset/microphone other than through the Xbox 360 Controller. In short, I don't see a huge need for this functionality, but feel free to post an issue if you'd really like to see it added. With enough support, I may try to explore it.
 
 -Force Feedback not supported. This can be done now since vJoy supports force feedback using the latest version, but I don't know how to send the commands to the controller since the developer who knew how to send these signals has not had any activity on this project since the Google Code Shutdown.
+
+-Not all 3rd party receivers work very well with this project. Microsoft receivers are recommended to be used with this project. Some 3rd party receivers work fine and some don't work at all. Most connection issues are due to the use of a 3rd party receiver or an installation error. If you are using a 3rd party receiver and cannot get the chatpad or controller to connect and you are sure everything is installed correctly, unfortunately there is nothing I can do to fix this. If you are having issues with a 3rd party receiver that is not connection-based, or a connection issue with a Microsoft-branded receiver, post an issue and please specify if you are using a 3rd party receiver.
 
 ## Installation Directions ##
 There's a unique method of getting this driver to work which requires two other applications to be installed. Follow these installation instructions exactly before submitting any issues.
