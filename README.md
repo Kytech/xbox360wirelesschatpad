@@ -59,7 +59,7 @@ _Installing the vJoy Driver_
     * Additional Axes Selected: Rx, Ry
     * POV Hat Switch: Continuous
     * POVs: 1
-    * Number of Buttons: 11
+    * Number of Buttons: 11  
   1. The Configuration utility will disappear, the vJoy Driver should now be installed.
   1. Note: For multiple controller support you can specify additional configurations with this utility. Use the counter in the bottom right of the program to change between 1, 2, 3, and 4 controllers.
 
@@ -75,20 +75,20 @@ Note: The first time you connect a controller, you should Calibrate it using the
   * Right Trigger: Z Rotation
   * Right Stick X: X Rotation
   * Right Stick Y: Y Rotation
-
+  
 ## Final Fantasy XIV Users ##
 In order to use the Final Fantasy XIV compatibility mode, the vJoystick should be configured with the following settings instead of above:
   * Basic Axes Selected: X, Y, Z, R/Rz/Rudder
   * POV Hat Switch: Continuous
   * POVs: 1
-  * Number of Buttons: 13
+  * Number of Buttons: 13  
 It is fine if you've already configured above, just re-run the utility and use these settings. Afterwards, launch the program like normal but before selection the Connect Controller button, check the Final Fantasy XIV box. After connecting, calibrate like normal in Windows, then you "should" be good to go in Final Fantasy XIV. In-game, you'll definitely want to check the controller calibration options to validate the settings are working properly.
 
 ## Special Commands ##
 Mouse Mode will allow you to move the mouse cursor, perform both left and right clicks, and scroll a window vertically. To enable Mouse Mode simply hold down the following button combination for 3 seconds:
-  * Left Bumper + Right Bumper + Back
+  * Left Bumper + Right Bumper + Back  
 Once in Mouse Mode use the left stick to move the mouse cursor. Holding down the Left Trigger will scale how fast the cursor moves. Use the A Button for Left Click and B Button for Right Click. Use the Right Joystick Y Axis to scroll a window vertically, similar to a mouse wheel.
 
 To shut down a controller while leaving the application running hold down the following button combination for 5 seconds:
-  * Left Trigger + Right Trigger + Back
+  * Left Trigger + Right Trigger + Back  
 To reconnect the controller, simply press the Guide button like normal.
