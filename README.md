@@ -1,13 +1,28 @@
 # xbox360wirelesschatpad
 Project moved from code.google.com/p/xbox360wirelesschatpad
 
-This application will allow you to use your Xbox 360 Wireless Controllers + Attached Chatpads on a Windows PC cordless through an Xbox 360 Wireless Receiver. Its been tested on Windows XP and Windows 7 64-Bit with decent success.
+This application will allow you to use your Xbox 360 Wireless Controllers + Attached Chatpads on a Windows PC cordless through an Xbox 360 Wireless Receiver. Its been tested on Windows XP, Windows 7 64-Bit, and Windows 8 64-bit with decent success.
 
-Special Thanks to [Ryan](http://thepocketofresistance.wordpress.com) and [Brandon](http://brandonw.net) who's source code this project is based on.
+Special Thanks to [Ryan](http://thepocketofresistance.wordpress.com) and [Brandon](http://brandonw.net) who's source code this project is based on. Additional thanks to SkyAG, who first wrote and maintained this codebase prior to the Google Code shutdown.
 
 Disclaimer: As this is free, open-source software I hold no liability for any damages it may cause to you or your equipment. There isn't too much being installed, and I believe everything can be un-done but, use at your own risk. See the Readme.txt inside the archive for more details.
 
-**Previous Updates**
+## Project Status Update
+
+**March 27 2021** - As of recent, I have decided to pick up this project again after a long while of very minimal changes. Shortly after becoming the maintainer of this project, I attempted to contact SkyAG, the original maintainer, but I never received a response. That was over 4 years ago, so it is safe to say that all contact has been lost with the original maintainer. I have been in recent contact with Ryan and Brandon, whose code/findings this program is based on, but they also have no contact with SkyAG. Ryan was able to share with me some of his findings and code while Brandon may be able to help point me in the right direction when I encounter roadblocks. However, as of now, I will be the primary person writing code for the project and will act as the maintainer. As always, contributions are welcome in the form of Pull Requests.
+
+Presently, there are many random bugs that are very hard to track down due to the current implementation of the app as of now. I am beginning a large rewrite of the application which will change its underlying architecture and simplify the number of pieces involved in making this thing work. This should eliminate many of the functional limitations as well as reduce the likelihood of difficult or obscure bugs. These rewrites are targeted for version 1.0 of the program.
+
+A few important points concerning my roadmap for this project:
+* As version 1.0 will be a major rewrite, I anticipate that certain features will not be fully ported over on the initial release. If I feel that these features are still useful or relevant, I will reintroduce them in a future version.
+  - Those who wish to use any features that are not ported at the time version 1.0 is released are welcome to use an older version pre-1.0
+* I will not be officially supporting Windows XP or Vista in v1.0. I do not plan to change the version of the .NET framework away from v4 at the time, nor do I expect that I will make changes that will break XP/Vista support. However, if an issue occurs when using the application on one of these OSes that requires a bugfix, I will not spend the time to implement it. These OSes are not supported by Microsoft, so I do not feel a need to go out of my way to support them when I cannot test the application against these platforms.
+  - If someone feels inclined enough to submit a PR for a fix of such an issue, so long as it does not affect the application on recent Windows versions, I will accept such Pull Requests.
+
+Please note that this is a side project for me that I work on during my leisure, so development progress will likely be sporatic between my other demands. I am still happy to try and help troubleshoot issues with the current version, though please be aware that many issues which are reported are often very difficult for me to replicate, so the more detail in your issues, the better.
+
+## Recent Changes
+
   * Improved error handling.
   * Fixed issue with controller connection and multiple navigation shortcuts executing.
   * Updated with closer Xbox button mappings. Hopefully this help until custom button mapings can be implemented (soon-ish)
@@ -22,7 +37,7 @@ Disclaimer: As this is free, open-source software I hold no liability for any da
   * Massive reorganization and cleanup of the code and repository as a whole.
   * Attempted having the application create the vJoy configuration, skipping a full install step. However this will take a bit more time.
 
-**Known Functional Limitations**
+## Known Functional Limitations
 
 -The native XInput driver is replaced with a non XInput driver. This may cause issues when using the controller in newer games that are expecting XInput functionality. **It is planned to add a feature that allows for the switching between the chatpad driver and native XInput driver to work around this issue.** Another workaround is to use the [x360ce](http://www.x360ce.com/) program which allows a non-XInput device to emulate an XInput device.
 
