@@ -2,10 +2,12 @@
 name: Bug report
 about: Create a report to help us improve
 title: ''
-labels: ''
+labels: bug
 assignees: ''
 
 ---
+
+Please search through existing issues and post any comments/observations there if someone else has already experienced the same bug/issue as you. If you are still stuck on install or the bug has not been reported, please continue filling out this issue. If your problem can be found in a closed issue, but the solutions there do not solve you problem, link to the old issue in your report and continue filling out this template.
 
 **Describe the bug**
 A clear and concise description of what the bug is.
