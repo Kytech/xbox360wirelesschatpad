@@ -3,7 +3,7 @@ Project moved from code.google.com/p/xbox360wirelesschatpad
 
 This application will allow you to use your Xbox 360 Wireless Controllers + Attached Chatpads on a Windows PC cordless through an Xbox 360 Wireless Receiver. Its been tested on Windows XP, Windows 7 64-Bit, and Windows 8 64-bit with decent success.
 
-Special Thanks to [Ryan](http://thepocketofresistance.wordpress.com) and [Brandon](http://brandonw.net) who's source code this project is based on. Additional thanks to SkyAG, who first wrote and maintained this codebase prior to the Google Code shutdown.
+Special Thanks to [Ryan](http://thepocketofresistance.wordpress.com) and [Brandon](http://brandonw.net) who's source code this project is based on. Additional thanks to [SkyAG/ksbarnes](https://github.com/ksbarnes), who first wrote and maintained this codebase prior to the Google Code shutdown.
 
 Disclaimer: As this is free, open-source software I hold no liability for any damages it may cause to you or your equipment. There isn't too much being installed, and I believe everything can be un-done but, use at your own risk. See the Readme.txt inside the archive for more details.
 
