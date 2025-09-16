@@ -91,6 +91,8 @@ Note: The first time you connect a controller, you should Calibrate it using the
   * Right Stick X: X Rotation
   * Right Stick Y: Y Rotation
 
+Having trouble getting things set up? Head on over to the GitHub issues. Try searching through the issues to see if someone has had a similar problem (don't forget to also search closed issues). If you don't see an answer there, open a new issue and someone will help.
+
 ## Final Fantasy XIV Users ##
 In order to use the Final Fantasy XIV compatibility mode, the vJoystick should be configured with the following settings instead of above:
   * Basic Axes Selected: X, Y, Z, R/Rz/Rudder
