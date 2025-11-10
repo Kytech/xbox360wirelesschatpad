@@ -43,7 +43,21 @@ namespace Xbox360WirelessChatpad
             {
                 // Open the Xbox Wireless Receiver as a USB device
                 // VendorID 0x045e, ProductID 0x0719
-                wirelessReceiver = UsbDevice.OpenUsbDevice(new UsbDeviceFinder(0x045E, 0x0719)) as IUsbDevice;
+                // Acepta tanto el receptor oficial (0x0719) como el de consola (0x02A9)
+                int vendorId = 0x045E;
+                int[] productIds = { 0x0719, 0x02A9 };
+
+                wirelessReceiver = null;
+
+                foreach (int pid in productIds)
+                {
+                    wirelessReceiver = UsbDevice.OpenUsbDevice(new UsbDeviceFinder(vendorId, pid)) as IUsbDevice;
+                    if (wirelessReceiver != null)
+                    {
+                        Console.WriteLine($"Xbox 360 Wireless Receiver detectado (VID=0x{vendorId:X4}, PID=0x{pid:X4})");
+                        break;
+                    }
+                }
 
                 // If primary IDs not found attempt secondary IDs
                 // VendorID 0x045e, Product ID 0x0291

@@ -12,6 +12,65 @@ namespace Xbox360WirelessChatpad
 {
     class Controller
     {
+
+        private int leftTriggerValue = 0;
+
+        private void RepeatStart(Keys key)
+        {
+            if (!mouseModeFlag) return;
+            lock (repeatKeys)
+            {
+                if (!repeatKeys.TryGetValue(key, out var st))
+                {
+                    st = new RepeatState();
+                    repeatKeys[key] = st;
+                }
+                st.Active = true;
+                st.DueAtMs = Environment.TickCount + REPEAT_DELAY_MS;
+            }
+        }
+
+        private void RepeatStop(Keys key)
+        {
+            lock (repeatKeys)
+            {
+                if (repeatKeys.TryGetValue(key, out var st))
+                    st.Active = false;
+            }
+        }
+
+        private void RepeatLoop()
+        {
+            while (repeatWorkerRun)
+            {
+                int now = Environment.TickCount;
+                List<Keys> fire = null;
+
+                lock (repeatKeys)
+                {
+                    foreach (var kv in repeatKeys)
+                    {
+                        var k = kv.Key; var st = kv.Value;
+                        if (st.Active && unchecked(now - st.DueAtMs) >= 0)
+                        {
+                            if (fire == null)
+                                fire = new List<Keys>();
+                            fire.Add(k);
+                            st.DueAtMs = now + REPEAT_RATE_MS;
+                        }
+                    }
+                }
+
+                if (fire != null)
+                    foreach (var k in fire) Keyboard.KeyPress(k);
+
+                System.Threading.Thread.Sleep(8);
+            }
+        }
+
+        private bool aClickActive = false;
+        private bool lsClickActive = false;
+
         // Tracks if the Wireless Controller is attached
         public bool controllerAttached = false;
 
@@ -112,8 +171,10 @@ namespace Xbox360WirelessChatpad
         // Identifies if Alt-Tab cycling has begun
         private bool altTabActive = false;
 
+
         // Used to determine if the data has changed since the last packet
         private byte[] dataPacketLast = new byte[3]; 
+
 
         // -----------------
         // Gamepad Variables
@@ -176,8 +237,50 @@ namespace Xbox360WirelessChatpad
         // Only used in Mouse Mode.
         private bool leftButtonDown = false;
         private bool rightButtonDown = false;
-
         private bool navActive = false;
+
+        // --- Auto-Repeat en modo mouse ---
+        private class RepeatState { public bool Active; public int DueAtMs; }
+
+        private readonly Dictionary<Keys, RepeatState> repeatKeys = new Dictionary<Keys, RepeatState>();
+        private System.Threading.Thread repeatWorker;
+        private volatile bool repeatWorkerRun = false;
+
+        // Ajustes de repetición (similar al teclado del SO)
+        private const int REPEAT_DELAY_MS = 420;   // retardo inicial
+        private const int REPEAT_RATE_MS = 50;    // intervalo de repetición
+
+        // RT → Alt+Tab (hold Alt)
+        private bool altHeldByRT = false;
+        private int lastRightTrig = 0; // guarda el valor anterior de RT (0–255)
+
+        // --- Mouse-mode helpers ---
+        // D-Pad → flechas (estado de “tecla mantenida”)
+        private bool dpadUpHeld = false, dpadDownHeld = false, dpadLeftHeld = false, dpadRightHeld = false;
+
+        // Modificadores mantenidos
+        private bool ctrlHeldByPad = false;
+        private bool altHeldByPad = false;
+
+        // Estado previo de los bytes de botones (para detectar flancos)
+        private byte lastBtn6 = 0; // Start/Back/LStick/RStick (y otros)
+        private byte lastBtn7 = 0; // A/B/X/Y + LB/RB
+
+        private void HoldArrow(ref bool heldFlag, bool wantDown, Keys key)
+        {
+            if (wantDown && !heldFlag)
+            {
+                Keyboard.KeyDown(key);
+                heldFlag = true;
+                RepeatStart(key);   // << añade esto
+            }
+            else if (!wantDown && heldFlag)
+            {
+                RepeatStop(key);    // << y esto
+                Keyboard.KeyUp(key);
+                heldFlag = false;
+            }
+        }
 
         public Controller(Window_Main window)
         {
@@ -458,11 +561,15 @@ namespace Xbox360WirelessChatpad
                     else
                         Keyboard.KeyUp(Keys.LShiftKey);
 
-                    // Set the Tab Key status based on the Messenger Modifier.
+                    // Set the Start Menu (Ctrl + Esc) action based on the Messenger Modifier.
                     if (chatpadMod["Messenger"])
-                        Keyboard.KeyDown(Keys.Tab);
-                    else
-                        Keyboard.KeyUp(Keys.Tab);
+                    {
+                        Keyboard.KeyDown(Keys.ControlKey);
+                        System.Threading.Thread.Sleep(50);   // breve retardo para asegurar la combinación
+                        Keyboard.KeyDown(Keys.Escape);
+                        Keyboard.KeyUp(Keys.Escape);
+                        Keyboard.KeyUp(Keys.ControlKey);
+                    }
 
                     // Duplicates the Alt-Tab functionality with the Green and Orange
                     // Modifiers. Orange is Alt, Green is Tab
@@ -499,12 +606,23 @@ namespace Xbox360WirelessChatpad
                     foreach (var key in chatpadKeysHeld)
                         if (key != dataPacket[26] && key != dataPacket[27])
                             keysToRemove.Add(key);
+
                     foreach (var key in keysToRemove)
                     {
-                        if (keyboardKeysDown.Contains(keyMap[key]))
+                        Keys mk = keyMap[key];
+
+                        if (mouseModeFlag && (mk == Keys.Left || mk == Keys.Right || mk == Keys.Space || mk == Keys.Back))
                         {
-                            keyboardKeysDown.Remove(keyMap[key]);
-                            Keyboard.KeyUp(keyMap[key]);
+                            // Detener auto-repeat (no usamos KeyUp porque veníamos de KeyPress)
+                            RepeatStop(mk);
+                        }
+                        else
+                        {
+                            if (keyboardKeysDown.Contains(mk))
+                            {
+                                keyboardKeysDown.Remove(mk);
+                                Keyboard.KeyUp(mk);
+                            }
                         }
                         chatpadKeysHeld.Remove(key);
                     }
@@ -520,39 +638,38 @@ namespace Xbox360WirelessChatpad
             // It will parse the data and feed it to the vJoy device as necessary
 
             // --------------------------
-            // Directional Pad Processing
-            // --------------------------
+            // ===== Directional Pad Processing =====
+            byte dpad = dataPacket[6];
 
-            // Set the POV hat based on the currently held direction
-            switch (dataPacket[6])
+            if (mouseModeFlag)
             {
-                case 0x01:
-                    vJoyInt.SetContPov(directionMap["Up"], (uint)controllerNumber, 1);
-                    break;
-                case 0x02:
-                    vJoyInt.SetContPov(directionMap["Down"], (uint)controllerNumber, 1);
-                    break;
-                case 0x04:
-                    vJoyInt.SetContPov(directionMap["Left"], (uint)controllerNumber, 1);
-                    break;
-                case 0x08:
-                    vJoyInt.SetContPov(directionMap["Right"], (uint)controllerNumber, 1);
-                    break;
-                case 0x05:
-                    vJoyInt.SetContPov(directionMap["UpLeft"], (uint)controllerNumber, 1);
-                    break;
-                case 0x06:
-                    vJoyInt.SetContPov(directionMap["DownLeft"], (uint)controllerNumber, 1);
-                    break;
-                case 0x09:
-                    vJoyInt.SetContPov(directionMap["UpRight"], (uint)controllerNumber, 1);
-                    break;
-                case 0x0A:
-                    vJoyInt.SetContPov(directionMap["DownRight"], (uint)controllerNumber, 1);
-                    break;
-                default:
-                    vJoyInt.SetContPov(directionMap["Neutral"], (uint)controllerNumber, 1);
-                    break;
+                // Tu firmware usa códigos: 0x01 Up, 0x02 Down, 0x04 Left, 0x08 Right,
+                // diagonales: 0x09 UpRight, 0x0A DownRight, 0x06 DownLeft, 0x05 UpLeft, otro = Neutral.
+                bool up = (dpad == 0x01 || dpad == 0x05 || dpad == 0x09);
+                bool down = (dpad == 0x02 || dpad == 0x0A || dpad == 0x06);
+                bool left = (dpad == 0x04 || dpad == 0x06 || dpad == 0x05);
+                bool right = (dpad == 0x08 || dpad == 0x09 || dpad == 0x0A);
+
+                HoldArrow(ref dpadUpHeld, up, Keys.Up);
+                HoldArrow(ref dpadDownHeld, down, Keys.Down);
+                HoldArrow(ref dpadLeftHeld, left, Keys.Left);
+                HoldArrow(ref dpadRightHeld, right, Keys.Right);
+            }
+            else
+            {
+                // Lógica original para vJoy (POV)
+                switch (dpad)
+                {
+                    case 0x01: vJoyInt.SetContPov(directionMap["Up"], (uint)controllerNumber, 1); break;
+                    case 0x02: vJoyInt.SetContPov(directionMap["Down"], (uint)controllerNumber, 1); break;
+                    case 0x04: vJoyInt.SetContPov(directionMap["Left"], (uint)controllerNumber, 1); break;
+                    case 0x08: vJoyInt.SetContPov(directionMap["Right"], (uint)controllerNumber, 1); break;
+                    case 0x05: vJoyInt.SetContPov(directionMap["UpLeft"], (uint)controllerNumber, 1); break;
+                    case 0x06: vJoyInt.SetContPov(directionMap["DownLeft"], (uint)controllerNumber, 1); break;
+                    case 0x09: vJoyInt.SetContPov(directionMap["UpRight"], (uint)controllerNumber, 1); break;
+                    case 0x0A: vJoyInt.SetContPov(directionMap["DownRight"], (uint)controllerNumber, 1); break;
+                    default: vJoyInt.SetContPov(directionMap["Neutral"], (uint)controllerNumber, 1); break;
+                }
             }
 
             // -----------------
@@ -562,30 +679,69 @@ namespace Xbox360WirelessChatpad
             // All button data comes in on 2 bytes, specifically 6 and 7. The following code
             // uses a Bitwise AND for each button to determine if it is being held down
 
+            // --- Lee botones actuales y previos ---
+            byte b6 = dataPacket[6];
+            byte b7 = dataPacket[7];
+            byte p6 = lastBtn6;
+            byte p7 = lastBtn7;
+
+            // Estados actuales
+            bool a = (b7 & 0x10) != 0;
+            bool bBtn = (b7 & 0x20) != 0;
+            bool b = (b7 & 0x20) != 0;
+            bool x = (b7 & 0x40) != 0;
+            bool y = (b7 & 0x80) != 0;
+            bool lb = (b7 & 0x01) != 0;
+            bool rb = (b7 & 0x02) != 0;
+            bool ls = (b6 & 0x40) != 0; // Click del stick izquierdo
+            bool rs = (b6 & 0x80) != 0;  // Click del stick derecho
+            bool start = (b6 & 0x10) != 0; // Botón Start
+            bool messenger = chatpadMod["Messenger"]; // Ya existe en el código del chatpad
+
+            // Estados previos
+            bool prevA = (p7 & 0x10) != 0;
+            bool prevBBtn = (p7 & 0x20) != 0;
+            bool px = (p7 & 0x40) != 0;
+            bool py = (p7 & 0x80) != 0;
+            bool plb = (p7 & 0x01) != 0;
+            bool prb = (p7 & 0x02) != 0;
+            bool pls = (p6 & 0x40) != 0;
+            bool prs = (p6 & 0x80) != 0;
+            bool pstart = (p6 & 0x10) != 0;
+
             // If in mouse mode use A and B as mouse clicks; otherwise set joystick buttons.
             if (mouseModeFlag)
             {
 
-                // A Button - Left Mouse Button
-                if ((dataPacket[7] & 0x10) > 0)
+                // A = Click izquierdo (mantener)
+                if (a && !prevA)
                 {
-                    if (!leftButtonDown)
+                    if (!aClickActive)
                     {
-                        Mouse.ButtonDown(Mouse.MouseKeys.Left);
-                        leftButtonDown = true;
+                        aClickActive = true;
+                        if (!leftButtonDown)
+                        {
+                            Mouse.ButtonDown(Mouse.MouseKeys.Left);
+                            leftButtonDown = true;
+                        }
                     }
                 }
-                else
+                else if (!a && prevA)
                 {
-                    if (leftButtonDown)
+                    if (aClickActive)
                     {
-                        Mouse.ButtonUp(Mouse.MouseKeys.Left);
-                        leftButtonDown = false;
+                        aClickActive = false;
+                        // Solo soltar si nadie más (LS) mantiene el clic
+                        if (!lsClickActive && leftButtonDown)
+                        {
+                            Mouse.ButtonUp(Mouse.MouseKeys.Left);
+                            leftButtonDown = false;
+                        }
                     }
                 }
 
-                // B Button - Right Mouse Button
-                if ((dataPacket[7] & 0x20) > 0)
+                // B = Click derecho (mantener)
+                if (bBtn && !prevBBtn)
                 {
                     if (!rightButtonDown)
                     {
@@ -593,7 +749,7 @@ namespace Xbox360WirelessChatpad
                         rightButtonDown = true;
                     }
                 }
-                else
+                else if (!bBtn && prevBBtn)
                 {
                     if (rightButtonDown)
                     {
@@ -601,11 +757,75 @@ namespace Xbox360WirelessChatpad
                         rightButtonDown = false;
                     }
                 }
+
+
+                // X = Backspace con auto-repeat
+                if (x && !px)
+                {
+                    Keyboard.KeyPress(Keys.Back);    // golpe inicial
+                    RepeatStart(Keys.Back);
+                }
+                if (!x && px)
+                {
+                    RepeatStop(Keys.Back);
+                }
+
+                // Y = Escape (pulso en flanco de bajada)
+                if (y && !py)
+                    Keyboard.KeyPress(Keys.Escape);
+
+                // LB = Ctrl (mantener)
+                if (lb && !plb && !ctrlHeldByPad) { Keyboard.KeyDown(Keys.ControlKey); ctrlHeldByPad = true; }
+                if (!lb && plb && ctrlHeldByPad) { Keyboard.KeyUp(Keys.ControlKey); ctrlHeldByPad = false; }
+
+                // RB = Alt (mantener)
+                if (rb && !prb && !altHeldByPad) { Keyboard.KeyDown(Keys.Menu); altHeldByPad = true; }
+                if (!rb && prb && altHeldByPad) { Keyboard.KeyUp(Keys.Menu); altHeldByPad = false; }
+
+                // LS = Click izquierdo (mantener)
+                if (ls && !pls)
+                {
+                    if (!lsClickActive)
+                    {
+                        lsClickActive = true;
+                        if (!leftButtonDown)
+                        {
+                            Mouse.ButtonDown(Mouse.MouseKeys.Left);
+                            leftButtonDown = true;
+                        }
+                    }
+                }
+                else if (!ls && pls)
+                {
+                    if (lsClickActive)
+                    {
+                        lsClickActive = false;
+                        // Solo soltar si nadie más (A) mantiene el clic
+                        if (!aClickActive && leftButtonDown)
+                        {
+                            Mouse.ButtonUp(Mouse.MouseKeys.Left);
+                            leftButtonDown = false;
+                        }
+                    }
+                }
+
+                // RS = Tab (pulso)
+                if (rs && !prs)
+                    Keyboard.KeyPress(Keys.Tab);
+
+                // Start = Enter (pulso)
+                if (start && !pstart)
+                    Keyboard.KeyPress(Keys.Enter);
+
             }
             else
             {
                 vJoyInt.SetBtn((dataPacket[7] & 0x10) > 0, (uint)controllerNumber, buttonMap["A"]);
                 vJoyInt.SetBtn((dataPacket[7] & 0x20) > 0, (uint)controllerNumber, buttonMap["B"]);
+                vJoyInt.SetBtn((dataPacket[7] & 0x40) > 0, (uint)controllerNumber, buttonMap["X"]);
+                vJoyInt.SetBtn((dataPacket[7] & 0x80) > 0, (uint)controllerNumber, buttonMap["Y"]);
+                vJoyInt.SetBtn((dataPacket[7] & 0x01) > 0, (uint)controllerNumber, buttonMap["LBump"]);
+                vJoyInt.SetBtn((dataPacket[7] & 0x02) > 0, (uint)controllerNumber, buttonMap["RBump"]);
             }
 
             vJoyInt.SetBtn((dataPacket[7] & 0x40) > 0, (uint)controllerNumber, buttonMap["X"]);
@@ -620,25 +840,8 @@ namespace Xbox360WirelessChatpad
             // otherwise set joystick buttons.
             if (mouseModeFlag)
             {
-                // Left Bumper - Navigate Back
-                if ((dataPacket[7] & 0x01) > 0 && !navActive)
-                {
-                    navActive = true;
-                    Keyboard.KeyDown(Keys.LMenu);
-                    Keyboard.KeyDown(Keys.Left);
-                    Keyboard.KeyUp(Keys.Left);
-                    Keyboard.KeyUp(Keys.LMenu);
-                }
-
-                // Right Bumper - Navigate Forward
-                if ((dataPacket[7] & 0x02) > 0 && !navActive)
-                {
-                    navActive = true;
-                    Keyboard.KeyDown(Keys.LMenu);
-                    Keyboard.KeyDown(Keys.Right);
-                    Keyboard.KeyUp(Keys.Right);
-                    Keyboard.KeyUp(Keys.LMenu);
-                }
+                // [NO-OP] En modo mouse, LB/RB ya se manejan arriba como Ctrl/Alt (mantener).
+                // No dispares navegación ni pases a vJoy aquí.
             }
             else
             {
@@ -657,6 +860,32 @@ namespace Xbox360WirelessChatpad
             short rightY = (short)(dataPacket[16] | (dataPacket[17] << 8));
             int leftTrig = dataPacket[8];
             int rightTrig = dataPacket[9];
+
+            leftTriggerValue = leftTrig;
+
+            // --- RT = ALT+TAB (en flanco) y mantener ALT mientras RT esté apretado ---
+            bool rtPressed = rightTrig >= 50;         // mismo umbral que usas para triggers
+            bool prevRtPressed = lastRightTrig >= 50;
+
+            if (rtPressed && !prevRtPressed)
+            {
+                // Si Alt no está aún mantenido por RT, bájalo y lanza Tab una vez
+                if (!altHeldByRT)
+                {
+                    Keyboard.KeyDown(Keys.LMenu); // ALT
+                    altHeldByRT = true;
+                }
+                Keyboard.KeyPress(Keys.Tab);      // ALT+TAB en el flanco de bajada
+            }
+            else if (!rtPressed && prevRtPressed)
+            {
+                // Al soltar RT, liberar ALT (solo si lo manteníamos por RT)
+                if (altHeldByRT)
+                {
+                    Keyboard.KeyUp(Keys.LMenu);
+                    altHeldByRT = false;
+                }
+            }
 
             // Filter the left stick X and Y values based on the left circular deadzone
             double leftDistance = Math.Sqrt((double)(leftX * leftX) + (double)(leftY * leftY));
@@ -770,6 +999,12 @@ namespace Xbox360WirelessChatpad
                 cmdKillController = true;
             else
                 cmdKillController = false;
+
+            // actualiza los previos
+            lastBtn6 = b6;
+            lastBtn7 = b7;
+
+            lastRightTrig = rightTrig;
         }
 
         private void sendData(byte[] dataToSend)
@@ -789,18 +1024,17 @@ namespace Xbox360WirelessChatpad
         {
             if (key != 0 && !chatpadKeysHeld.Contains(key))
             {
-                // If key is non-zero and was not previously being held down,
-                // record that is now being held
+                // marcar como actualmente presionada
                 chatpadKeysHeld.Add(key);
 
-                // Process the keystroke for the character associated with the key
-                // depending on the status of Orange and Green modifiers.
+                // Modificadores Orange / Green → comportamiento original con SendKeys
                 if (chatpadMod["Orange"])
                 {
                     if (flagUpperCase)
                         SendKeys.SendWait(orangeMap[key].ToUpper());
                     else
                         SendKeys.SendWait(orangeMap[key]);
+                    return;
                 }
                 else if (chatpadMod["Green"])
                 {
@@ -808,12 +1042,25 @@ namespace Xbox360WirelessChatpad
                         SendKeys.SendWait(greenMap[key].ToUpper());
                     else
                         SendKeys.SendWait(greenMap[key]);
+                    return;
+                }
+
+                // Sin modificador: mapeo directo
+                Keys mk = keyMap[key];
+
+                if (mouseModeFlag && (mk == Keys.Left || mk == Keys.Right || mk == Keys.Space || mk == Keys.Back))
+                {
+                    // golpe inicial + programar repetición
+                    Keyboard.KeyPress(mk);
+                    RepeatStart(mk);
+                    // No agregues a keyboardKeysDown (estamos usando KeyPress para repetir)
                 }
                 else
                 {
-                    keyboardKeysDown.Add(keyMap[key]);
-                    Keyboard.KeyDown(keyMap[key]);
+                    keyboardKeysDown.Add(mk);
+                    Keyboard.KeyDown(mk);
                 }
+
             }
         }
 
@@ -824,66 +1071,66 @@ namespace Xbox360WirelessChatpad
             switch (keyboardType)
             {
                 case "Q W E R T Y":
-                    keyMap[23] = Keys.D1; greenMap[23] = ""; orangeMap[23] = "";
-                    keyMap[22] = Keys.D2; greenMap[22] = ""; orangeMap[22] = "";
-                    keyMap[21] = Keys.D3; greenMap[21] = ""; orangeMap[21] = "";
-                    keyMap[20] = Keys.D4; greenMap[20] = ""; orangeMap[20] = "";
-                    keyMap[19] = Keys.D5; greenMap[19] = ""; orangeMap[19] = "";
-                    keyMap[18] = Keys.D6; greenMap[18] = ""; orangeMap[18] = "";
-                    keyMap[17] = Keys.D7; greenMap[17] = ""; orangeMap[17] = "";
-                    keyMap[103] = Keys.D8; greenMap[103] = ""; orangeMap[103] = "";
-                    keyMap[102] = Keys.D9; greenMap[102] = ""; orangeMap[102] = "";
-                    keyMap[101] = Keys.D0; greenMap[101] = ""; orangeMap[101] = "";
+                    keyMap[23] = Keys.D1;           greenMap[23] = "{HOME}";        orangeMap[23] = "{F1}";
+                    keyMap[22] = Keys.D2;           greenMap[22] = "{END}";         orangeMap[22] = "{F2}";
+                    keyMap[21] = Keys.D3;           greenMap[21] = "{PGUP}";        orangeMap[21] = "{F3}";
+                    keyMap[20] = Keys.D4;           greenMap[20] = "{PGDN}";        orangeMap[20] = "{F4}";
+                    keyMap[19] = Keys.D5;           greenMap[19] = "{INS}";         orangeMap[19] = "{F5}";
+                    keyMap[18] = Keys.D6;           greenMap[18] = "{DEL}";         orangeMap[18] = "{F6}";
+                    keyMap[17] = Keys.D7;           greenMap[17] = "{SCROLLLOCK}";  orangeMap[17] = "{F7}";
+                    keyMap[103] = Keys.D8;          greenMap[103] = "{BREAK}";      orangeMap[103] = "{F8}";
+                    keyMap[102] = Keys.D9;          greenMap[102] = "{F11}";        orangeMap[102] = "{F9}";
+                    keyMap[101] = Keys.D0;          greenMap[101] = "{F12}";        orangeMap[101] = "{F10}";
 
-                    keyMap[39] = Keys.Q; greenMap[39] = "!"; orangeMap[39] = "¡";
-                    keyMap[38] = Keys.W; greenMap[38] = "@"; orangeMap[38] = "å";
-                    keyMap[37] = Keys.E; greenMap[37] = "€"; orangeMap[37] = "é";
-                    keyMap[36] = Keys.R; greenMap[36] = "#"; orangeMap[36] = "$";
-                    keyMap[35] = Keys.T; greenMap[35] = "{%}"; orangeMap[35] = "Þ";
-                    keyMap[34] = Keys.Y; greenMap[34] = "{^}"; orangeMap[34] = "ý";
-                    keyMap[33] = Keys.U; greenMap[33] = "&"; orangeMap[33] = "ú";
-                    keyMap[118] = Keys.I; greenMap[118] = "*"; orangeMap[118] = "í";
-                    keyMap[117] = Keys.O; greenMap[117] = "{(}"; orangeMap[117] = "ó";
-                    keyMap[100] = Keys.P; greenMap[100] = "{)}"; orangeMap[100] = "=";
+                    keyMap[39] = Keys.Q;            greenMap[39] = "!";             orangeMap[39] = "¡";
+                    keyMap[38] = Keys.W;            greenMap[38] = "@";             orangeMap[38] = "å";
+                    keyMap[37] = Keys.E;            greenMap[37] = "€";             orangeMap[37] = "é";
+                    keyMap[36] = Keys.R;            greenMap[36] = "#";             orangeMap[36] = "$";
+                    keyMap[35] = Keys.T;            greenMap[35] = "{%}";           orangeMap[35] = "Þ";
+                    keyMap[34] = Keys.Y;            greenMap[34] = "{^}";           orangeMap[34] = "ý";
+                    keyMap[33] = Keys.U;            greenMap[33] = "&";             orangeMap[33] = "ú";
+                    keyMap[118] = Keys.I;           greenMap[118] = "*";            orangeMap[118] = "í";
+                    keyMap[117] = Keys.O;           greenMap[117] = "{(}";          orangeMap[117] = "ó";
+                    keyMap[100] = Keys.P;           greenMap[100] = "{)}";          orangeMap[100] = "=";
 
-                    keyMap[55] = Keys.A; greenMap[55] = "{~}"; orangeMap[55] = "á";
-                    keyMap[54] = Keys.S; greenMap[54] = "š"; orangeMap[54] = "ß";
-                    keyMap[53] = Keys.D; greenMap[53] = "{{}"; orangeMap[53] = "ð";
-                    keyMap[52] = Keys.F; greenMap[52] = "{}}"; orangeMap[52] = "£";
-                    keyMap[51] = Keys.G; greenMap[51] = "¨"; orangeMap[51] = "¥";
-                    keyMap[50] = Keys.H; greenMap[50] = "/"; orangeMap[50] = "\\";
-                    keyMap[49] = Keys.J; greenMap[49] = "'"; orangeMap[49] = "\"";
-                    keyMap[119] = Keys.K; greenMap[119] = "{[}"; orangeMap[119] = "☺";
-                    keyMap[114] = Keys.L; greenMap[114] = "{]}"; orangeMap[114] = "ø";
-                    keyMap[98] = Keys.Oemcomma; greenMap[98] = ":"; orangeMap[98] = ";";
+                    keyMap[55] = Keys.A;            greenMap[55] = "{~}";           orangeMap[55] = "á";
+                    keyMap[54] = Keys.S;            greenMap[54] = "š";             orangeMap[54] = "ß";
+                    keyMap[53] = Keys.D;            greenMap[53] = "{{}";           orangeMap[53] = "ð";
+                    keyMap[52] = Keys.F;            greenMap[52] = "{}}";           orangeMap[52] = "£";
+                    keyMap[51] = Keys.G;            greenMap[51] = "¨";             orangeMap[51] = "¥";
+                    keyMap[50] = Keys.H;            greenMap[50] = "/";             orangeMap[50] = "\\";
+                    keyMap[49] = Keys.J;            greenMap[49] = "'";             orangeMap[49] = "\"";
+                    keyMap[119] = Keys.K;           greenMap[119] = "{[}";          orangeMap[119] = "☺";
+                    keyMap[114] = Keys.L;           greenMap[114] = "{]}";          orangeMap[114] = "ø";
+                    keyMap[98] = Keys.Oemcomma;     greenMap[98] = ":";             orangeMap[98] = ";";
 
-                    keyMap[70] = Keys.Z; greenMap[70] = "`"; orangeMap[70] = "æ";
-                    keyMap[69] = Keys.X; greenMap[69] = "«"; orangeMap[69] = "œ";
-                    keyMap[68] = Keys.C; greenMap[68] = "»"; orangeMap[68] = "ç";
-                    keyMap[67] = Keys.V; greenMap[67] = "-"; orangeMap[67] = "_";
-                    keyMap[66] = Keys.B; greenMap[66] = "|"; orangeMap[66] = "{+}";
-                    keyMap[65] = Keys.N; greenMap[65] = "<"; orangeMap[65] = "ñ";
-                    keyMap[82] = Keys.M; greenMap[82] = ">"; orangeMap[82] = "µ";
-                    keyMap[83] = Keys.OemPeriod; greenMap[83] = "?"; orangeMap[83] = "¿";
-                    keyMap[99] = Keys.Enter; greenMap[99] = ""; orangeMap[99] = "";
+                    keyMap[70] = Keys.Z;            greenMap[70] = "`";             orangeMap[70] = "æ";
+                    keyMap[69] = Keys.X;            greenMap[69] = "«";             orangeMap[69] = "œ";
+                    keyMap[68] = Keys.C;            greenMap[68] = "»";             orangeMap[68] = "ç";
+                    keyMap[67] = Keys.V;            greenMap[67] = "-";             orangeMap[67] = "_";
+                    keyMap[66] = Keys.B;            greenMap[66] = "|";             orangeMap[66] = "{+}";
+                    keyMap[65] = Keys.N;            greenMap[65] = "<";             orangeMap[65] = "ñ";
+                    keyMap[82] = Keys.M;            greenMap[82] = ">";             orangeMap[82] = "µ";
+                    keyMap[83] = Keys.OemPeriod;    greenMap[83] = "?";             orangeMap[83] = "¿";
+                    keyMap[99] = Keys.Enter;        greenMap[99] = "";              orangeMap[99] = "";
 
-                    keyMap[85] = Keys.Left; greenMap[85] = ""; orangeMap[85] = "";
-                    keyMap[84] = Keys.Space; greenMap[84] = ""; orangeMap[84] = "";
-                    keyMap[81] = Keys.Right; greenMap[81] = ""; orangeMap[81] = "";
-                    keyMap[113] = Keys.Back; greenMap[113] = ""; orangeMap[113] = "";
+                    keyMap[85] = Keys.Left;         greenMap[85] = "";              orangeMap[85] = "";
+                    keyMap[84] = Keys.Space;        greenMap[84] = "";              orangeMap[84] = "";
+                    keyMap[81] = Keys.Right;        greenMap[81] = "";              orangeMap[81] = "";
+                    keyMap[113] = Keys.Back;        greenMap[113] = "";             orangeMap[113] = "";
                     break;
 
                 case "Q W E R T Z":
-                    keyMap[23] = Keys.D1; greenMap[23] = ""; orangeMap[23] = "";
-                    keyMap[22] = Keys.D2; greenMap[22] = ""; orangeMap[22] = "";
-                    keyMap[21] = Keys.D3; greenMap[21] = ""; orangeMap[21] = "";
-                    keyMap[20] = Keys.D4; greenMap[20] = ""; orangeMap[20] = "";
-                    keyMap[19] = Keys.D5; greenMap[19] = ""; orangeMap[19] = "";
-                    keyMap[18] = Keys.D6; greenMap[18] = ""; orangeMap[18] = "";
-                    keyMap[17] = Keys.D7; greenMap[17] = ""; orangeMap[17] = "";
-                    keyMap[103] = Keys.D8; greenMap[103] = ""; orangeMap[103] = "";
-                    keyMap[102] = Keys.D9; greenMap[102] = ""; orangeMap[102] = "";
-                    keyMap[101] = Keys.D0; greenMap[101] = ""; orangeMap[101] = "";
+                    keyMap[23] = Keys.D1;           greenMap[23] = "{HOME}";        orangeMap[23] = "{F1}";
+                    keyMap[22] = Keys.D2;           greenMap[22] = "{END}";         orangeMap[22] = "{F2}";
+                    keyMap[21] = Keys.D3;           greenMap[21] = "{PGUP}";        orangeMap[21] = "{F3}";
+                    keyMap[20] = Keys.D4;           greenMap[20] = "{PGDN}";        orangeMap[20] = "{F4}";
+                    keyMap[19] = Keys.D5;           greenMap[19] = "{INS}";         orangeMap[19] = "{F5}";
+                    keyMap[18] = Keys.D6;           greenMap[18] = "{DEL}";         orangeMap[18] = "{F6}";
+                    keyMap[17] = Keys.D7;           greenMap[17] = "{SCROLLLOCK}";  orangeMap[17] = "{F7}";
+                    keyMap[103] = Keys.D8;          greenMap[103] = "{BREAK}";      orangeMap[103] = "{F8}";
+                    keyMap[102] = Keys.D9;          greenMap[102] = "{F11}";        orangeMap[102] = "{F9}";
+                    keyMap[101] = Keys.D0;          greenMap[101] = "{F12}";        orangeMap[101] = "{F10}";
 
                     keyMap[39] = Keys.Q; greenMap[39] = "!"; orangeMap[39] = "@";
                     keyMap[38] = Keys.W; greenMap[38] = "\""; orangeMap[38] = "¡";
@@ -924,16 +1171,16 @@ namespace Xbox360WirelessChatpad
                     break;
 
                 case "A Z E R T Y":
-                    keyMap[23] = Keys.D1; greenMap[23] = ""; orangeMap[23] = "";
-                    keyMap[22] = Keys.D2; greenMap[22] = ""; orangeMap[22] = "";
-                    keyMap[21] = Keys.D3; greenMap[21] = ""; orangeMap[21] = "";
-                    keyMap[20] = Keys.D4; greenMap[20] = ""; orangeMap[20] = "";
-                    keyMap[19] = Keys.D5; greenMap[19] = ""; orangeMap[19] = "";
-                    keyMap[18] = Keys.D6; greenMap[18] = ""; orangeMap[18] = "";
-                    keyMap[17] = Keys.D7; greenMap[17] = ""; orangeMap[17] = "";
-                    keyMap[103] = Keys.D8; greenMap[103] = ""; orangeMap[103] = "";
-                    keyMap[102] = Keys.D9; greenMap[102] = ""; orangeMap[102] = "";
-                    keyMap[101] = Keys.D0; greenMap[101] = ""; orangeMap[101] = "";
+                    keyMap[23] = Keys.D1;       greenMap[23] = "{HOME}";        orangeMap[23] = "{F1}";
+                    keyMap[22] = Keys.D2;       greenMap[22] = "{END}";         orangeMap[22] = "{F2}";
+                    keyMap[21] = Keys.D3;       greenMap[21] = "{PGUP}";        orangeMap[21] = "{F3}";
+                    keyMap[20] = Keys.D4;       greenMap[20] = "{PGDN}";        orangeMap[20] = "{F4}";
+                    keyMap[19] = Keys.D5;       greenMap[19] = "{INS}";         orangeMap[19] = "{F5}";
+                    keyMap[18] = Keys.D6;       greenMap[18] = "{DEL}";         orangeMap[18] = "{F6}";
+                    keyMap[17] = Keys.D7;       greenMap[17] = "{SCROLLLOCK}";  orangeMap[17] = "{F7}";
+                    keyMap[103] = Keys.D8;      greenMap[103] = "{BREAK}";      orangeMap[103] = "{F8}";
+                    keyMap[102] = Keys.D9;      greenMap[102] = "{F11}";        orangeMap[102] = "{F9}";
+                    keyMap[101] = Keys.D0;      greenMap[101] = "{F12}";        orangeMap[101] = "{F10}";
 
                     keyMap[39] = Keys.A; greenMap[39] = "à"; orangeMap[39] = "&";
                     keyMap[38] = Keys.Z; greenMap[38] = "æ"; orangeMap[38] = "{~}";
@@ -1172,49 +1419,79 @@ namespace Xbox360WirelessChatpad
 
         private void tickMouseMode()
         {
-            // This function is executed periodically to continually move the mouse based on
-            // the left joystick as long as the relative coordinates are not (0,0). In addition
-            // this will allow for vertical scrolling using the right joystick
-            // Note: For some reason, the left stick Y axis is inverted, multiplied by -1 to fix
-            int tickCount = 0;
+            // Suavizado por interpolación (exponential smoothing)
+            double smoothX = 0.0, smoothY = 0.0;
+            const double smoothFactor = 0.35; // 0.2–0.5 recomendado (menor = más suave)
+            const double dead = 0.05;         // deadzone para evitar microtemblores
 
-            // This will count for tracking the navigation active boolean, to help avoid double
-            // navigation commands
+            int tickCount = 0;
             int navActCount = 0;
+
+            // Ajustes de temporización:
+            // - Antes: Sleep(20) → ~50 Hz. Scroll cada 4 ticks = ~80 ms
+            // - Ahora: Sleep(8)  → ~125 Hz. Para ~80 ms ≈ 10 ticks
+            const int scrollEveryTicks = 10;
+
+            // Para mantener ~500 ms de bloqueo navActive como antes:
+            // 500 ms / 8 ms ≈ 62 ticks
+            const int navDeactivateTicks = 62;
 
             while (true)
             {
-                if ((Math.Abs(mouseVelX) > 0) || ((Math.Abs(mouseVelY) > 0)))
-                    Mouse.MoveRelative(mouseVelX, -mouseVelY);
+                // Interpolar hacia la velocidad objetivo calculada por los sticks
+                // Nota: Y original invertida
+                smoothX += (mouseVelX - smoothX) * smoothFactor;
+                smoothY += ((-mouseVelY) - smoothY) * smoothFactor;
 
-                // The tickCount will get incremented each time this thread executes. The check for 4
-                // will allow the resulting code to execute every 4th iteration. This necessary to
-                // keep the cursor speed fluid while still having a usable scroll speed.
+                // Deadzone para eliminar pasos mínimos y jitter
+                double moveX = (Math.Abs(smoothX) < dead) ? 0.0 : smoothX;
+                double moveY = (Math.Abs(smoothY) < dead) ? 0.0 : smoothY;
+
+                if (moveX != 0.0 || moveY != 0.0)
+                    Mouse.MoveRelative((int)moveX, (int)moveY);
+
+
+                // Scroll con la misma cadencia temporal que el original (~80 ms)
                 if (tickCount == 4)
                 {
-                    if (rightStickDir == -1)
-                        Mouse.Scroll(Mouse.ScrollDirection.Down);
-                    else if (rightStickDir == 1)
-                        Mouse.Scroll(Mouse.ScrollDirection.Up);
+                    if (rightStickDir != 0)
+                    {
+                        // Calcula un factor de aceleración según la presión del LT (0–255)
+                        double scrollMultiplier = 1.0 + (leftTriggerValue / 255.0) * 3.0; // hasta 4x más rápido
+
+                        int scrollSteps = (int)Math.Round(scrollMultiplier); // convierte en pasos enteros
+
+                        for (int i = 0; i < scrollSteps; i++)
+                        {
+                            if (rightStickDir == -1)
+                                Mouse.Scroll(Mouse.ScrollDirection.Down);
+                            else if (rightStickDir == 1)
+                                Mouse.Scroll(Mouse.ScrollDirection.Up);
+                        }
+                    }
 
                     tickCount = 0;
                 }
 
+                // Ventana anti-doble navegación (misma duración real que antes)
                 if (navActive)
                 {
-                    if (navActCount == 25)
+                    if (navActCount >= navDeactivateTicks)
                     {
                         navActive = false;
                         navActCount = 0;
                     }
-                    navActCount++;
+                    else
+                    {
+                        navActCount++;
+                    }
                 }
 
                 tickCount++;
-
-                System.Threading.Thread.Sleep(20);
+                System.Threading.Thread.Sleep(8); // ~125 Hz → movimiento mucho más fluido
             }
         }
+
 
         private void startMouseMode()
         {
@@ -1223,6 +1500,11 @@ namespace Xbox360WirelessChatpad
             mouseModeThread.IsBackground = true;
             mouseModeThread.Start();
 
+            // Iniciar worker de repetición
+            repeatWorkerRun = true;
+            repeatWorker = new System.Threading.Thread(RepeatLoop);
+            repeatWorker.IsBackground = true;
+            repeatWorker.Start();
 
             // When toggling mouse mode, some buttons will still be processed as being held down.
             // The buttons need to be set in the released position to stop this from occuring.
@@ -1276,6 +1558,11 @@ namespace Xbox360WirelessChatpad
                 mouseModeThread = null;
             }
 
+            // Detener worker de repetición y limpiar estados
+            repeatWorkerRun = false;
+            try { repeatWorker?.Join(100); } catch { }
+            lock (repeatKeys) repeatKeys.Clear();
+
             // Send Commands to Flash Orange Modifier
             for (int i = 0; i < 3; i++)
             {
@@ -1284,6 +1571,24 @@ namespace Xbox360WirelessChatpad
                 sendData(controllerCommands["OrangeOff"]);
                 System.Threading.Thread.Sleep(100);
             }
+
+            // Soltar modificadores si quedaron presionados
+            if (ctrlHeldByPad) { Keyboard.KeyUp(Keys.ControlKey); ctrlHeldByPad = false; }
+            if (altHeldByPad) { Keyboard.KeyUp(Keys.Menu); altHeldByPad = false; }
+
+            // Soltar flechas si estaban presionadas
+            if (dpadUpHeld) { Keyboard.KeyUp(Keys.Up); dpadUpHeld = false; }
+            if (dpadDownHeld) { Keyboard.KeyUp(Keys.Down); dpadDownHeld = false; }
+            if (dpadLeftHeld) { Keyboard.KeyUp(Keys.Left); dpadLeftHeld = false; }
+            if (dpadRightHeld) { Keyboard.KeyUp(Keys.Right); dpadRightHeld = false; }
+
+            // Soltar RT si estaba presionado
+            if (altHeldByRT)
+            {
+                Keyboard.KeyUp(Keys.LMenu);
+                altHeldByRT = false;
+            }
+
         }
 
         private void resetComboButtons()
