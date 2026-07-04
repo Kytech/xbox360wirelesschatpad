@@ -31,7 +31,7 @@ If applicable, add screenshots to help explain your problem.
 **Installation details**
  - Windows Version [e.g. Windows 10, Windows 7]
  - Application Version [e.g. 22]
- - If install issue: libusb and vJoy versions
+ - If install issue: libusb and ViGEmBus versions
 
 **Additional context/details**
 Add any other context or details about the problem here. Include anything you feel would help the developers understand the bug or your issue post. If you need to make any final clarifications, this is a good section for that as well.

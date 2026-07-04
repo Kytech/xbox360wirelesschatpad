@@ -23,6 +23,9 @@ Please note that this is a side project for me that I work on during my leisure,
 
 ## Recent Changes
 
+  * Replaced the vJoy virtual joystick backend with [ViGEmBus](https://github.com/nefarius/ViGEmBus). Controllers now appear to Windows and games as genuine Xbox 360 (XInput) controllers — no vJoy configuration, no calibration, and no compatibility workarounds like x360ce are needed anymore.
+  * Force feedback (rumble) is now passed through from games to the physical controller.
+  * Removed the "Triggers as Buttons" (Final Fantasy XIV compatibility) mode. With native XInput emulation, games address the triggers correctly without it.
   * Improved error handling.
   * Fixed issue with controller connection and multiple navigation shortcuts executing.
   * Updated with closer Xbox button mappings. Hopefully this help until custom button mapings can be implemented (soon-ish)
@@ -39,11 +42,7 @@ Please note that this is a side project for me that I work on during my leisure,
 
 ## Known Functional Limitations
 
--The native XInput driver is replaced with a non XInput driver. This may cause issues when using the controller in newer games that are expecting XInput functionality. **It is planned to add a feature that allows for the switching between the chatpad driver and native XInput driver to work around this issue.** Another workaround is to use the [x360ce](http://www.x360ce.com/) program which allows a non-XInput device to emulate an XInput device.
-
--Headset not supported. The scope of this application is not to create a driver but drive existing drivers (vJoy). To implement this I would need to find a virtual audio driver or create my own, and it may not work great due to latency issues anyway. Also, because this is windows, there are many ways to attach a headset/microphone other than through the Xbox 360 Controller. In short, I don't see a huge need for this functionality, but feel free to post an issue if you'd really like to see it added. With enough support, I may try to explore it.
-
--Force Feedback not supported. This can be done now since vJoy supports force feedback using the latest version, but I don't know how to send the commands to the controller since the developer who knew how to send these signals has not had any activity on this project since the Google Code Shutdown.
+-Headset not supported. The scope of this application is not to create a driver but drive existing drivers (ViGEmBus). To implement this I would need to find a virtual audio driver or create my own, and it may not work great due to latency issues anyway. Also, because this is windows, there are many ways to attach a headset/microphone other than through the Xbox 360 Controller. In short, I don't see a huge need for this functionality, but feel free to post an issue if you'd really like to see it added. With enough support, I may try to explore it.
 
 -Not all 3rd party receivers work very well with this project. Microsoft receivers are recommended to be used with this project. Some 3rd party receivers work fine and some don't work at all. Most connection issues are due to the use of a 3rd party receiver or an installation error. If you are using a 3rd party receiver and cannot get the chatpad or controller to connect and you are sure everything is installed correctly, unfortunately there is nothing I can do to fix this. If you are having issues with a 3rd party receiver that is not connection-based, or a connection issue with a Microsoft-branded receiver, post an issue and please specify if you are using a 3rd party receiver.
 
@@ -65,18 +64,10 @@ _Installing the LibUSB Driver_
   1. Select "Install Now" to install the driver.
   1. Select OK at the confirmation, the LibUSB driver should now be installed.
 
-_Installing the vJoy Driver_
-  1. Download vJoy [here](http://sourceforge.net/projects/vjoystick/files/Beta%202). (v2.0.2)
-  1. Install as an Admin with at least the vJoy Configuration Application.
-  1. Run "Configure vJoy" from the newly created Start Menu folder.
-  1. Match the following selection then hit OK:
-    * Basic Axes Selected: X, Y, Z, R/Rz/Rudder
-    * Additional Axes Selected: Rx, Ry
-    * POV Hat Switch: Continuous
-    * POVs: 1
-    * Number of Buttons: 11
-  1. The Configuration utility will disappear, the vJoy Driver should now be installed.
-  1. Note: For multiple controller support you can specify additional configurations with this utility. Use the counter in the bottom right of the program to change between 1, 2, 3, and 4 controllers.
+_Installing the ViGEmBus Driver_
+  1. Download the latest ViGEmBus setup [here](https://github.com/nefarius/ViGEmBus/releases).
+  1. Run the installer as an Admin and follow the prompts.
+  1. That's it — no per-device configuration is needed. Virtual Xbox 360 controllers are created automatically as your physical controllers connect, so multiple controllers work out of the box.
 
 _Running the Xbox 360 Wireless Chatpad Application_
   1. Download the latest version of the application [here](https://github.com/KytechN24/xbox360wirelesschatpad/releases).
@@ -84,22 +75,9 @@ _Running the Xbox 360 Wireless Chatpad Application_
   1. Execute "Xbox 360 Wireless Chatpad.exe"
   1. Follow in instruction in the application to connect your controller.
 
-Note: The first time you connect a controller, you should Calibrate it using the Windows Game Controllers utility in the Control Panel (Windows XP). The following describes different Axes during calibration (Xbox Stick: Windows Name)
-  * Left Stick: Primary Axis
-  * Left Trigger: Z Axis
-  * Right Trigger: Z Rotation
-  * Right Stick X: X Rotation
-  * Right Stick Y: Y Rotation
+Note: Controllers appear to Windows as standard Xbox 360 (XInput) controllers, so no calibration is required.
 
 Having trouble getting things set up? Head on over to the GitHub issues. Try searching through the issues to see if someone has had a similar problem (don't forget to also search closed issues). If you don't see an answer there, open a new issue and someone will help.
-
-## Final Fantasy XIV Users ##
-In order to use the Final Fantasy XIV compatibility mode, the vJoystick should be configured with the following settings instead of above:
-  * Basic Axes Selected: X, Y, Z, R/Rz/Rudder
-  * POV Hat Switch: Continuous
-  * POVs: 1
-  * Number of Buttons: 13
-It is fine if you've already configured above, just re-run the utility and use these settings. Afterwards, launch the program like normal but before selection the Connect Controller button, check the Final Fantasy XIV box. After connecting, calibrate like normal in Windows, then you "should" be good to go in Final Fantasy XIV. In-game, you'll definitely want to check the controller calibration options to validate the settings are working properly.
 
 ## Special Commands ##
 Mouse Mode will allow you to move the mouse cursor, perform both left and right clicks, and scroll a window vertically. To enable Mouse Mode simply hold down the following button combination for 3 seconds:
