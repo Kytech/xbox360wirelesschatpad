@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xbox 360 Wireless Chatpad",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xbox360WirelessChatpad.Core", "Xbox360WirelessChatpad.Core\Xbox360WirelessChatpad.Core.csproj", "{2F2A1982-33B9-4A78-9D3E-6C81A26A0F1B}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xbox360WirelessChatpad.Tests", "Xbox360WirelessChatpad.Tests\Xbox360WirelessChatpad.Tests.csproj", "{7D4C60E3-91A5-4F2B-B0D8-3E5F1A9C2D47}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -22,6 +24,10 @@ Global
 		{2F2A1982-33B9-4A78-9D3E-6C81A26A0F1B}.Debug|x86.Build.0 = Debug|Any CPU
 		{2F2A1982-33B9-4A78-9D3E-6C81A26A0F1B}.Release|x86.ActiveCfg = Release|Any CPU
 		{2F2A1982-33B9-4A78-9D3E-6C81A26A0F1B}.Release|x86.Build.0 = Release|Any CPU
+		{7D4C60E3-91A5-4F2B-B0D8-3E5F1A9C2D47}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7D4C60E3-91A5-4F2B-B0D8-3E5F1A9C2D47}.Debug|x86.Build.0 = Debug|Any CPU
+		{7D4C60E3-91A5-4F2B-B0D8-3E5F1A9C2D47}.Release|x86.ActiveCfg = Release|Any CPU
+		{7D4C60E3-91A5-4F2B-B0D8-3E5F1A9C2D47}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
