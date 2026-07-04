@@ -1,4 +1,4 @@
-﻿namespace Xbox360WirelessChatpad
+namespace Xbox360WirelessChatpad
 {
     partial class Window_Main
     {
@@ -45,7 +45,6 @@
             this.ctrl1AzertyButton = new System.Windows.Forms.RadioButton();
             this.ctrl1QwertzButton = new System.Windows.Forms.RadioButton();
             this.ctrl1QwertyButton = new System.Windows.Forms.RadioButton();
-            this.ctrl1TriggerTypeBox = new System.Windows.Forms.CheckBox();
             this.ctrl1Group = new System.Windows.Forms.GroupBox();
             this.ctrl1MouseModeBox = new System.Windows.Forms.CheckBox();
             this.ctrl1KeyboardGroup = new System.Windows.Forms.GroupBox();
@@ -55,7 +54,6 @@
             this.ctrl2AzertyButton = new System.Windows.Forms.RadioButton();
             this.ctrl2QwertyButton = new System.Windows.Forms.RadioButton();
             this.ctrl2QwertzButton = new System.Windows.Forms.RadioButton();
-            this.ctrl2TriggerTypeBox = new System.Windows.Forms.CheckBox();
             this.ctrl2DeadzoneGroup = new System.Windows.Forms.GroupBox();
             this.ctrl2RightDeadzonePercentLabel = new System.Windows.Forms.Label();
             this.ctrl2LeftDeadzonePercentLabel = new System.Windows.Forms.Label();
@@ -69,7 +67,6 @@
             this.ctrl3AzertyButton = new System.Windows.Forms.RadioButton();
             this.ctrl3QwertyButton = new System.Windows.Forms.RadioButton();
             this.ctrl3QwertzButton = new System.Windows.Forms.RadioButton();
-            this.ctrl3TriggerTypeBox = new System.Windows.Forms.CheckBox();
             this.ctrl3DeadzoneGroup = new System.Windows.Forms.GroupBox();
             this.ctrl3RightDeadzonePercentLabel = new System.Windows.Forms.Label();
             this.ctrl3LeftDeadzonePercentLabel = new System.Windows.Forms.Label();
@@ -83,7 +80,6 @@
             this.ctrl4AzertyButton = new System.Windows.Forms.RadioButton();
             this.ctrl4QwertyButton = new System.Windows.Forms.RadioButton();
             this.ctrl4QwertzButton = new System.Windows.Forms.RadioButton();
-            this.ctrl4TriggerTypeBox = new System.Windows.Forms.CheckBox();
             this.ctrl4DeadzoneGroup = new System.Windows.Forms.GroupBox();
             this.ctrl4RightDeadzonePercentLabel = new System.Windows.Forms.Label();
             this.ctrl4LeftDeadzonePercentLabel = new System.Windows.Forms.Label();
@@ -279,24 +275,10 @@
             this.ctrl1QwertyButton.UseVisualStyleBackColor = true;
             this.ctrl1QwertyButton.CheckedChanged += new System.EventHandler(this.keyboardType_Selected);
             // 
-            // ctrl1TriggerTypeBox
-            // 
-            this.ctrl1TriggerTypeBox.AutoSize = true;
-            this.ctrl1TriggerTypeBox.Location = new System.Drawing.Point(28, 58);
-            this.ctrl1TriggerTypeBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.ctrl1TriggerTypeBox.Name = "ctrl1TriggerTypeBox";
-            this.ctrl1TriggerTypeBox.Size = new System.Drawing.Size(154, 21);
-            this.ctrl1TriggerTypeBox.TabIndex = 6;
-            this.ctrl1TriggerTypeBox.Text = "Triggers as Buttons";
-            this.ctrl1TriggerTypeBox.UseVisualStyleBackColor = true;
-            this.ctrl1TriggerTypeBox.CheckedChanged += new System.EventHandler(this.triggerType_CheckChanged);
-            this.ctrl1TriggerTypeBox.EnabledChanged += new System.EventHandler(this.triggerType_CheckChanged);
-            // 
             // ctrl1Group
             // 
             this.ctrl1Group.Controls.Add(this.ctrl1MouseModeBox);
             this.ctrl1Group.Controls.Add(this.ctrl1KeyboardGroup);
-            this.ctrl1Group.Controls.Add(this.ctrl1TriggerTypeBox);
             this.ctrl1Group.Controls.Add(this.ctrl1DeadzoneGroup);
             this.ctrl1Group.Enabled = false;
             this.ctrl1Group.Location = new System.Drawing.Point(15, 15);
@@ -338,7 +320,6 @@
             // 
             this.ctrl2Group.Controls.Add(this.ctrl2MouseModeBox);
             this.ctrl2Group.Controls.Add(this.ctrl2KeyboardGroup);
-            this.ctrl2Group.Controls.Add(this.ctrl2TriggerTypeBox);
             this.ctrl2Group.Controls.Add(this.ctrl2DeadzoneGroup);
             this.ctrl2Group.Enabled = false;
             this.ctrl2Group.Location = new System.Drawing.Point(233, 15);
@@ -417,18 +398,6 @@
             this.ctrl2QwertzButton.Text = "Q W E R T Z";
             this.ctrl2QwertzButton.UseVisualStyleBackColor = true;
             this.ctrl2QwertzButton.CheckedChanged += new System.EventHandler(this.keyboardType_Selected);
-            // 
-            // ctrl2TriggerTypeBox
-            // 
-            this.ctrl2TriggerTypeBox.AutoSize = true;
-            this.ctrl2TriggerTypeBox.Location = new System.Drawing.Point(28, 58);
-            this.ctrl2TriggerTypeBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.ctrl2TriggerTypeBox.Name = "ctrl2TriggerTypeBox";
-            this.ctrl2TriggerTypeBox.Size = new System.Drawing.Size(154, 21);
-            this.ctrl2TriggerTypeBox.TabIndex = 6;
-            this.ctrl2TriggerTypeBox.Text = "Triggers as Buttons";
-            this.ctrl2TriggerTypeBox.UseVisualStyleBackColor = true;
-            this.ctrl2TriggerTypeBox.CheckedChanged += new System.EventHandler(this.triggerType_CheckChanged);
             // 
             // ctrl2DeadzoneGroup
             // 
@@ -511,7 +480,6 @@
             // 
             this.ctrl3Group.Controls.Add(this.ctrl3MouseModeBox);
             this.ctrl3Group.Controls.Add(this.ctrl3KeyboardGroup);
-            this.ctrl3Group.Controls.Add(this.ctrl3TriggerTypeBox);
             this.ctrl3Group.Controls.Add(this.ctrl3DeadzoneGroup);
             this.ctrl3Group.Enabled = false;
             this.ctrl3Group.Location = new System.Drawing.Point(452, 15);
@@ -590,18 +558,6 @@
             this.ctrl3QwertzButton.Text = "Q W E R T Z";
             this.ctrl3QwertzButton.UseVisualStyleBackColor = true;
             this.ctrl3QwertzButton.CheckedChanged += new System.EventHandler(this.keyboardType_Selected);
-            // 
-            // ctrl3TriggerTypeBox
-            // 
-            this.ctrl3TriggerTypeBox.AutoSize = true;
-            this.ctrl3TriggerTypeBox.Location = new System.Drawing.Point(28, 58);
-            this.ctrl3TriggerTypeBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.ctrl3TriggerTypeBox.Name = "ctrl3TriggerTypeBox";
-            this.ctrl3TriggerTypeBox.Size = new System.Drawing.Size(154, 21);
-            this.ctrl3TriggerTypeBox.TabIndex = 6;
-            this.ctrl3TriggerTypeBox.Text = "Triggers as Buttons";
-            this.ctrl3TriggerTypeBox.UseVisualStyleBackColor = true;
-            this.ctrl3TriggerTypeBox.CheckedChanged += new System.EventHandler(this.triggerType_CheckChanged);
             // 
             // ctrl3DeadzoneGroup
             // 
@@ -684,7 +640,6 @@
             // 
             this.ctrl4Group.Controls.Add(this.ctrl4MouseModeBox);
             this.ctrl4Group.Controls.Add(this.ctrl4KeyboardGroup);
-            this.ctrl4Group.Controls.Add(this.ctrl4TriggerTypeBox);
             this.ctrl4Group.Controls.Add(this.ctrl4DeadzoneGroup);
             this.ctrl4Group.Enabled = false;
             this.ctrl4Group.Location = new System.Drawing.Point(671, 15);
@@ -763,18 +718,6 @@
             this.ctrl4QwertzButton.Text = "Q W E R T Z";
             this.ctrl4QwertzButton.UseVisualStyleBackColor = true;
             this.ctrl4QwertzButton.CheckedChanged += new System.EventHandler(this.keyboardType_Selected);
-            // 
-            // ctrl4TriggerTypeBox
-            // 
-            this.ctrl4TriggerTypeBox.AutoSize = true;
-            this.ctrl4TriggerTypeBox.Location = new System.Drawing.Point(28, 58);
-            this.ctrl4TriggerTypeBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.ctrl4TriggerTypeBox.Name = "ctrl4TriggerTypeBox";
-            this.ctrl4TriggerTypeBox.Size = new System.Drawing.Size(154, 21);
-            this.ctrl4TriggerTypeBox.TabIndex = 6;
-            this.ctrl4TriggerTypeBox.Text = "Triggers as Buttons";
-            this.ctrl4TriggerTypeBox.UseVisualStyleBackColor = true;
-            this.ctrl4TriggerTypeBox.CheckedChanged += new System.EventHandler(this.triggerType_CheckChanged);
             // 
             // ctrl4DeadzoneGroup
             // 
@@ -926,7 +869,6 @@
         private System.Windows.Forms.RadioButton ctrl1AzertyButton;
         private System.Windows.Forms.RadioButton ctrl1QwertzButton;
         private System.Windows.Forms.RadioButton ctrl1QwertyButton;
-        private System.Windows.Forms.CheckBox ctrl1TriggerTypeBox;
         private System.Windows.Forms.GroupBox ctrl1Group;
         private System.Windows.Forms.GroupBox ctrl1KeyboardGroup;
         private System.Windows.Forms.CheckBox ctrl1MouseModeBox;
@@ -936,7 +878,6 @@
         private System.Windows.Forms.RadioButton ctrl2AzertyButton;
         private System.Windows.Forms.RadioButton ctrl2QwertyButton;
         private System.Windows.Forms.RadioButton ctrl2QwertzButton;
-        private System.Windows.Forms.CheckBox ctrl2TriggerTypeBox;
         private System.Windows.Forms.GroupBox ctrl2DeadzoneGroup;
         private System.Windows.Forms.Label ctrl2RightDeadzonePercentLabel;
         private System.Windows.Forms.Label ctrl2LeftDeadzonePercentLabel;
@@ -950,7 +891,6 @@
         private System.Windows.Forms.RadioButton ctrl3AzertyButton;
         private System.Windows.Forms.RadioButton ctrl3QwertyButton;
         private System.Windows.Forms.RadioButton ctrl3QwertzButton;
-        private System.Windows.Forms.CheckBox ctrl3TriggerTypeBox;
         private System.Windows.Forms.GroupBox ctrl3DeadzoneGroup;
         private System.Windows.Forms.Label ctrl3RightDeadzonePercentLabel;
         private System.Windows.Forms.Label ctrl3LeftDeadzonePercentLabel;
@@ -964,7 +904,6 @@
         private System.Windows.Forms.RadioButton ctrl4AzertyButton;
         private System.Windows.Forms.RadioButton ctrl4QwertyButton;
         private System.Windows.Forms.RadioButton ctrl4QwertzButton;
-        private System.Windows.Forms.CheckBox ctrl4TriggerTypeBox;
         private System.Windows.Forms.GroupBox ctrl4DeadzoneGroup;
         private System.Windows.Forms.Label ctrl4RightDeadzonePercentLabel;
         private System.Windows.Forms.Label ctrl4LeftDeadzonePercentLabel;

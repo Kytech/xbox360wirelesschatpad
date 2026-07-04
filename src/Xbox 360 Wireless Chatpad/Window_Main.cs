@@ -250,13 +250,6 @@ namespace Xbox360WirelessChatpad
             chatpadTextBox.Enter -= chatpadTextBox_Enter;
         }
 
-        private void triggerType_CheckChanged(object sender, EventArgs e)
-        {
-            // Trigger-as-button mode was removed with the ViGEmBus migration;
-            // triggers are always reported as XInput analog triggers. This stub
-            // and its checkbox will be removed along with the setting.
-        }
-
         private void keyboardType_Selected(object sender, EventArgs e)
         {
             // Set the corresponding controller keyboard type based on the radio buttons
