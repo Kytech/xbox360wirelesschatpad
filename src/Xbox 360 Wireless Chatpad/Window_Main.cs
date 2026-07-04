@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Windows.Forms;
 
+using Xbox360WirelessChatpad.Core;
+using Xbox360WirelessChatpad.Core.ViGEm;
+
 namespace Xbox360WirelessChatpad
 {
     // Necessary to update the form items in a thread-safe manner
@@ -18,24 +21,31 @@ namespace Xbox360WirelessChatpad
         // Gamepad (Joystick and Buttons) and a Chatpad (Attached Keyboard)
         private Controller[] xboxControllers = new Controller[4];
 
+        // The connection to the ViGEmBus driver, shared by all controllers
+        // to create their virtual XInput gamepads
+        private IVirtualGamepadFactory gamepadFactory;
+
         public Window_Main()
         {
             try
             {
-                // Instantiate the Controllers
-                xboxControllers[0] = new Controller(this);
-                xboxControllers[1] = new Controller(this);
-                xboxControllers[2] = new Controller(this);
-                xboxControllers[3] = new Controller(this);
+                // Connect to the ViGEmBus driver
+                gamepadFactory = new ViGEmGamepadFactory();
             }
-            catch (VjoyNotEnabledException)
+            catch (VigemBusNotAvailableException)
             {
-                MessageBox.Show("Xbox 360 Wireless Chatpad could not be loaded.\n\nThe vJoy driver is not enabled or it is not installed. You can enable vJoy using the \"Configure vJoy\" tool or go to https://github.com/KytechN24/xbox360wirelesschatpad for more information on how to install and configure vJoy for this application.",
+                MessageBox.Show("Xbox 360 Wireless Chatpad could not be loaded.\n\nThe ViGEmBus driver is not installed or could not be accessed. Download and install the latest ViGEmBus release from https://github.com/nefarius/ViGEmBus/releases or go to https://github.com/KytechN24/xbox360wirelesschatpad for more information on how to set up this application.",
                     "Xbox 360 Wireless Chatpad Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
                 Environment.Exit(1);
             }
+
+            // Instantiate the Controllers
+            xboxControllers[0] = new Controller(this, gamepadFactory);
+            xboxControllers[1] = new Controller(this, gamepadFactory);
+            xboxControllers[2] = new Controller(this, gamepadFactory);
+            xboxControllers[3] = new Controller(this, gamepadFactory);
 
             // Initialize the Form Components
             InitializeComponent();
@@ -65,13 +75,6 @@ namespace Xbox360WirelessChatpad
                     ctrl1QwertyButton.Checked = true;
                     break;
             }
-
-            // Trigger Type
-            xboxControllers[0].configureGamepad(Properties.Settings.Default.ctrl1TriggerAsButton);
-            if (Properties.Settings.Default.ctrl1TriggerAsButton)
-                ctrl1TriggerTypeBox.Checked = true;
-            else
-                ctrl1TriggerTypeBox.Checked = false;
 
             // Mouse Mode
             xboxControllers[0].mouseModeFlag = Properties.Settings.Default.ctrl1MouseMode;
@@ -105,13 +108,6 @@ namespace Xbox360WirelessChatpad
                     break;
             }
 
-            // Trigger Type
-            xboxControllers[1].configureGamepad(Properties.Settings.Default.ctrl2TriggerAsButton);
-            if (Properties.Settings.Default.ctrl2TriggerAsButton)
-                ctrl2TriggerTypeBox.Checked = true;
-            else
-                ctrl2TriggerTypeBox.Checked = false;
-
             // Mouse Mode
             xboxControllers[1].mouseModeFlag = Properties.Settings.Default.ctrl2MouseMode;
             if (Properties.Settings.Default.ctrl2MouseMode)
@@ -142,13 +138,6 @@ namespace Xbox360WirelessChatpad
                     ctrl3QwertyButton.Checked = true;
                     break;
             }
-
-            // Trigger Type
-            xboxControllers[2].configureGamepad(Properties.Settings.Default.ctrl3TriggerAsButton);
-            if (Properties.Settings.Default.ctrl3TriggerAsButton)
-                ctrl3TriggerTypeBox.Checked = true;
-            else
-                ctrl3TriggerTypeBox.Checked = false;
 
             // Mouse Mode
             xboxControllers[2].mouseModeFlag = Properties.Settings.Default.ctrl3MouseMode;
@@ -181,13 +170,6 @@ namespace Xbox360WirelessChatpad
                     break;
             }
 
-            // Trigger Type
-            xboxControllers[3].configureGamepad(Properties.Settings.Default.ctrl4TriggerAsButton);
-            if (Properties.Settings.Default.ctrl4TriggerAsButton)
-                ctrl4TriggerTypeBox.Checked = true;
-            else
-                ctrl4TriggerTypeBox.Checked = false;
-
             // Mouse Mode
             xboxControllers[3].mouseModeFlag = Properties.Settings.Default.ctrl4MouseMode;
             if (Properties.Settings.Default.ctrl4MouseMode)
@@ -199,11 +181,11 @@ namespace Xbox360WirelessChatpad
             ctrl4LeftDeadzone.Value = Properties.Settings.Default.ctrl4DeadzoneL;
             ctrl4RightDeadzone.Value = Properties.Settings.Default.ctrl4DeadzoneR;
 
-            // Register each Controller to a vJoy Joystick
-            xboxControllers[0].registerJoystick(1);
-            xboxControllers[1].registerJoystick(2);
-            xboxControllers[2].registerJoystick(3);
-            xboxControllers[3].registerJoystick(4);
+            // Assign each Controller its number (drives the physical LED and log messages)
+            xboxControllers[0].registerControllerNumber(1);
+            xboxControllers[1].registerControllerNumber(2);
+            xboxControllers[2].registerControllerNumber(3);
+            xboxControllers[3].registerControllerNumber(4);
 
             // Instantiate and Connect to the Receiver
             xboxReceiver = new Receiver(xboxControllers, this);
@@ -223,6 +205,9 @@ namespace Xbox360WirelessChatpad
             {
                 // Cleanup the Wireless Receiver
                 xboxReceiver.killReceiver();
+
+                // Disconnect from the ViGEmBus driver
+                gamepadFactory.Dispose();
 
                 // Save the configuraiton file variables
                 Properties.Settings.Default.Save();
@@ -267,45 +252,9 @@ namespace Xbox360WirelessChatpad
 
         private void triggerType_CheckChanged(object sender, EventArgs e)
         {
-            // Set corresponding controller trigger type based on the check box
-            string checkBoxName = ((CheckBox)sender).Name;
-
-            if (checkBoxName.Contains("1"))
-            {
-                if (((CheckBox)sender).Checked)
-                    Properties.Settings.Default.ctrl1TriggerAsButton = true;
-               else
-                    Properties.Settings.Default.ctrl1TriggerAsButton = false;
-
-                xboxControllers[0].configureGamepad(Properties.Settings.Default.ctrl1TriggerAsButton);
-            }
-            else if (checkBoxName.Contains("2"))
-            {
-                if (((CheckBox)sender).Checked)
-                    Properties.Settings.Default.ctrl2TriggerAsButton = true;
-                else
-                    Properties.Settings.Default.ctrl2TriggerAsButton = false;
-
-                xboxControllers[1].configureGamepad(Properties.Settings.Default.ctrl2TriggerAsButton);
-            }
-            else if (checkBoxName.Contains("3"))
-            {
-                if (((CheckBox)sender).Checked)
-                    Properties.Settings.Default.ctrl3TriggerAsButton = true;
-                else
-                    Properties.Settings.Default.ctrl3TriggerAsButton = false;
-
-                xboxControllers[2].configureGamepad(Properties.Settings.Default.ctrl3TriggerAsButton);
-            }
-            else
-            {
-                if (((CheckBox)sender).Checked)
-                    Properties.Settings.Default.ctrl4TriggerAsButton = true;
-                else
-                    Properties.Settings.Default.ctrl4TriggerAsButton = false;
-
-                xboxControllers[3].configureGamepad(Properties.Settings.Default.ctrl4TriggerAsButton);
-            }
+            // Trigger-as-button mode was removed with the ViGEmBus migration;
+            // triggers are always reported as XInput analog triggers. This stub
+            // and its checkbox will be removed along with the setting.
         }
 
         private void keyboardType_Selected(object sender, EventArgs e)

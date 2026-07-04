@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 
 using InputManager;
-using vJoyInterfaceWrap;
 
 using LibUsbDotNet;
 using LibUsbDotNet.Main;
+
+using Xbox360WirelessChatpad.Core;
 
 namespace Xbox360WirelessChatpad
 {
@@ -17,9 +18,6 @@ namespace Xbox360WirelessChatpad
 
         // Tracks the connected controller's number
         private int controllerNumber;
-
-        // Tracks if the trigger will behave like a button or axis
-        private bool triggerAsButton;
 
         // The Controllers associated endpoint writer in the receiver
         private UsbEndpointWriter epWriter;
@@ -74,11 +72,6 @@ namespace Xbox360WirelessChatpad
         private Dictionary<int, string> greenMap = new Dictionary<int, string>();
         private Dictionary<int, string> orangeMap = new Dictionary<int, string>();
 
-        // Contains mappings of controller buttons, directional pad, and axes
-        private Dictionary<String, uint> buttonMap = new Dictionary<String, uint>();
-        private Dictionary<String, int> directionMap = new Dictionary<String, int>();
-        private Dictionary<String, HID_USAGES> axisMap = new Dictionary<String, HID_USAGES>();
-
         // Tracks which Chatpad Modifiers are active
         private Dictionary<string, bool> chatpadMod = new Dictionary<string, bool>()
             {
@@ -119,35 +112,12 @@ namespace Xbox360WirelessChatpad
         // Gamepad Variables
         // -----------------
 
-        // The vJoy virtual joystick
-        vJoy vJoyInt;
+        // Creates the virtual gamepad when the physical controller attaches
+        private readonly IVirtualGamepadFactory gamepadFactory;
 
-        // Note: This is very close to being complete for deployment, all that's left is to programatically disable
-        // and re-enable the vJoy Device. Leaving in for now, but will wait until a future versiion for release
-        // after some user feedback.
-        //// Size variable and binary array for Button trigger type vJoy registry key
-        //byte vJoyButtonSize = 0x69;
-        //byte[] vJoyButtonDesctiptor = { 0x05, 0x01, 0x15, 0x00, 0x09, 0x04, 0xa1, 0x01, 0x05, 0x01, 0x85, 0x01,
-        //                             0x09, 0x01, 0x15, 0x00, 0x26, 0xff, 0x7f, 0x75, 0x20, 0x95, 0x01, 0xa1,
-        //                             0x00, 0x09, 0x30, 0x81, 0x02, 0x09, 0x31, 0x81, 0x02, 0x09, 0x32, 0x81,
-        //                             0x02, 0x81, 0x01, 0x81, 0x01, 0x09, 0x35, 0x81, 0x02, 0x81, 0x01, 0x81,
-        //                             0x01, 0xc0, 0x15, 0x00, 0x27, 0x3c, 0x8c, 0x00, 0x00, 0x35, 0x00, 0x47,
-        //                             0x3c, 0x8c, 0x00, 0x00, 0x65, 0x14, 0x75, 0x20, 0x95, 0x01, 0x09, 0x39,
-        //                             0x81, 0x02, 0x95, 0x03, 0x81, 0x01, 0x05, 0x09, 0x15, 0x00, 0x25, 0x01,
-        //                             0x55, 0x00, 0x65, 0x00, 0x19, 0x01, 0x29, 0x0d, 0x75, 0x01, 0x95, 0x0d,
-        //                             0x81, 0x02, 0x75, 0x13, 0x95, 0x01, 0x81, 0x01, 0xc0 };
-
-        //// Binary array for Axis trigger type vJoy registry key
-        //byte vJoyAxisSize = 0x6d;
-        //byte[] vJoyAxisDesctiptor = { 0x05, 0x01, 0x15, 0x00, 0x09, 0x04, 0xa1, 0x01, 0x05, 0x01, 0x85, 0x01,
-        //                                0x09, 0x01, 0x15, 0x00, 0x26, 0xff, 0x7f, 0x75, 0x20, 0x95, 0x01, 0xa1,
-        //                                0x00, 0x09, 0x30, 0x81, 0x02, 0x09, 0x31, 0x81, 0x02, 0x09, 0x32, 0x81,
-        //                                0x02, 0x09, 0x33, 0x81, 0x02, 0x09, 0x34, 0x81, 0x02, 0x09, 0x35, 0x81,
-        //                                0x02, 0x81, 0x01, 0x81, 0x01, 0xc0, 0x15, 0x00, 0x27, 0x3c, 0x8c, 0x00,
-        //                                0x00, 0x35, 0x00, 0x47, 0x3c, 0x8c, 0x00, 0x00, 0x65, 0x14, 0x75, 0x20,
-        //                                0x95, 0x01, 0x09, 0x39, 0x81, 0x02, 0x95, 0x03, 0x81, 0x01, 0x05, 0x09,
-        //                                0x15, 0x00, 0x25, 0x01, 0x55, 0x00, 0x65, 0x00, 0x19, 0x01, 0x29, 0x0b,
-        //                                0x75, 0x01, 0x95, 0x0b, 0x81, 0x02, 0x75, 0x15, 0x95, 0x01, 0x81, 0x01, 0xc0 };
+        // The virtual XInput gamepad presented to the OS via ViGEmBus.
+        // Exists only while the physical controller is attached.
+        private IVirtualGamepad gamepad;
 
         // Deadzone variables for the joysticks on the gamepad
         public int deadzoneL = 0;
@@ -179,25 +149,14 @@ namespace Xbox360WirelessChatpad
 
         private bool navActive = false;
 
-        public Controller(Window_Main window)
+        public Controller(Window_Main window, IVirtualGamepadFactory gamepadFactory)
         {
             // Stores the passed window as parentWindow for furtue use
             parentWindow = window;
 
-            // Instantiate the vJoy interface
-            vJoyInt = new vJoy();
-            if (!vJoyInt.vJoyEnabled())
-            {
-                  // If vJoy not enabled, throw exception
-                  throw new VjoyNotEnabledException();
-
-/*              This is the old method of handling disabled vjoy error. This threw several different
-                exceptions down the line bacause main window handle didn't exist at this time.
-                parentWindow.Invoke(new logCallback(parentWindow.logMessage),
-                    "ERROR: vJoy Driver Not Enabled.");
-                return;
-*/
-            }
+            // Stores the factory used to create the virtual gamepad once the
+            // physical controller attaches
+            this.gamepadFactory = gamepadFactory;
         }
 
         public void registerEndpointWriter(UsbEndpointWriter writer)
@@ -206,45 +165,12 @@ namespace Xbox360WirelessChatpad
             epWriter = writer;
         }
 
-        public void registerJoystick(int ctrlNum)
+        public void registerControllerNumber(int ctrlNum)
         {
-            // Stores the passed controller number for future use
+            // Stores the passed controller number for future use. This drives
+            // the physical controller's LED assignment; the virtual gamepad is
+            // created dynamically when the controller attaches.
             controllerNumber = ctrlNum;
-
-            // Note: This is very close to being complete for deployment, all that's left is to programatically disable
-            // and re-enable the vJoy Device. Leaving in for now, but will wait until a future versiion for release
-            // after some user feedback.
-            //// Create Registry Key for vjoy device
-            //string vJoyRegPath = @"SYSTEM\CurrentControlSet\services\vjoy\Parameters";
-            //RegistryKey vJoyDeviceKey = Registry.LocalMachine.CreateSubKey(vJoyRegPath + "\\Device0" + controllerNumber);
-
-            //// Populate Registry Key based on trigger type
-            //if (controllerTrigger == "Button")
-            //{
-            //    // Update Byte 12 to represent the current controller
-            //    vJoyButtonDesctiptor[11] = (byte)controllerNumber;
-            //    vJoyDeviceKey.SetValue("HidReportDesctiptor", vJoyButtonDesctiptor);
-            //    vJoyDeviceKey.SetValue("HidReportDesctiptorSize", vJoyButtonSize, RegistryValueKind.DWord);
-            //}
-            //else if (controllerTrigger == "Axis")
-            //{
-            //    // Update Byte 12 to represent the current controller
-            //    vJoyAxisDesctiptor[11] = (byte)controllerNumber;
-            //    vJoyDeviceKey.SetValue("HidDesctiptor", vJoyAxisDesctiptor);
-            //    vJoyDeviceKey.SetValue("HidReportDesctiptorSize", vJoyAxisSize, RegistryValueKind.DWord);
-            //}
-            //else
-            //    parentWindow.Invoke(new logCallback(parentWindow.logMessage),
-            //        "ERROR: Unknown Trigger Type.");
-
-            // Retreives the virtual joystick status
-            VjdStat vJoystickStatus = vJoyInt.GetVJDStatus((uint)controllerNumber);
-
-            // Acquire the virtual joystick
-            if ((vJoystickStatus != VjdStat.VJD_STAT_FREE) ||
-                ((vJoystickStatus == VjdStat.VJD_STAT_FREE) && (!vJoyInt.AcquireVJD((uint)controllerNumber))))
-                parentWindow.Invoke(new logCallback(parentWindow.logMessage),
-                    "WARNING: Failed to Acquire vJoy Gamepad Number " + controllerNumber + ".");
         }
 
         public void processDataPacket(object sender, EndpointDataEventArgs e)
@@ -261,6 +187,9 @@ namespace Xbox360WirelessChatpad
                     {
                         parentWindow.Invoke(new logCallback(parentWindow.logMessage),
                             "Xbox 360 Wireless Controller " + controllerNumber + " Disconnected.");
+
+                        // Unplug the virtual gamepad
+                        disposeGamepad();
 
                         // Clean up the Mouse Mode thread
                         killMouseMode();
@@ -281,6 +210,23 @@ namespace Xbox360WirelessChatpad
                 {
                     // Flag that the controller has connected
                     controllerAttached = true;
+
+                    // Plug in the virtual XInput gamepad for this controller.
+                    // Guarded against repeated attach packets.
+                    if (gamepad == null)
+                    {
+                        try
+                        {
+                            gamepad = gamepadFactory.CreateGamepad();
+                            gamepad.FeedbackReceived += gamepadFeedbackReceived;
+                            gamepad.Connect();
+                        }
+                        catch (Exception ex)
+                        {
+                            parentWindow.Invoke(new logCallback(parentWindow.logMessage),
+                                "ERROR: Failed to Create Virtual Gamepad: " + ex.Message);
+                        }
+                    }
 
                     // Set the LED for the controller number
                     switch (controllerNumber)
@@ -516,58 +462,40 @@ namespace Xbox360WirelessChatpad
 
         public void ProcessGamepadData(byte[] dataPacket)
         {
-            // This function is called anytime received data is identified as gamepad data
-            // It will parse the data and feed it to the vJoy device as necessary
+            // This function is called anytime received data is identified as gamepad data.
+            // It decodes the packet into a gamepad state and feeds it to the virtual
+            // XInput gamepad as one atomic report.
+            GamepadState state = GamepadStateMapper.Map(dataPacket, deadzoneL, deadzoneR);
 
-            // --------------------------
-            // Directional Pad Processing
-            // --------------------------
+            // ------------------
+            // Special Processing
+            // ------------------
 
-            // Set the POV hat based on the currently held direction
-            switch (dataPacket[6])
-            {
-                case 0x01:
-                    vJoyInt.SetContPov(directionMap["Up"], (uint)controllerNumber, 1);
-                    break;
-                case 0x02:
-                    vJoyInt.SetContPov(directionMap["Down"], (uint)controllerNumber, 1);
-                    break;
-                case 0x04:
-                    vJoyInt.SetContPov(directionMap["Left"], (uint)controllerNumber, 1);
-                    break;
-                case 0x08:
-                    vJoyInt.SetContPov(directionMap["Right"], (uint)controllerNumber, 1);
-                    break;
-                case 0x05:
-                    vJoyInt.SetContPov(directionMap["UpLeft"], (uint)controllerNumber, 1);
-                    break;
-                case 0x06:
-                    vJoyInt.SetContPov(directionMap["DownLeft"], (uint)controllerNumber, 1);
-                    break;
-                case 0x09:
-                    vJoyInt.SetContPov(directionMap["UpRight"], (uint)controllerNumber, 1);
-                    break;
-                case 0x0A:
-                    vJoyInt.SetContPov(directionMap["DownRight"], (uint)controllerNumber, 1);
-                    break;
-                default:
-                    vJoyInt.SetContPov(directionMap["Neutral"], (uint)controllerNumber, 1);
-                    break;
-            }
+            // The special button combinations will be stored as booleans when they are
+            // detected. A higher level timer function will use these booleans to determine
+            // if the associated actions should be executed.
 
-            // -----------------
-            // Button Processing
-            // -----------------
+            // Indicate to toggle mouse mode based on the command sequence:
+            // LBump + RBump + Back
+            cmdMouseModeToggle = state.LeftShoulder && state.RightShoulder && state.Back;
 
-            // All button data comes in on 2 bytes, specifically 6 and 7. The following code
-            // uses a Bitwise AND for each button to determine if it is being held down
+            // Indicate to shutdown controller based on the command sequence:
+            // LTrig + RTrig + Back
+            cmdKillController = (state.LeftTrigger >= 50) && (state.RightTrigger >= 50) && state.Back;
 
-            // If in mouse mode use A and B as mouse clicks; otherwise set joystick buttons.
+            // ---------------------
+            // Mouse Mode Processing
+            // ---------------------
+
+            // If in Mouse Mode: A and B act as mouse clicks, the bumpers act as
+            // navigation shortcuts, the left stick and left trigger drive the
+            // cursor, and the right stick drives scrolling. Inputs consumed by
+            // Mouse Mode are suppressed from the virtual gamepad; everything
+            // else still passes through.
             if (mouseModeFlag)
             {
-
                 // A Button - Left Mouse Button
-                if ((dataPacket[7] & 0x10) > 0)
+                if (state.A)
                 {
                     if (!leftButtonDown)
                     {
@@ -585,7 +513,7 @@ namespace Xbox360WirelessChatpad
                 }
 
                 // B Button - Right Mouse Button
-                if ((dataPacket[7] & 0x20) > 0)
+                if (state.B)
                 {
                     if (!rightButtonDown)
                     {
@@ -601,27 +529,9 @@ namespace Xbox360WirelessChatpad
                         rightButtonDown = false;
                     }
                 }
-            }
-            else
-            {
-                vJoyInt.SetBtn((dataPacket[7] & 0x10) > 0, (uint)controllerNumber, buttonMap["A"]);
-                vJoyInt.SetBtn((dataPacket[7] & 0x20) > 0, (uint)controllerNumber, buttonMap["B"]);
-            }
 
-            vJoyInt.SetBtn((dataPacket[7] & 0x40) > 0, (uint)controllerNumber, buttonMap["X"]);
-            vJoyInt.SetBtn((dataPacket[7] & 0x80) > 0, (uint)controllerNumber, buttonMap["Y"]);
-            vJoyInt.SetBtn((dataPacket[6] & 0x10) > 0, (uint)controllerNumber, buttonMap["Start"]);
-            vJoyInt.SetBtn((dataPacket[6] & 0x20) > 0, (uint)controllerNumber, buttonMap["Back"]);
-            vJoyInt.SetBtn((dataPacket[6] & 0x40) > 0, (uint)controllerNumber, buttonMap["LStick"]);
-            vJoyInt.SetBtn((dataPacket[6] & 0x80) > 0, (uint)controllerNumber, buttonMap["RStick"]);
-            vJoyInt.SetBtn((dataPacket[7] & 0x04) > 0, (uint)controllerNumber, buttonMap["Guide"]);
-
-            // If in mouse mode use Left and Rught bumpers as navigationg shortcuts;
-            // otherwise set joystick buttons.
-            if (mouseModeFlag)
-            {
                 // Left Bumper - Navigate Back
-                if ((dataPacket[7] & 0x01) > 0 && !navActive)
+                if (state.LeftShoulder && !navActive)
                 {
                     navActive = true;
                     Keyboard.KeyDown(Keys.LMenu);
@@ -631,7 +541,7 @@ namespace Xbox360WirelessChatpad
                 }
 
                 // Right Bumper - Navigate Forward
-                if ((dataPacket[7] & 0x02) > 0 && !navActive)
+                if (state.RightShoulder && !navActive)
                 {
                     navActive = true;
                     Keyboard.KeyDown(Keys.LMenu);
@@ -639,137 +549,46 @@ namespace Xbox360WirelessChatpad
                     Keyboard.KeyUp(Keys.Right);
                     Keyboard.KeyUp(Keys.LMenu);
                 }
-            }
-            else
-            {
-                vJoyInt.SetBtn((dataPacket[7] & 0x01) > 0, (uint)controllerNumber, buttonMap["LBump"]);
-                vJoyInt.SetBtn((dataPacket[7] & 0x02) > 0, (uint)controllerNumber, buttonMap["RBump"]);
-            }
 
-            // ---------------
-            // Axis Processing
-            // ---------------
-
-            // Record the left stick and right stick X and Y values and left and right trigger values
-            short leftX = (short)(dataPacket[10] | (dataPacket[11] << 8));
-            short leftY = (short)(dataPacket[12] | (dataPacket[13] << 8));
-            short rightX = (short)(dataPacket[14] | (dataPacket[15] << 8));
-            short rightY = (short)(dataPacket[16] | (dataPacket[17] << 8));
-            int leftTrig = dataPacket[8];
-            int rightTrig = dataPacket[9];
-
-            // Filter the left stick X and Y values based on the left circular deadzone
-            double leftDistance = Math.Sqrt((double)(leftX * leftX) + (double)(leftY * leftY));
-            if (leftDistance < deadzoneL)
-            {
-                leftX = 0;
-                leftY = 0;
-            }
-            else
-            {
-                if (Math.Abs(Convert.ToInt32(leftX)) < deadzoneL)
-                    leftX = 0;
-                if (Math.Abs(Convert.ToInt32(leftY)) < deadzoneL)
-                    leftY = 0;
-            }
-
-            // Filter the right stick X and Y values based on the right circular deadzone
-            double rightDistance = Math.Sqrt((double)(rightX * rightX) + (double)(rightY * rightY));
-            if (rightDistance < deadzoneR)
-            {
-                rightX = 0;
-                rightY = 0;
-            }
-            else
-            {
-                if (Math.Abs(Convert.ToInt32(rightX)) < deadzoneR)
-                    rightX = 0;
-                if (Math.Abs(Convert.ToInt32(rightY)) < deadzoneR)
-                    rightY = 0;
-            }
-
-            // If in Mouse Mode use the left stick and left trigger to determine the movement
-            // of the mouse. Use the right stick and right trigger to determine the movement
-            // of the scrollbars. If not in mouse mode, simply set the joysticks.
-            if (mouseModeFlag)
-            {
                 // Sets the maximum velocity based on the amount of Left Trigger depressed.
                 // A more depressed trigger yields a higher max velocity.
                 int maxVelocity = 10;
-                if (leftTrig >= 50)
+                if (state.LeftTrigger >= 50)
                     maxVelocity = 20;
 
                 // Sets the mouse X and Y velocity to a fraction of the maximum velocity based on
                 // the position of the Left stick.
-                mouseVelX = maxVelocity * leftX / 32767;
-                mouseVelY = maxVelocity * leftY / 32767;
+                mouseVelX = maxVelocity * state.LeftStickX / 32767;
+                mouseVelY = maxVelocity * state.LeftStickY / 32767;
 
                 // Sets the right stick direction based on the Y position of the Right stick.
-                if (rightY < 0)
+                if (state.RightStickY < 0)
                     rightStickDir = -1;
-                else if (rightY > 0)
+                else if (state.RightStickY > 0)
                     rightStickDir = 1;
                 else
                     rightStickDir = 0;
-            }
-            else
-            {
-                // Set the left stick X and Y values
-                // Note: For some reason, the left stick Y axis is inverted, multiplied by -1 to fix
-                vJoyInt.SetAxis(leftX, (uint)controllerNumber, axisMap["LX"]);
-                vJoyInt.SetAxis(-leftY, (uint)controllerNumber, axisMap["LY"]);
 
-                // Set the right stick X and Y values
-                vJoyInt.SetAxis(rightX, (uint)controllerNumber, axisMap["RX"]);
-                vJoyInt.SetAxis(rightY, (uint)controllerNumber, axisMap["RY"]);
-
-                // If in FFXIV Mode the Left and Right Triggers are buttons otherwise
-                // they are separate axes.
-                if (triggerAsButton)
-                {
-                    // Left Trigger
-                    if (leftTrig >= 50)
-                        vJoyInt.SetBtn(true, (uint)controllerNumber, buttonMap["LTrig"]);
-                    else
-                        vJoyInt.SetBtn(false, (uint)controllerNumber, buttonMap["LTrig"]);
-
-                    // Right Trigger
-                    if (rightTrig >= 50)
-                        vJoyInt.SetBtn(true, (uint)controllerNumber, buttonMap["RTrig"]);
-                    else
-                        vJoyInt.SetBtn(false, (uint)controllerNumber, buttonMap["RTrig"]);
-                }
-                else
-                {
-                    // Left Trigger
-                    vJoyInt.SetAxis(leftTrig, (uint)controllerNumber, axisMap["LTrig"]);
-
-                    // Right Trigger
-                    vJoyInt.SetAxis(rightTrig, (uint)controllerNumber, axisMap["RTrig"]);
-                }
+                // Suppress the inputs consumed by Mouse Mode before feeding
+                // the virtual gamepad.
+                state.A = false;
+                state.B = false;
+                state.LeftShoulder = false;
+                state.RightShoulder = false;
+                state.LeftStickX = 0;
+                state.LeftStickY = 0;
+                state.RightStickX = 0;
+                state.RightStickY = 0;
+                state.LeftTrigger = 0;
+                state.RightTrigger = 0;
             }
 
-            // ------------------
-            // Special Processing
-            // ------------------
+            // -----------------------
+            // Virtual Gamepad Report
+            // -----------------------
 
-            // The special button combinations will be stored as booleans when they are
-            // detected. A higher level timer function will use these booleans to determine
-            // if the associated actions should be executed.
-
-            // Indicate to toggle mouse mode based on the command sequence:
-            // LBump + RBump + Back
-            if (((dataPacket[7] & 0x01) > 0) && ((dataPacket[7] & 0x02) > 0) && ((dataPacket[6] & 0x20) > 0))
-                cmdMouseModeToggle = true;
-            else
-                cmdMouseModeToggle = false;
-
-            // Indicate to shutdown controller based on the command sequence:
-            // LTrig + RTrig + Back
-            if ((leftTrig >= 50) && (rightTrig >= 50) && ((dataPacket[6] & 0x20) > 0))
-                cmdKillController = true;
-            else
-                cmdKillController = false;
+            if (gamepad != null)
+                gamepad.SubmitState(state);
         }
 
         private void sendData(byte[] dataToSend)
@@ -980,76 +799,6 @@ namespace Xbox360WirelessChatpad
             }
         }
 
-        public void configureGamepad(bool triggerAsBtn)
-        {
-            // Updates the controller dictionaries and record the specified
-            // trigger type of either Button or Axis.
-            triggerAsButton = triggerAsBtn;
-
-            if (triggerAsBtn)
-            {
-                buttonMap["A"]      = 3;
-                buttonMap["B"]      = 4;
-                buttonMap["X"]      = 1;
-                buttonMap["Y"]      = 2;
-                buttonMap["LStick"] = 9;
-                buttonMap["RStick"] = 10;
-                buttonMap["LBump"]  = 5;
-                buttonMap["RBump"]  = 6;
-                buttonMap["LTrig"]  = 7;
-                buttonMap["RTrig"]  = 8;
-                buttonMap["Back"]   = 11;
-                buttonMap["Start"]  = 12;
-                buttonMap["Guide"]  = 13;
-
-                directionMap["Neutral"]     = -1;
-                directionMap["Up"]          = 0;
-                directionMap["UpRight"]     = 4500;
-                directionMap["Right"]       = 9000;
-                directionMap["DownRight"]   = 13500;
-                directionMap["Down"]        = 18000;
-                directionMap["DownLeft"]    = 22500;
-                directionMap["Left"]        = 27000;
-                directionMap["UpLeft"]      = 31500;
-
-                axisMap["LX"] = HID_USAGES.HID_USAGE_X;
-                axisMap["LY"] = HID_USAGES.HID_USAGE_Y;
-                axisMap["RX"] = HID_USAGES.HID_USAGE_Z;
-                axisMap["RY"] = HID_USAGES.HID_USAGE_RZ;
-            }
-            else
-            {
-                buttonMap["A"]      = 1;
-                buttonMap["B"]      = 2;
-                buttonMap["X"]      = 3;
-                buttonMap["Y"]      = 4;
-                buttonMap["LStick"] = 9;
-                buttonMap["RStick"] = 10;
-                buttonMap["LBump"]  = 5;
-                buttonMap["RBump"]  = 6;
-                buttonMap["Back"]   = 7;
-                buttonMap["Start"]  = 8;
-                buttonMap["Guide"]  = 11;
-
-                directionMap["Neutral"]     = -1;
-                directionMap["Up"]          = 0;
-                directionMap["UpRight"]     = 4500;
-                directionMap["Right"]       = 9000;
-                directionMap["DownRight"]   = 13500;
-                directionMap["Down"]        = 18000;
-                directionMap["DownLeft"]    = 22500;
-                directionMap["Left"]        = 27000;
-                directionMap["UpLeft"]      = 31500;
-
-                axisMap["LX"]       = HID_USAGES.HID_USAGE_X;
-                axisMap["LY"]       = HID_USAGES.HID_USAGE_Y;
-                axisMap["RX"]       = HID_USAGES.HID_USAGE_RX;
-                axisMap["RY"]       = HID_USAGES.HID_USAGE_RY;
-                axisMap["LTrig"]    = HID_USAGES.HID_USAGE_Z;
-                axisMap["RTrig"]    = HID_USAGES.HID_USAGE_RZ;
-            }
-        }
-
         public void startController()
         {
             // Sends command to begin polling for controller data
@@ -1062,8 +811,33 @@ namespace Xbox360WirelessChatpad
         {
             // Sends command to disable the controller
             sendData(controllerCommands["DisableController"]);
+
+            // Unplug the virtual gamepad
+            disposeGamepad();
+
             parentWindow.Invoke(new logCallback(parentWindow.logMessage),
                 "Disconnecting Xbox 360 Wireless Controller " + controllerNumber + ".");
+        }
+
+        private void disposeGamepad()
+        {
+            // Unplugs the virtual gamepad from the system and releases it
+            if (gamepad != null)
+            {
+                gamepad.FeedbackReceived -= gamepadFeedbackReceived;
+                gamepad.Dispose();
+                gamepad = null;
+            }
+        }
+
+        private void gamepadFeedbackReceived(object sender, GamepadFeedback feedback)
+        {
+            // Forwards a game's rumble request to the physical controller.
+            // Note: This may fire on a ViGEm worker thread; sendData is already
+            // used from multiple background threads. Rumble packet format is
+            // untested on hardware, verify with a rumble-capable game.
+            if (controllerAttached && epWriter != null)
+                sendData(ReceiverProtocol.BuildRumbleCommand(feedback.LargeMotor, feedback.SmallMotor));
         }
 
         private void tickButtonCombo()
@@ -1225,10 +999,10 @@ namespace Xbox360WirelessChatpad
 
 
             // When toggling mouse mode, some buttons will still be processed as being held down.
-            // The buttons need to be set in the released position to stop this from occuring.
-            vJoyInt.SetBtn(false, (uint)controllerNumber, buttonMap["LBump"]);
-            vJoyInt.SetBtn(false, (uint)controllerNumber, buttonMap["RBump"]);
-            vJoyInt.SetBtn(false, (uint)controllerNumber, buttonMap["Back"]);
+            // Submit a neutral state so the virtual gamepad releases them; the next
+            // data packet will re-feed the true state.
+            if (gamepad != null)
+                gamepad.SubmitState(GamepadState.Neutral);
 
             // Send Commands to Flash Green Modifier
             for (int i = 0; i < 3; i++)
@@ -1286,42 +1060,5 @@ namespace Xbox360WirelessChatpad
             }
         }
 
-        private void resetComboButtons()
-        {
-            // When the controller disconnects using the button combo, the buttons are still
-            // processed as being pressed even when the controller is disconnected. The buttons
-            // must be set as released to stop this from occurring.
-            if (!mouseModeFlag)
-            {
-                if (triggerAsButton)
-                {
-                    vJoyInt.SetBtn(false, (uint)controllerNumber, buttonMap["LTrig"]);
-                    vJoyInt.SetBtn(false, (uint)controllerNumber, buttonMap["RTrig"]);
-                    vJoyInt.SetBtn(false, (uint)controllerNumber, buttonMap["Back"]);
-                }
-                else
-                {
-                    vJoyInt.SetAxis(0, (uint)controllerNumber, axisMap["LTrig"]);
-                    vJoyInt.SetAxis(0, (uint)controllerNumber, axisMap["RTrig"]);
-                    vJoyInt.SetBtn(false, (uint)controllerNumber, buttonMap["Back"]);
-                }
-            }
-            else
-            {
-                if (mouseModeFlag)
-                {
-                    vJoyInt.SetBtn(false, (uint)controllerNumber, buttonMap["Back"]);
-                    vJoyInt.SetBtn(false, (uint)controllerNumber, buttonMap["LBump"]);
-                    vJoyInt.SetBtn(false, (uint)controllerNumber, buttonMap["RBump"]);
-                }
-            }
-        }
-    }
-
-    class VjoyNotEnabledException : Exception
-    {
-        internal VjoyNotEnabledException()
-        {
-        }
     }
 }
