@@ -5,6 +5,8 @@ VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xbox 360 Wireless Chatpad", "Xbox 360 Wireless Chatpad\Xbox 360 Wireless Chatpad.csproj", "{581ACA2E-F868-4411-8BB7-6922983DA7FA}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xbox360WirelessChatpad.Core", "Xbox360WirelessChatpad.Core\Xbox360WirelessChatpad.Core.csproj", "{2F2A1982-33B9-4A78-9D3E-6C81A26A0F1B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -16,6 +18,10 @@ Global
 		{581ACA2E-F868-4411-8BB7-6922983DA7FA}.Release|x86.ActiveCfg = Release|x86
 		{581ACA2E-F868-4411-8BB7-6922983DA7FA}.Release|x86.Build.0 = Release|x86
 		{581ACA2E-F868-4411-8BB7-6922983DA7FA}.Release|x86.Deploy.0 = Release|x86
+		{2F2A1982-33B9-4A78-9D3E-6C81A26A0F1B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2F2A1982-33B9-4A78-9D3E-6C81A26A0F1B}.Debug|x86.Build.0 = Debug|Any CPU
+		{2F2A1982-33B9-4A78-9D3E-6C81A26A0F1B}.Release|x86.ActiveCfg = Release|Any CPU
+		{2F2A1982-33B9-4A78-9D3E-6C81A26A0F1B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
