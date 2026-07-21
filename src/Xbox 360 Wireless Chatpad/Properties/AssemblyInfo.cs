@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Xbox 360 Wireless Chatpad")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("SkyAg")]
+[assembly: AssemblyCompany("Kytech, SkyAg")]
 [assembly: AssemblyProduct("Xbox 360 Wireless Chatpad")]
-[assembly: AssemblyCopyright("Copyright © SkyAg")]
+[assembly: AssemblyCopyright("Copyright © 2026 Kytech, SkyAg")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
