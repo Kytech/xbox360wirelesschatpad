@@ -1,12 +1,24 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using LibUsbDotNet;
+using LibUsbDotNet.LibUsb;
 using LibUsbDotNet.Main;
 
 namespace Xbox360WirelessChatpad
 {
     class Receiver
     {
+        // VID/PID pairs for known supported receivers
+        private static readonly HashSet<(Int32, Int32)> DeviceIds = new HashSet<(Int32, Int32)> {
+            // Official Receiver
+            (0x045E, 0x0719),
+            // Receiver from Console
+            (0x045E, 0x0291),
+            // Unofficial Receivers
+            (0x045E, 0x02A9),
+        };
+
         // Tracks if the Wireless Receiver is attached
         public bool receiverAttached = false;
 
@@ -41,16 +53,15 @@ namespace Xbox360WirelessChatpad
             // readers/writers as necessary.
             try
             {
+                // Keeping for later for trying to move to WinUSB
+                //foreach (UsbRegistry regDevice in UsbDevice.AllDevices) {
+                //    parentWindow.Invoke(new logCallback(parentWindow.logMessage), $"USB Device Found: {regDevice.Name}: {regDevice.Vid:X4}/{regDevice.Pid:X4}");
+                //}
+
                 // Open the Xbox Wireless Receiver as a USB device
-                // VendorID 0x045e, ProductID 0x0719
-                wirelessReceiver = UsbDevice.OpenUsbDevice(new UsbDeviceFinder(0x045E, 0x0719)) as IUsbDevice;
+                wirelessReceiver = UsbDevice.OpenUsbDevice((dev) => dev is LibUsbRegistry && DeviceIds.Contains((dev.Vid, dev.Pid))) as IUsbDevice;
 
-                // If primary IDs not found attempt secondary IDs
-                // VendorID 0x045e, Product ID 0x0291
-                if (wirelessReceiver == null)
-                    wirelessReceiver = UsbDevice.OpenUsbDevice(new UsbDeviceFinder(0x045E, 0x0291)) as IUsbDevice;
-
-                // If secondary IDs not found report the error
+                // If no valid ID found, report the error
                 if (wirelessReceiver == null)
                     parentWindow.Invoke(new logCallback(parentWindow.logMessage),
                         "ERROR: Wireless Receiver Not Found.");
