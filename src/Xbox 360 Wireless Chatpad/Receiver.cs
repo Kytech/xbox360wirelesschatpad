@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 
 using LibUsbDotNet;
-using LibUsbDotNet.LibUsb;
 using LibUsbDotNet.Main;
 
 namespace Xbox360WirelessChatpad
@@ -29,7 +28,7 @@ namespace Xbox360WirelessChatpad
         private Controller[] xboxControllers = new Controller[4];
 
         // USB Wireless Receiver to connect
-        private IUsbDevice wirelessReceiver;
+        private UsbDevice wirelessReceiver;
 
         // USB Endpoints to send/receive data from the Wireless Receiver
         private UsbEndpointWriter[] epWriters = new UsbEndpointWriter[4];
@@ -53,13 +52,8 @@ namespace Xbox360WirelessChatpad
             // readers/writers as necessary.
             try
             {
-                // Keeping for later for trying to move to WinUSB
-                //foreach (UsbRegistry regDevice in UsbDevice.AllDevices) {
-                //    parentWindow.Invoke(new logCallback(parentWindow.logMessage), $"USB Device Found: {regDevice.Name}: {regDevice.Vid:X4}/{regDevice.Pid:X4}");
-                //}
-
                 // Open the Xbox Wireless Receiver as a USB device
-                wirelessReceiver = UsbDevice.OpenUsbDevice((dev) => dev is LibUsbRegistry && DeviceIds.Contains((dev.Vid, dev.Pid))) as IUsbDevice;
+                wirelessReceiver = UsbDevice.OpenUsbDevice((dev) => DeviceIds.Contains((dev.Vid, dev.Pid)));
 
                 // If no valid ID found, report the error
                 if (wirelessReceiver == null)
@@ -67,9 +61,10 @@ namespace Xbox360WirelessChatpad
                         "ERROR: Wireless Receiver Not Found.");
                 else
                 {
-                    // Set the Configuration, Claim the Interface
-                    wirelessReceiver.ClaimInterface(1);
-                    wirelessReceiver.SetConfiguration(1);
+                    // No need to set device configuration or claim the interface as part of receiver setup.
+                    // WinUSB always sets the device to use Configuration 1, which is what we want.
+                    // Interface 1 is bound by the WinUSB driver, since it's the only interface
+                    // we can bind the driver to to using Zadig for a receiver.
 
                     // Log if the Wireless Receiver was connected to successfully
                     if (wirelessReceiver.IsOpen)
